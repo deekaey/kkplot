@@ -1,0 +1,151 @@
+
+## python -B kkplot.py --data-dir examples/spatial \
+#         --debug --engine matplotlib \
+#         examples/spatial/CN_yanting-demo.yaml | python
+
+datasources:
+  soilchemistry: &soilchemistry
+    path: CN_yanting.sqlite3&table=soilchemistrydaily
+    format: sqlite3
+  watercycle: &watercycle
+    path: CN_yanting.sqlite3&table=watercycledaily
+    format: sqlite3
+    #formatargs: { table: watercycledaily }
+    flavor: ldndcesri
+    flavorargs: { esrishapefile: '/home/klatt-s/projects/catchments/CN_yanting/gis/CN_yanting', linkby: 'ID', z: 'elev_pk', area: 'AREA' }
+
+  physiology: &physiology
+    path: CN_yanting-phys.sqlite3&table=physiologydaily
+    format: sqlite3
+    #formatargs: { table:  }
+    flavor: ldndcesri
+    flavorargs: { esrishapefile: '/home/klatt-s/projects/catchments/CN_yanting/gis/CN_yanting', linkby: 'ID', z: 'elev_pk', area: 'AREA' }
+
+figure:
+  title: 'Yanting (China)'
+  time: '2001-01-01->2005-12-31'
+  #space: '0:200, 0:100'
+  output: 'CN_yanting-demo.pdf'
+
+  style: { kind: 'line' }
+  properties:
+    columns: 2
+    height: 16
+    width: 40
+  datasource: 'soilchemistry'
+
+plots:
+#  - NitrousOxideEmissions:
+#      title: 'Nitrous Oxide Emissions'
+#      #properties: { align: False, ylabel: 'N$_2$O emissions [kg N ha$^{-1}$]'}
+#      graphs:
+#        n2oemis:
+#          name: [ 'dN_n2o_emis@soilchemistry' ]
+#          #label: [ 'N$_2$O Emission' ]
+#          groupby:
+#            - id: [ [ 0, 299 ] ]
+#
+#    #name: [ 'sumtransp:id = sum( transp@watercycle)' ]
+#  - WaterCycleTranspiration90:
+#      space: '-inf:inf,-inf:inf'
+#      title: 'Transpiration (2005)'
+#      style: { kind: 'polygons' }
+#      #properties: { align: False, ylabel: 'N$_2$O emissions [kg N ha$^{-1}$]' }
+#      graphs:
+#        transpiration:
+#          name: [ 'transp = area@watercycle * sum(transp@watercycle)' ]
+#          label: [ '' ]
+#          groupby:
+#            - year: [ 2005 ]
+#            - julianday: [ 90 ]
+#  - WaterCycleTranspiration180:
+#      space: '-inf:inf,-inf:inf'
+#      title: 'Transpiration (2005)'
+#      style: { kind: 'polygons' }
+#      graphs:
+#        transpiration:
+#          name: [ 'transp = area@watercycle * transp@watercycle' ]
+#          label: [ '' ]
+#          groupby:
+#            - year: [ 2005 ]
+#            - julianday: [ 180 ]
+#  - WaterCycleTranspiration270:
+#      space: '-inf:inf,-inf:inf'
+#      title: 'Transpiration (2005)'
+#      style: { kind: 'polygons' }
+#      graphs:
+#        transpiration:
+#          name: [ 'transp = area@watercycle * transp@watercycle' ]
+#          label: [ '' ]
+#          groupby:
+#            - year: [ 2005 ]
+#            - julianday: [ 270 ]
+##  - WaterCycleTranspiration360:
+##      space: '-inf:inf,-inf:inf'
+##      title: 'Transpiration (2005)'
+##      style: { kind: 'polygons' }
+##      graphs:
+##        transpiration:
+##          name: [ 'transp = area@watercycle * evasoil@watercycle' ]
+##          label: [ '' ]
+##          groupby:
+##            - year: [ 2005 ]
+##            - julianday: [ 360 ]
+#
+#  - PhysiologyAGB:
+#      space: '-inf:inf,-inf:inf'
+#      title: 'Aboveground biomass (2005)'
+#      style: { kind: 'polygons' }
+#      graphs:
+#        dwabove:
+#          name: [ 'agb = area@physiology * DW_above@physiology' ]
+#          #label: [ '' ]
+#          groupby:
+#            - year: [ 2005 ]
+#            - julianday: [ 180 ]
+#  - PhysiologyLAI:
+#      space: '-inf:inf,-inf:inf'
+#      title: 'LAI (2005)'
+#      style: { kind: 'polygons' }
+#      graphs:
+#        dwabove:
+#          name: [ 'LAI = lai@physiology' ]
+#          #label: [ '' ]
+#          groupby:
+#            - year: [ 2005 ]
+#            - julianday: [ 180 ]
+#  - PhysiologyNO3Uptake:
+#      space: '-inf:inf,-inf:inf'
+#      title: 'NO3 uptake (2005)'
+#      style: { kind: 'polygons' }
+#      graphs:
+#        dwabove:
+#          name: [ 'no3uptake = dN_no3_upt@physiology' ]
+#          #label: [ '' ]
+#          groupby:
+#            - year: [ 2005 ]
+#            - julianday: [ 180 ]
+
+  - WaterCycleSoilwater04:
+      space: '-inf:inf,-inf:inf'
+      title: 'Soil Water (June 01., 2004)'
+      style: { kind: 'polygons' }
+      graphs:
+        transpiration:
+          name: [ 'soilwater = soil_water@watercycle' ]
+          #label: [ 'Soil Water' ]
+          groupby:
+            - year: [ 2004 ]
+            - julianday: [ 180 ]
+  - WaterCycleSoilwater05:
+      space: '-inf:inf,-inf:inf'
+      title: 'Soil Water (June 01., 2005)'
+      style: { kind: 'polygons' }
+      graphs:
+        transpiration:
+          name: [ 'soilwater = soil_water@watercycle' ]
+          #label: [ 'Soil Water' ]
+          groupby:
+            - year: [ 2005 ]
+            - julianday: [ 180 ]
+

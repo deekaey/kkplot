@@ -1,0 +1,622 @@
+
+## python -B kkplot.py --data-dir examples/spatial \
+#         --debug --engine matplotlib \
+#         examples/spatial/spatial-demo.yaml | python
+
+datasources:
+  physiology: &physiology
+    path: B0Ssilo-phys.sqlite3&table=physiology
+  soilchemistry: &soilchemistry
+    path: B0Ssilo.sqlite3&table=soilchemistrydaily
+    format: sqlite3
+  soilchemistrylayer: &soilchemistrylayer
+    path: B0Ssilo.sqlite3&table=soilchemistrylayerdaily
+    format: sqlite3
+  watercycle: &watercycle
+    path: B0Ssilo.sqlite3&table=watercycledaily
+    format: sqlite3
+  watercyclelayer: &watercyclelayer
+    path: B0Ssilo.sqlite3&table=watercyclelayerdaily
+    format: sqlite3
+  metrx: &metrx
+    path: B0Ssilo.sqlite3&table=metrxdaily
+    format: sqlite3
+  metrxlayer: &metrxlayer
+    path: B0Ssilo.sqlite3&table=metrxdailylayer
+    format: sqlite3
+
+  B0SsiloSoilchemistry2006:
+    path: &CN_yantingSoilchemistry2006 CN_yantingSoilchemistry2006.txt
+    kind: tmp
+    flavor: ldndcesri
+    flavorargs: { esrishapefile: '/home/klatt-s/projects/catchments/CN_yanting/gis/CN_yanting', linkby: 'ID', z: 'elev_pk', area: 'AREA' }
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *CN_yantingSoilchemistry2006
+        - 'CN_yanting/r811/CN_yanting.sqlite3'
+        - 'id n2oemis'
+        - 'select id,sum(dN_n2o_emis) from soilchemistrydaily where year=2006 group by id'
+
+  B0Ssilo_soilchemistry: &B0Ssilo_soilchemistry
+    path: B0Ssilo/r840/B0Ssilo.sql&table=soilchemistrydaily
+    format: sqlite3
+    flavor: ldndcxyz
+    flavorargs: { xyround: 2, xlength: 5.0, ylength: 5.0 }
+  B5SsiloMgrass_soilchemistry: &B5SsiloMgrass_soilchemistry
+    path: B5SsiloMgrass/r840/B5SsiloMgrass.sql&table=soilchemistrydaily
+    format: sqlite3
+    flavor: ldndcxyz
+  B10SsiloMgrass_soilchemistry: &B10SsiloMgrass_soilchemistry
+    path: B10SsiloMgrass/r840/B10SsiloMgrass.sql&table=soilchemistrydaily
+    format: sqlite3
+    flavor: ldndcxyz
+
+  B0Ssilo_metrxlayer: &B0Ssilo_metrxlayer
+    path: B0Ssilo/r840/B0Ssilo.sql&table=metrxdailylayer
+    format: sqlite3
+  B5SsiloMgrass_metrxlayer: &B5SsiloMgrass_metrxlayer
+    path: B5SsiloMgrass/r840/B5SsiloMgrass.sql&table=metrxdailylayer
+    format: sqlite3
+  B10SsiloMgrass_metrxlayer: &B10SsiloMgrass_metrxlayer
+    path: B10SsiloMgrass/r840/B10SsiloMgrass.sql&table=metrxdailylayer
+    format: sqlite3
+
+
+figure:
+  title: 'Bufferzones'
+  time: '2005-01-01->2009-01-01'
+  space: '0:200, 0:100'
+  output: 'spatial-demo.pdf'
+
+  style: { kind: 'line' }
+  properties:
+    columns: 1
+    height: 10
+    width: 12
+  datasource: 'soilchemistry'
+
+plots:
+
+#  - N2OEdges:
+#      title: 'Nitrous Oxide Emissions at edges clockwise'
+#      properties: { align: False, ylabel: 'N$_2$O emissions [kg N ha$^{-1}$]'}
+#      graphs:
+#        n2o:
+#          name: [ 'dN_n2o_emis' ]
+#          label: [ 'N$_2$O Emission' ]
+#          groupby:
+#            - id: [ 0, 380, 399, 19 ]
+#  - N2OAll:
+#      title: 'Nitrous Oxide Emissions for all $400$ cell'
+#      properties: { align: False, ylabel: 'N$_2$O emissions [kg N ha$^{-1}$]'}
+#      graphs:
+#        n2o:
+#          name: [ 'dN_n2o_emis' ]
+#          label:
+#          groupby:
+#            - id: [ [0, 399] ]
+#        n2o_label:
+#          name:
+#          label: [ 'N$_2$O Emissions for cell $C_0,...,C_{399}$' ]
+
+#  - N2OSouthAndEast:
+#      title: 'Nitrous Oxide Emissions for cells with discharge'
+#      properties: { align: False, ylabel: 'N$_2$O emissions [kg N ha$^{-1}$]'}
+#      graphs:
+#        n2o_south:
+#          name: [ 'dN_n2o_emis' ]
+#          style: { color: '#3EA28C' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18] ]
+#        n2o_east:
+#          name: [ 'dN_n2o_emis' ]
+#          style: { color: '#DD5482' }
+#          label:
+#          groupby:
+#            - id: [ [19, 399, 20] ]
+
+#  - NO3SouthAndEast:
+#      title: 'Nitrate Leaching for cells with discharge'
+#      properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_no3_leach@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#        no3_b5:
+#          name: [ 'dN_no3_leach@B5SsiloMgrass_soilchemistry' ]
+#          style: { color: '#DD5482' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#        no3_b10:
+#          name: [ 'dN_no3_leach@B10SsiloMgrass_soilchemistry' ]
+#          style: { color: '#9AE156' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+
+#  - NitrogenNitrificationB0:
+#      title: 'Nitrification for cells along diagonal [B0Ssilo]'
+#      properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_nitrify_min@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C' }
+#          label:
+#          groupby:
+#            - id: [ [19, 380, 19] ]
+#  - NitrogenNitrificationB5:
+#      title: 'Nitrification for cells along diagonal [B5Ssilo]'
+#      properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#      graphs:
+#        no3_b5:
+#          name: [ 'dN_nitrify_min@B5SsiloMgrass_soilchemistry' ]
+#          style: { color: '#DD5482' }
+#          label:
+#          groupby:
+#            - id: [ [19, 380, 19] ]
+#  - NitrogenNitrificationB10:
+#      title: 'Nitrification for cells along diagonal [B10Ssilo]'
+#      properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#      graphs:
+#        no3_b10:
+#          name: [ 'dN_nitrify_min@B10SsiloMgrass_soilchemistry' ]
+#          style: { color: '#9AE156' }
+#          label:
+#          groupby:
+#            - id: [ [19, 380, 19] ]
+
+#  - NO3ProductionB0:
+#      title: 'B0Ssilo'
+#      properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#      graphs:
+#        no3_b0:
+#          name: [ 'no3_prod_nit@B0Ssilo_metrxlayer', 'level@B0Ssilo_metrxlayer' ]
+#          style: { kind: 'heatmap', color: '#3EA28C' }
+#          label:
+#          groupby:
+#            - id: [ 19 ]
+#            - layer: [ [ -1, -15, -1] ]
+
+#   - NO3ProductionBx_19:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 19 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_38:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 38 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_57:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 57 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_76:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 76 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_95:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 95 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_114:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 114 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_133:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 133 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_152:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 152 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_171:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 171 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_190:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 190 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_209:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 209 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_228:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 228 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_247:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 247 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_266:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 266 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_285:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 285 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_304:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 304 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_323:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 323 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_342:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 342 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_361:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 361 ]
+#             - layer: [ [ -1, -15, -1] ]
+#
+#   - NO3ProductionBx_380:
+#       title: 'B10SsiloMgrass'
+#       properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#       graphs:
+#         no3_prod:
+#           name: [ 'no3_cons_denit@B10SsiloMgrass_metrxlayer', 'level@B10SsiloMgrass_metrxlayer' ]
+#           style: { kind: 'heatmap', color: '#3EA28C' }
+#           label:
+#           groupby:
+#             - id: [ 380 ]
+#             - layer: [ [ -1, -15, -1] ]
+
+#  - NO3SouthAndEastB0:
+#      title: 'Nitrate Leaching for cells with discharge [B0Ssilo]'
+#      properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_no3_leach@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#  - NO3SouthAndEastB5:
+#      title: 'Nitrate Leaching for cells with discharge [B5SsiloMgrass]'
+#      properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#      graphs:
+#        no3_b5:
+#          name: [ 'dN_no3_leach@B5SsiloMgrass_soilchemistry' ]
+#          style: { color: '#DD5482' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#  - NO3SouthAndEastB10:
+#      space: '0:200, 0:100'
+#      title: 'Nitrate Leaching for cells with discharge [B10SsiloMgrass]'
+#      properties: { align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#      graphs:
+#        no3_b10:
+#          name: [ 'dN_no3_leach@B10SsiloMgrass_soilchemistry' ]
+#          style: { color: '#9AE156' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#            - year: [ 2006 ]
+#            - julianday: [ 300 ]
+
+#  - NO3SouthAndEastSpace:
+#      space: '0:100, 0:100'
+#      title: 'Nitrate Leaching for cells with discharge' # [B10SsiloMgrass]'
+#      style: { kind: 'line', projection: '3d', marker: "o" }
+#      properties: { projection: '3d', align: False, zlabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_no3_leach@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#            - year: [ 2006 ]
+#            - julianday: [ 300 ]
+#        no3_b5:
+#          name: [ 'dN_no3_leach@B5SsiloMgrass_soilchemistry' ]
+#          style: { color: '#DD5482' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#            - year: [ 2006 ]
+#            - julianday: [ 300 ]
+#        no3_b10:
+#          name: [ 'dN_no3_leach@B10SsiloMgrass_soilchemistry' ]
+#          style: { color: '#9AE156' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#            - year: [ 2006 ]
+#            - julianday: [ 300 ]
+
+#  - NitrousOxideEmissionsRdBu:
+#      space: '0:100, 0:100'
+#      title: 'RdBu'
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_n2o_emis@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C', colormap: 'RdBu', colorbarpad: 0.06, colorbarorientation: 'horizontal' }
+#          label:
+#          groupby:
+#            - year: [ 2006 ]
+#            - julianday: [ 180 ]
+
+  - NitrousOxideEmissionsRdBuR:
+      space: '0:100, 0:100'
+      title: 'RdBu (Reversed)'
+      style: { kind: 'polygon' }
+      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+      graphs:
+        no3_b0:
+          name: [ 'n2oemis = n2oemis@B0SsiloSoilchemistry2006' ]
+          style: { color: '#3EA28C', colormap: 'RdBu_r', colorbarpad: 0.02 }
+          label:
+          groupby:
+            - year: [ 2006 ]
+
+#  - NitrousOxideEmissionsGnuplot:
+#      space: '0:100, 0:100'
+#      title: 'Gnuplot'
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_n2o_emis@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C', colormap: 'gnuplot' }
+#          label:
+#          groupby:
+#            - year: [ 2006 ]
+#            - julianday: [ 180 ]
+#  - NitrousOxideEmissionsTerrain:
+#      space: '0:100, 0:100'
+#      title: 'Terrain'
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_n2o_emis@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C', colormap: 'terrain' }
+#          label:
+#          groupby:
+#            - year: [ 2006 ]
+#            - julianday: [ 180 ]
+#  - NitrousOxideEmissionsCubehelix:
+#      space: '0:100, 0:100'
+#      title: 'CubeHelix'
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_n2o_emis@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C', colormap: 'cubehelix' }
+#          label:
+#          groupby:
+#            - year: [ 2006 ]
+#            - julianday: [ 180 ]
+#  - NitrousOxideEmissionsOcean:
+#      space: '0:100, 0:100'
+#      title: 'Ocean'
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_n2o_emis@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C', colormap: 'ocean' }
+#          label:
+#          groupby:
+#            - year: [ 2006 ]
+#            - julianday: [ 180 ]
+#  - NitrousOxideEmissionsPastel1:
+#      space: '0:100, 0:100'
+#      title: 'Pastel 1'
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_n2o_emis@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C', colormap: 'Pastel1' }
+#          label:
+#          groupby:
+#            - year: [ 2006 ]
+#            - julianday: [ 180 ]
+#  - NitrousOxideEmissionsWistia:
+#      space: '0:100, 0:100'
+#      title: 'Wistia'
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_n2o_emis@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C', colormap: 'Wistia' }
+#          label:
+#          groupby:
+#            - year: [ 2006 ]
+#            - julianday: [ 180 ]
+#  - NitrousOxideEmissionsGrayR:
+#      space: '0:100, 0:100'
+#      title: 'Gray (Reversed)'
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_n2o_emis@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C', colormap: 'gray_r' }
+#          label:
+#          groupby:
+#            - year: [ 2006 ]
+#            - julianday: [ 180 ]
+#  - NitrousOxideEmissionsGray:
+#      space: '0:100, 0:100'
+#      title: 'Gray'
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'dN_n2o_emis@B0Ssilo_soilchemistry' ]
+#          style: { color: '#3EA28C', colormap: 'gray' }
+#          label:
+#          groupby:
+#            - year: [ 2006 ]
+#            - julianday: [ 180 ]
+
