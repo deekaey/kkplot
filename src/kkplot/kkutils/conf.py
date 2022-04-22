@@ -12,7 +12,7 @@ class kkplot_configuration( object) :
 
         parser = argparse.ArgumentParser()
 
-        parser.add_argument( '-E','--engine', default=None,
+        parser.add_argument( '-E','--engine', default='matplotlib',
             help='plot engine {%s}' % ', '.join(_engines))
         parser.add_argument( '-o','--engine-options', default='',
             help='ampersand (&) separated list of engine options')
