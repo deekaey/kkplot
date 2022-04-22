@@ -3,9 +3,9 @@
 import sys
 import argparse
 import os
-import kkutils as utils
-from kkutils.log import *
-from kkplot_version import __version__
+import kkplot.kkutils as utils
+from kkplot.kkutils.log import *
+from kkplot.kkplot_version import __version__
 
 
 class kkgen_configuration( object) :

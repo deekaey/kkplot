@@ -2,9 +2,9 @@
 ## example call
 ## python kkplot.py -E null
 
-from kkengines.base import kkplot_engine as kkplot_engine
+from kkplot.kkengines.base import kkplot_engine as kkplot_engine
 
-from kkutils.log import *
+from kkplot.kkutils.log import *
 
 import sys
 import time

@@ -1,6 +1,6 @@
 
 import numpy
-from kkutils.log import *
+from kkplot.kkutils.log import *
 
 def kkplot_pythonmatplotlib_time_raster( self, _id, _graph, _axes_index, _columns, _auxialiary_columns, **_kwargs) :
 

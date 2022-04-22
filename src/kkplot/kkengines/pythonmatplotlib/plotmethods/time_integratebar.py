@@ -1,4 +1,4 @@
-from kkutils.log import *
+from kkplot.kkutils.log import *
 
 ##@page time_integratebar Bar plot (temporal integration)
 #@tableofcontents

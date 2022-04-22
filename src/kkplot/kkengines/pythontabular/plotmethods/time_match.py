@@ -1,5 +1,5 @@
 
-from kkutils.log import *
+from kkplot.kkutils.log import *
 
 def kkplot_pythontabular_time_match( self, _id, _graph, _columns, _auxialiary_columns, **_kwargs) :
     w = self.writer.iappendnl

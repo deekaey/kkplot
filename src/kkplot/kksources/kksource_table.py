@@ -1,6 +1,6 @@
 
-from kkutils.log import *
-from kksources.base import kkplot_source as kkplot_source
+from kkplot.kkutils.log import *
+from kkplot.kksources.base import kkplot_source as kkplot_source
 
 import pandas as pandas
 

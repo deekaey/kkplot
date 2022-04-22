@@ -5,11 +5,11 @@
 ## supported output formats:
 ##  html (png graphics)
 
-from kkengines.base import kkplot_engine as kkplot_engine
-from kkengines.pythonmatplotlib import kkplot_engine_matplotlib as kkplot_engine_matplotlib
-from kkplot_dviplot import kkplot_dviplot as kkplot_dviplot
+from kkplot.kkengines.base import kkplot_engine as kkplot_engine
+from kkplot.kkengines.pythonmatplotlib import kkplot_engine_matplotlib as kkplot_engine_matplotlib
+from kkplot.kkplot_dviplot import kkplot_dviplot as kkplot_dviplot
 
-from kkutils.log import *
+from kkplot.kkutils.log import *
 
 import sys
 import time

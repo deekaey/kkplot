@@ -1,13 +1,13 @@
 
-from kkutils.log import *
-from kkutils.timedelta import parse_timedelta
-from kkplot_pfyaml import kkplot_pfreader_yaml as pfreader_yaml
-from kkplot_figure import kkplot_figure as kkplot_figure
-from kkplot_figure import isreference as kkplot_isreference
-from kkplot_figure import asname as kkplot_asname
-from kkplot_figure import nocolumndepends as kkplot_nocolumndepends
+from kkplot.kkutils.log import *
+from kkplot.kkutils.timedelta import parse_timedelta
+from kkplot.kkplot_pfyaml import kkplot_pfreader_yaml as pfreader_yaml
+from kkplot.kkplot_figure import kkplot_figure as kkplot_figure
+from kkplot.kkplot_figure import isreference as kkplot_isreference
+from kkplot.kkplot_figure import asname as kkplot_asname
+from kkplot.kkplot_figure import nocolumndepends as kkplot_nocolumndepends
 
-from kksources import kkplot_sourcefactory as kkplot_sourcefactory
+from kkplot.kksources import kkplot_sourcefactory as kkplot_sourcefactory
 
 import os as os
 import pandas as pandas

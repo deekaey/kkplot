@@ -1,3 +1,3 @@
 
-from .pythonvtk import kkplot_engine_vtk
+from kkplot.kkengines.pythonvtk.pythonvtk import kkplot_engine_vtk
 

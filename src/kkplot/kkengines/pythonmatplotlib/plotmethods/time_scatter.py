@@ -1,5 +1,5 @@
 
-from kkutils.log import *
+from kkplot.kkutils.log import *
 
 def kkplot_pythonmatplotlib_time_scatter( self, _id, _graph, _axes_index, _columns, _auxialiary_columns, **_kwargs) :
     axes = '%s["%s"]' % ( _kwargs['axes'], _axes_index)

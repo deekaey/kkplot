@@ -1,8 +1,8 @@
 
-from kkutils.log import *
-from kkutils.expand import *
+from kkplot.kkutils.log import *
+from kkplot.kkutils.expand import *
 
-import kkplot_domains
+import kkplot.kkplot_domains
 
 import sys
 

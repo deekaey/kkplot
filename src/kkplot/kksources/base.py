@@ -1,5 +1,5 @@
 
-from kkutils.log import *
+from kkplot.kkutils.log import *
 
 import datetime as datetime
 import pandas as pandas

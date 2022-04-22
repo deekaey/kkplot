@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
 import sys
-import kkutils as utils
-import kkengines as engines
-from kkplot_dviplot import kkplot_dviplot as dviplot
+import kkplot.kkutils as utils
+import kkplot.kkengines as engines
+from kkplot.kkplot_dviplot import kkplot_dviplot as dviplot
 
-from kkplot_version import __version__
+from kkplot.kkplot_version import __version__
 
 def kkplot_print_enginehelp( _engine, _config=None) :
     engine = None
@@ -28,7 +28,8 @@ def kkplot_list_engines() :
     sys.stdout.write( '%s\n' % ( '\n'.join( engines.names())))
     return 0
 
-if __name__ == '__main__':
+
+def main():
 
     try :
         kkplot_config = utils.configuration( engines.names())
@@ -75,4 +76,9 @@ if __name__ == '__main__':
         utils.log.kklog_debug( 'reread data, but not running engine.')
 
     sys.exit( 0)
+
+
+if __name__ == '__main__':
+
+    main()
 

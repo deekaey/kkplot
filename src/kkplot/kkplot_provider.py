@@ -1,6 +1,6 @@
 
-from kkutils.log import *
-from kkutils.expand import *
+from kkplot.kkutils.log import *
+from kkplot.kkutils.expand import *
 import os
 
 class kkplot_provider( object) :

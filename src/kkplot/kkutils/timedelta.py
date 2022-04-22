@@ -1,6 +1,6 @@
 
 import datetime
-from kkutils.log import *
+from kkplot.kkutils.log import *
 def  parse_timedelta( _timedelta) :
 
     units = { 'w':'weeks', 'd':'days', 'h':'hours', 'm':'minutes', 's':'seconds' }

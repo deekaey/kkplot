@@ -1,3 +1,3 @@
 
-from .pythonmatplotlib import kkplot_engine_matplotlib
+from kkplot.kkengines.pythonmatplotlib.pythonmatplotlib import kkplot_engine_matplotlib
 

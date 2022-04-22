@@ -1,6 +1,6 @@
 
-from kkutils.log import *
-from kkutils import esri as shapefile
+from kkplot.kkutils.log import *
+from kkplot.kkutils import esri as shapefile
 #from kkutils import rotate as rotate
 
 #from vtk.util import numpy_support

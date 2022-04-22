@@ -1,6 +1,6 @@
 
-from kkutils.log import *
-from kkengines.pythoncode import fitness
+from kkplot.kkutils.log import *
+from kkplot.kkengines.pythoncode import fitness
 
 def kkplot_pythonmatplotlib_time_line( self, _id, _graph, _axes_index, _columns, _auxialiary_columns, **_kwargs) :
     axes = '%s["%s"]' % ( _kwargs['axes'], _axes_index)

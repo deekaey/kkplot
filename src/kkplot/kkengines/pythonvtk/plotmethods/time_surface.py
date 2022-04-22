@@ -1,6 +1,6 @@
 
-from kkutils.log import *
-from kkutils import esri as shapefile
+from kkplot.kkutils.log import *
+from kkplot.kkutils import esri as shapefile
 from PIL import Image, ImageDraw
 import numpy as numpy
 import random as random

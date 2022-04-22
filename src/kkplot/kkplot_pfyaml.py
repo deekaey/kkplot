@@ -1,10 +1,10 @@
 
-import kkutils as utils
-from kkutils.log import *
-from kkutils.expand import *
-from kkplot_figure import *
-import kkplot_domains
-import kkplot_provider
+import kkplot.kkutils as utils
+from kkplot.kkutils.log import *
+from kkplot.kkutils.expand import *
+from kkplot.kkplot_figure import *
+import kkplot.kkplot_domains
+import kkplot.kkplot_provider
 
 import yaml
 import itertools

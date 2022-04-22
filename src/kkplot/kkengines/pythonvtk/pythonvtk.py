@@ -5,15 +5,15 @@
 ## supported output formats:
 ##  vtr vtu
 
-from kkengines.base import kkplot_engine as kkplot_engine
-from kkengines.base import kkplot_plotmethod as kkplot_plotmethod
-from kkplot_dviplot import kkplot_dviplot as kkplot_dviplot
+from kkplot.kkengines.base import kkplot_engine as kkplot_engine
+from kkplot.kkengines.base import kkplot_plotmethod as kkplot_plotmethod
+from kkplot.kkplot_dviplot import kkplot_dviplot as kkplot_dviplot
 
-from kkutils.log import *
-from kkutils import writer as kkplot_writer
+from kkplot.kkutils.log import *
+from kkplot.kkutils import writer as kkplot_writer
 
-from kkengines.pythonbase import *
-from kkengines.pythonvtk.plotmethods import *
+from kkplot.kkengines.pythonbase import *
+from kkplot.kkengines.pythonvtk.plotmethods import *
 
 import sys
 import time

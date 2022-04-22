@@ -1,4 +1,4 @@
 
-from .time_fit import kkplot_pythontabular_time_fit
-from .time_match import kkplot_pythontabular_time_match
+from kkplot.kkengines.pythontabular.plotmethods.time_fit import kkplot_pythontabular_time_fit
+from kkplot.kkengines.pythontabular.plotmethods.time_match import kkplot_pythontabular_time_match
 

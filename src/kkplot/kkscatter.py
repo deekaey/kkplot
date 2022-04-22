@@ -6,9 +6,9 @@
 ##  python kkscatter.py --range '1996-01-01->2012-01-01' --title 'Scatter Plot' --columns dC_ch4_emis: soilchemistry-daily.txt | kkplot -
 
 import sys
-import kkgen as gen
-from kkutils.log import *
-from kkutils import colors
+import kkplot.kkgen as gen
+from kkplot.kkutils.log import *
+from kkplot.kkutils import colors
 
 def label( _j, _J=0) :
     if _j==_J :

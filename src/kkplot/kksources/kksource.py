@@ -1,6 +1,6 @@
 
-from kkutils.log import *
-from kksources.base import create as kksource_create
+from kkplot.kkutils.log import *
+from kkplot.kksources.base import create as kksource_create
 
 class kkplot_sourcefactory( object) :
     def  __init__( self, _source, _conf) :

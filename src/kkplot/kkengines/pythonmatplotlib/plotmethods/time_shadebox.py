@@ -1,6 +1,6 @@
 
-from kkutils.log import *
-from kkengines.pythoncode import fitness
+from kkplot.kkutils.log import *
+from kkplot.kkengines.pythoncode import fitness
 import matplotlib.dates as matplotlib_dates
 
 def kkplot_pythonmatplotlib_time_shadebox( self, _id, _graph, _axes_index, _columns, _auxialiary_columns, **_kwargs) :

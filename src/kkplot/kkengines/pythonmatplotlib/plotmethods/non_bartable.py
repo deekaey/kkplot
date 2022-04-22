@@ -1,5 +1,5 @@
 
-from kkutils.log import *
+from kkplot.kkutils.log import *
 
 class ident_t( object) :
     def __init__( self, _name) :

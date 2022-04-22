@@ -1,8 +1,8 @@
 
-from .writer import kkplot_writer as writer
-from .conf import kkplot_configuration as configuration
+from kkplot.kkutils.writer import kkplot_writer as writer
+from kkplot.kkutils.conf import kkplot_configuration as configuration
 #from expand import kkplot_expand as kkexpand
-from .log import *
+from kkplot.kkutils.log import *
 
 import sys
 def programname( _path=None) :

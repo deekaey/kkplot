@@ -1,5 +1,5 @@
 
-from kkutils.log import *
+from kkplot.kkutils.log import *
 
 def kkplot_pythontabular_time_fit( self, _id, _graph, _columns, _auxialiary_columns, **_kwargs) :
     w = self.writer.iappendnl
@@ -32,7 +32,7 @@ def kkplot_pythontabular_time_fit( self, _id, _graph, _columns, _auxialiary_colu
     return  method_call
 
 
-from kkengines.pythoncode import fitness
+from kkplot.kkengines.pythoncode import fitness
 
 def kkplot_pythontabular_time_fitness( self, _graph, _columns, _fitness_func, _dataframe, _kwargs) :
 
