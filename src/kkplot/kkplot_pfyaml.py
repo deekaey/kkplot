@@ -3,8 +3,8 @@ import kkplot.kkutils as utils
 from kkplot.kkutils.log import *
 from kkplot.kkutils.expand import *
 from kkplot.kkplot_figure import *
-import kkplot.kkplot_domains
-import kkplot.kkplot_provider
+import kkplot.kkplot_domains as kkplot_domains
+import kkplot.kkplot_provider as kkplot_provider
 
 import yaml
 import itertools

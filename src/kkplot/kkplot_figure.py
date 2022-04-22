@@ -2,7 +2,7 @@
 from kkplot.kkutils.log import *
 from kkplot.kkutils.expand import *
 
-import kkplot.kkplot_domains
+import kkplot.kkplot_domains as kkplot_domains
 
 import sys
 
