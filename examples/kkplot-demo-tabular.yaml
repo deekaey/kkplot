@@ -1,0 +1,70 @@
+
+## python -B kkplot.py --data-dir examples \
+#         --providers-dir providers --debug \
+#         --measurements-dir examples/measurements \
+#         examples/kkplot-demo-tabular.yaml | python
+
+engine: tabular
+
+datasources:
+
+  soilchemistry: &soilchemistry
+    path: soilchemistry-daily.txt
+    flavor: ldndcyj
+  observed_co2:
+    path: &observed_co2 observed_co2.txt
+    flavor: iso8601
+    kind: tmp
+    provider:
+      program: measurement-parser.py
+      arguments:
+        - *observed_co2
+        - co2.txt
+
+define:
+  F: '(12.0 * 8.64 * 0.1)'
+
+figure:
+  title: 'kkplot (Tabular Demo)'
+  time: '2006-01-01->2008-01-01'
+  output: 'examples/kkplot-demo-tabular.pdf'
+
+plots:
+  - CO2_ObservedVersusSimulated:
+      datasource: *soilchemistry
+      title: '[A]  Nash-Sutcliffe Efficiency (CO2)'
+      time: '2007-01-01->2009-01-01'
+      properties: { ylabel: 'Scenario', xlabel: 'NSE',
+        sort: 'ascending' }
+      style: { kind: 'fitness', fitnessproperties: { function: 'nashsutcliffe',
+        format: 'plain', decimalalign: 'left', floatformat: '.6f'}}
+      graphs:
+        - C_co2_0:
+            name: [ 'observed = c_co2@observed_co2 * F', 'simulated = dC_co2_emis_auto + dC_co2_emis_hetero' ]
+            label: 'C_0'
+        - C_co2_1:
+            name: [ 'observed = dC_co2_emis_auto', 'simulated = dC_co2_emis_auto + dC_co2_emis_hetero' ]
+            label: 'C_1'
+        - C_co2_2:
+            name: [ 'observed = dC_co2_emis_hetero', 'simulated = dC_co2_emis_auto + dC_co2_emis_hetero' ]
+            label: 'C_2'
+
+  - N2O_ObservedVersusSimulated:
+      datasource: *soilchemistry
+      title: '[B]  Nash-Sutcliffe Efficiency (N2O)'
+      time: '2007-01-01->2009-01-01'
+      style: { kind: 'fitness' , fitnessproperties: { function: 'r2', headers: 'NSE' }}
+      graphs:
+        - N_n2o_0:
+            name: [ 'observed = dN_n2o_emis', 'simulated = dN_n2o_emis' ]
+            label: 'N_0'
+        - N_n2o_1:
+            name: [ 'observed = dN_n2o_emis', 'simulated = dN_n2_emis' ]
+            label: 'N_1'
+        - N_n2o_2:
+            name: [ 'observed = dN_n2o_emis', 'simulated = dN_nh3_emis' ]
+            label: 'N_2'
+        - N_n2o_3:
+            name: [ 'observed = dN_nh4_leach', 'simulated = dN_no3_leach' ]
+            label: 'N_3'
+

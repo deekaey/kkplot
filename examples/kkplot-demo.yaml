@@ -1,0 +1,361 @@
+
+## python -B kkplot.py --data-dir examples \
+#         --measurements-dir examples/measurements \
+#         --providers-dir providers --debug \
+#         examples/kkplot-demo.yaml | python
+
+engine: matplotlib
+
+datasources:
+  spatial_ecosystem: &spatial_ecosystem
+    path: ecosystem-daily.txt
+    flavor: 'ldndcyj'
+  ecosystem: &ecosystem
+    path: ecosystem-daily.sqlite3&table=ecosystemdaily
+    format: sqlite3
+    flavor: 'ldndcyj'
+  microclimate: &microclimate
+    path: microclimate-daily.txt
+    flavor: 'ldndcyj'
+  physiology: &physiology
+    path: physiology-daily.txt
+    flavor: 'ldndcyj'
+  soilchemistry: &soilchemistry
+    path: soilchemistry-daily.txt
+    flavor: 'ldndcyj'
+  soilchemistrylayer: &soilchemistrylayer
+    path: soilchemistry-layer-daily.txt
+    flavor: 'ldndcyj'
+  watercycle: &watercycle
+    path: watercycle-daily.txt
+    flavor: 'ldndcyj'
+  watercycle15min: &watercycle15min
+    path: watercycle-15min.txt
+  watercyclelayer: &watercyclelayer
+    path: watercycle-daily.txt
+    flavor: 'ldndcyj'
+
+  observed_nee:
+    path: &observed_nee observed_nee.txt
+    flavor: 'ldndcyj'
+    kind: tmp
+    provider:
+      program: measurement-parser.py
+      arguments:
+        - *observed_nee
+        - nee.txt
+  observed_co2:
+    path: &observed_co2 observed_co2.txt
+    flavor: 'ldndcyj'
+    kind: tmp
+    provider:
+      program: measurement-parser.py
+      arguments:
+        - *observed_co2
+        - co2.txt
+
+  observed_n2o:
+    path: &observed_n2o observed_n2o.txt
+    flavor: 'ldndcyj'
+    kind: tmp
+    provider:
+      program: measurement-parser.py
+      arguments:
+        - *observed_n2o
+        - n2o.txt
+
+  ldndcclimate:
+     path: &ldndcclimate climate.txt
+     kind: tmp
+     provider:
+       program: ldndcclimate.sh
+       arguments:
+         - '2005-01-01->2008-01-01' #*time_temperatures
+         - '/mnt/ldndcprojects/largedata/regional/DE_saxony/climate_saxony_arable.txt'
+         #- '12792,12253,11710'
+         - '11710,11889' #,12253,13870,12070,12611,12971,14052,13512,11893,12073,11895,13154,13875,11894,11173,9914,12614,11176,12974,13335,14774,12976,14594,11356,14777,12436,12077,9015,15857,12076,9735,10636,14057,11896,13877,12615,10099,11717,13158,14958,9558,34220,15139,9741,12078,15318,13517,7757,35298,13519,7397,13879,9919,7758,14599,9739,8844,13518,9560,33501,33321,35301,14959,15501,9382,12800,14059,13880,34759,14420,12081,13701,35120,9203,15321,35661,15681,9027,7400,9380,6501,10640,8480,10821,9740,13341,14781,7042,15323,9202,12621,4882,8843,5783,4883,33503,6323,7402,6503,32786,5062,11002,5064,15862,12262,5423,31342,12983,14782,8302,16223,12263,33684,30265,15683,7763,15684,7764,10284,6146,10465,14424,11724,14423,11905,7947,8305,10645,16225,7586,4704,9569,5785,4345,7406,5426,13164,4344,6145,13347,11725,16045,14785,12265,9746,12266,14788,15865,12627,5425,13166,8126,8486,12625,6865,6327,9389,16595,8307,7946,7410,8846,5068,9386,5428,5073,5246,11549,16587,37467,16586,16046,7766,12086,7767,6687,10831,10827,38187,12987,8310,9207,6148,38367,15147,15687,28287,8487,7232,5067,28469,27747,7230,5790,13709,12990,5794'
+         - *ldndcclimate
+
+  CN_yantingSoilchemistry2004:
+    path: &CN_yantingSoilchemistry2004 CN_yantingSoilchemistry2004.txt
+    kind: tmp
+    flavor: ldndcesri
+    flavorargs: { esrishapefile: '/home/klatt-s/projects/catchments/CN_yanting/gis/CN_yanting', linkby: 'ID', z: 'elev_pk', area: 'AREA' }
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *CN_yantingSoilchemistry2004
+        - 'CN_yanting/r811/CN_yanting.sqlite3'
+        - 'id n2oemis'
+        - 'select id,sum(dN_n2o_emis) from soilchemistrydaily where year=2004 group by id'
+
+  B0SsiloSoilchemistry2006:
+    path: &B0SsiloSoilchemistry2006 B0SsiloSoilchemistry2006.txt
+    kind: tmp
+    flavor: ldndcxyz
+    flavorargs: { xyround: 2, xlength: 5.0, ylength: 5.0 }
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloSoilchemistry2006
+        - 'B0Ssilo/r840/B0Ssilo.sql'
+        - 'id x y z no3leach'
+        - 'select id,x,y,z,sum(dN_no3_leach) from soilchemistrydaily where year=2006 group by id'
+
+
+figure:
+  title: 'kkplot (Demo)'
+  time: '2004-01-01->2008-12-31'
+  output: 'kkplot-demo.pdf'
+  properties:
+    #colorscheme: grayscale
+    columns: 2
+    height: 19
+    width: 17
+    legendfontsize: 10
+
+define:
+  C: '10.0'
+  F: '12.0 * 8.64 * 0.1'
+
+plots:
+  - SoilWater:
+      title: '[A]  Lines with markers'
+      properties: { linewidth: 0.3, markerstride: 5, xlabel: '', ylabel: 'Soil water [%]', align: false, grid: false }
+      datasource: 'watercycle15min'
+      time: '2002-06-02T08:45 -> 2002-06-04T16:30'
+      graphs:
+        - soilwater_10cm:
+            name: [ 'soilwater_10cm' ]
+            style: { color: '#DD5482', marker: '.' }
+            label: '-10 cm'
+        - soilwater_20cm:
+            name: [ 'soilwater_20cm' ]
+            style: { color: '#3EA28C', marker: '*', linewidth: 0.0, markerstride: 8, hidden: true }
+            label: '-20 cm'
+        - soilwater_10and30cm:
+            name: [ 'soilwater_10cm', 'soilwater_30cm' ]
+            style: { color: '#9AE156', linewidth: 3.0 }
+            label: [ '@nse:soilwater_10cm,soilwater_30cm' ]
+
+  - Biomass:
+      title: '[B]  Area and stacked area plots'
+      time: '2005-01-01->2007-10-30'
+      properties: { xlabel: Null, ylabel: 'Biomass [kg DW m$^{-2}$]', align: false, legendcolumns: 2, legendfontsize: 7 }
+      datasource: *physiology
+      graphs:
+        - bm_cran:
+            label:
+            style: { kind: 'line', linewidth: 0.0 }
+            name:
+              - 'bm_cran = 0.0'
+              - 'DW_bud = DW_bud@physiology'
+              - 'DW_fol = DW_fol@physiology'
+              - 'DW_sap = DW_sap@physiology'
+              - 'DW_frt = DW_frt@physiology'
+            groupby:
+              - species: [ 'CRAN' ]
+        - DW_bud_cran:
+            name: [ 'DW_bud_cran=.bm_cran.DW_bud' ]
+            label: 'Biomass (Buds)'
+            style: { color: '#DD5482' }
+            groupby:
+              - species: [ 'CRAN' ]
+        - DW_sap_cran:
+            name: [ 'DW_sap_cran=.bm_cran.DW_sap' ]
+            label: 'Biomass (Sapwood)'
+            style: { color: '#3EA28C' }
+            groupby:
+              - species: [ 'CRAN' ]
+        - DW_fol_cran:
+            name: [ 'DW_fol_cran=.bm_cran.DW_fol' ]
+            label: 'Biomass (Foliage)'
+            style: { color: '#9AE156' }
+            groupby:
+              - species: [ 'CRAN' ]
+        - DW_frt_cran:
+            name: 'DW_frt_cran=.bm_cran.DW_frt'
+            label: 'Biomass (Fineroots)'
+            style: { color: '#FC843A' }
+            groupby:
+              - species: [ 'CRAN' ]
+#        - DW_biomass_cran:
+#            label: 'Biomass (Buds + Foliage + Sapwood + Fineroots)'
+#            style: { kind: 'line', linewidth: 0.8, linestyle: 'point', color: '#000000', marker: 'h', markersize: 1.2 }
+#            name:
+#              - 'X = .bm_cran.DW_frt + .bm_cran.DW_sap + .bm_cran.DW_fol + .bm_cran.DW_bud'
+#            groupby:
+#              - species: [ 'CRAN' ]
+
+
+        - DW_biomass_wbre:
+            style: { kind: 'area', linewidth: 1.0 }
+            name: [ DW_bud, DW_sap, DW_fol, DW_frt ]
+            label: [ 'Biomass (Sapwood)', 'Biomass (Foliage)', 'Biomass (Buds)', 'Biomass (Fineroots)' ]
+            groupby:
+              - species: [ 'WBRE' ]
+
+  - NEE:
+      title: '[C]  Points on top of lines using two y-axes'
+      properties: { align: False, ylabel: 'NEE [g d$^{-1}$ m$^{-2}$]', legendcolumns: 2 }
+      graphs:
+        - nee_sim_2006:
+            name: [ 'NEE@ecosystem' ]
+            label: 'NEE (simulated)'
+            style: { kind: 'line' }
+            groupby:
+              - year: [ 2006 ]
+        - nee_obs_2006:
+            name: [ 'observed_nee = C*nee@observed_nee' ]
+            style: { kind: 'points', linestyle: 'point' }
+            label: 'NEE (observed)'
+            groupby:
+              - year: [ 2006 ]
+
+        - nee_sim_2007:
+            name: [ 'NEE@ecosystem' ]
+            label: 'NEE (simulated)'
+            style: { kind: 'line', yaxisat: 'right' }
+            groupby:
+              - year: [ 2007 ]
+        - nee_obs_2007:
+            name: [ 'observed_nee = C*nee@observed_nee' ]
+            style: { kind: 'points', linestyle: 'point', yaxisat: 'right' }
+            label: 'NEE (observed)'
+            groupby:
+              - year: [ 2007 ]
+
+  - N2O:
+      title: '[D]  Points with error bars ontop of lines'
+      properties: { align: False, ylabel: 'NO and N$_2$O emissions [kg N ha$^{-1}$]'}
+      time: '2007-07-01->2008-07-01'
+      graphs:
+        - n2o_sim:
+            name: [ 'dN_n2o_emis = 1000.0*dN_n2o_emis@soilchemistry']
+            label: 'Nitrous Oxide Emission (simulated)'
+        - n2o_obs:
+            name: [ 'n_n2o@observed_n2o', 'n_n2o_std@observed_n2o' ]
+            style: { kind: 'points+errors', linestyle: 'point', marker: 'o', markersize: 2.0, markerstride: 6, markeredgecolor: 'green', markeredgewidth: 1.0 }
+            label: 'Nitrous Oxide Emission (observed)'
+
+  - ObservedVersusSimulatedRegression:
+      title: '[E]  Observed vs Simulated with 0-line Regression'
+      datasource: *soilchemistry
+      time: '2007-01-01->2008-01-01'
+      properties: { align: True, ylabel: 'observed', xlabel: 'simulated', timeresolution: 'hour' } #, xlimitlow: 0.0, xlimithigh: 20000.0, ylimitlow: 0.0, ylimithigh: 20000.0 }
+      style: { kind: 'regressionpoint', linewidth: 2.0, linestyle: 'line', marker: 'o', markersize: 8.0 }
+      graphs:
+        C_co2_0:
+          name: [ 'dC_co2_S = dC_co2_emis_auto + dC_co2_emis_hetero', 'dC_co2_O = c_co2@observed_co2 * F' ]
+          label: [ 'Scenario$^{(0)}$' ]
+          properties: { xerror: 12.3, marker: '*', markersize: 20.0, timeresolution: 'hour' }
+        C_co2_1:
+          name: [ 'dC_co2_S = 0.85 * .C_co2_0.dC_co2_S', 'dC_co2_O = 1.7 * .C_co2_0.dC_co2_O' ]
+          label: [ 'Scenario$^{(1)}$' ]
+          properties: { xerror: 12.3, yerror: 5.6 }
+        C_co2_2:
+          name: [ 'dC_co2_S = 1.20 * .C_co2_0.dC_co2_S', 'dC_co2_O = 2.1 * .C_co2_0.dC_co2_O' ]
+          label: [ 'Scenario$^{(2)}$' ]
+          properties: { yerror: 9.6 }
+        C_co2_3:
+          name: [ 'dC_co2_S = 0.08 * .C_co2_0.dC_co2_S', 'dC_co2_O = 0.2 * .C_co2_0.dC_co2_O' ]
+          label: [ 'Scenario$^{(3)}$' ]
+        C_co2_regression:
+          style: { kind: 'regressionzero', linewidth: 3.0, markersize: 0.0 }
+          name: [ '=.C_co2_0.result', '=.C_co2_1.result', '=.C_co2_2.result', '=.C_co2_3.result' ]
+
+  - ObservedVersusSimulatedIBar:
+      title: '[F]  Bar plot with aggregation operation (median)'
+      datasource: *soilchemistry
+      time: '2007-01-01->2009-01-01'
+      properties: { ylabel: 'CO$_2$ respiration [kg C ha$^{-1}$]', xlabel: '' }
+      style: { kind: 'integratebar', linewidth: 2.0, linestyle: 'line', op: 'median' }
+      graphs:
+        C_co2:
+          name: [ 'dC_co2_O = c_co2@observed_co2 * F', 'dC_co2_S = dC_co2_emis_auto + dC_co2_emis_hetero' ]
+          label: [ 'observed', 'simulated' ]
+          groupby:
+            - year: [ 2007, 2008 ]
+
+  - AnaerobicVolumeFraction:
+      title: '[G]  Histogram with 32 bins'
+      style: { kind: 'histogram', bins: 32 }
+      datasource: *soilchemistrylayer
+      time: '2007-01-01->2007-12-31'
+      unit: '-'
+      properties: { xlabel: 'values', ylabel: 'count $\Sigma$'}
+      graphs:
+        anvf_g:
+          name: 'anvf'
+          label: #'Anaerobic volume fraction'
+          groupby:
+            - layer: [[ -1, -21, -3]]
+
+#   - Temperatures:
+#       time: '2005-01-01->2008-01-01'
+#       title: 'T$^{\mathrm{air}}$'
+#       properties: { align: False, ylabel: 'Air temperature [$\degree$ C]'}
+#       style: { kind: 'integratebar' }
+#       graphs:
+#         tavg:
+#           name: [ 'tavg=tavg@ldndcclimate' ]
+#           #label: [ 'T$^{\mathrm{air}}_{\mathrm{avg}}$' ]
+#           groupby:
+#             - id: [ 11710, 11889 ] #, 12253, 13870, 12070, 12611, 12971, 14052, 13512, 11893, 12073, 11895, 13154, 13875, 11894, 11173, 9914, 12614, 11176, 12974, 13335, 14774, 12976, 14594, 11356, 14777, 12436, 12077, 9015, 15857, 12076, 9735, 10636, 14057, 11896, 13877, 12615, 10099, 11717, 13158, 14958, 9558, 34220, 15139, 9741, 12078, 15318, 13517, 7757, 35298, 13519, 7397, 13879, 9919, 7758, 14599, 9739, 8844, 13518, 9560, 33501, 33321, 35301, 14959, 15501, 9382, 12800, 14059, 13880, 34759, 14420, 12081, 13701, 35120, 9203, 15321, 35661, 15681, 9027, 7400, 9380, 6501, 10640, 8480, 10821, 9740, 13341, 14781, 7042, 15323, 9202, 12621, 4882, 8843, 5783, 4883, 33503, 6323, 7402, 6503, 32786, 5062, 11002, 5064, 15862, 12262, 5423, 31342, 12983, 14782, 8302, 16223, 12263, 33684, 30265, 15683, 7763, 15684, 7764, 10284, 6146, 10465, 14424, 11724, 14423, 11905, 7947, 8305, 10645, 16225, 7586, 4704, 9569, 5785, 4345, 7406, 5426, 13164, 4344, 6145, 13347, 11725, 16045, 14785, 12265, 9746, 12266, 14788, 15865, 12627, 5425, 13166, 8126, 8486, 12625, 6865, 6327, 9389, 16595, 8307, 7946, 7410, 8846, 5068, 9386, 5428, 5073, 5246, 11549, 16587, 37467, 16586, 16046, 7766, 12086, 7767, 6687, 10831, 10827, 38187, 12987, 8310, 9207, 6148, 38367, 15147, 15687, 28287, 8487, 7232, 5067, 28469, 27747, 7230, 5790, 13709, 12990, 5794 ]
+#             - year: [ 2005, 2007 ]
+
+  - Oxygen:
+      title: '[H]  Heatmap showing oxygen levels across soil profile'
+      time: '2005-01-01->2008-12-31'
+      properties: { align: False, colormap: 'gnuplot' }
+      graphs:
+        oxygen:
+          name: [ 'o2=o2@soilchemistrylayer', 'levels=level@soilchemistrylayer' ]
+          label: [ 'Oxygen  [bar]' ]
+          style: { kind: 'heatmap'}
+          groupby:
+            - layer: [ [ -1, -21, -1] ]
+
+#  - NitrousOxideEmissionsRdBuR:
+#      space: '0:inf, 0:inf'
+#      title: '[I]  Using an ESRI shapefile'
+#      span: [ 2, 1]
+#      style: { kind: 'polygon' }
+#      properties: { align: False, ylabel: '[m]', xlabel: '[m]' }
+#      graphs:
+#        n2oemis:
+#          name: [ 'n2oemis = n2oemis@CN_yantingSoilchemistry2004' ]
+#          style: { color: '#3EA28C', colormap: 'RdBu_r', colorbarpad: 0.02 }
+#          label: [ 'Annual sum of X [$\frac{\mathrm{kg}}{\mathrm{a ha}}$]' ]
+
+## sk:conflicts with other spatial plots
+##   - NO3SouthAndEastSpace:
+##       space: '0:100, 0:100'
+##       title: 'Nitrate Leaching for cells with discharge'
+##       style: { kind: 'line', projection: '3d', marker: "o" }
+##       properties: { projection: '3d', align: False, zlabel: 'NO$_3$ [kg N ha$^{-1}$]'}
+##       graphs:
+##         no3_b0:
+##           name: [ 'no3leach = no3leach@B0SsiloSoilchemistry2006' ]
+##           style: { color: '#3EA28C' }
+##           label:
+##           groupby:
+##             - id: [ [0, 18], [19, 399, 20] ]
+#        no3_b5:
+#          name: [ 'dN_no3_leach@B5SsiloMgrass_soilchemistry' ]
+#          style: { color: '#DD5482' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#            - year: [ 2006 ]
+#            - julianday: [ 300 ]
+#        no3_b10:
+#          name: [ 'dN_no3_leach@B10SsiloMgrass_soilchemistry' ]
+#          style: { color: '#9AE156' }
+#          label:
+#          groupby:
+#            - id: [ [0, 18], [19, 399, 20] ]
+#            - year: [ 2006 ]
+#            - julianday: [ 300 ]
+
+

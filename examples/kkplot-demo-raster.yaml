@@ -1,0 +1,43 @@
+## 
+## run commands:
+## gunzip examples/raster.txt.gz
+## python -B kkplot.py --data-dir=examples examples/kkplot-demo-raster.yaml | python
+
+engine: matplotlib
+
+datasources:
+  LAI: &LAI
+    path: &LAI_tmp 'raster.txt'
+    format: table
+
+figure:
+  time: '1999-01-01 -> 1999-01-01'
+  title: 'Limestone Alps'
+  output: 'examples/LAI.pdf'
+  properties: { columns: 2, height: 6.5, width: 15.4235, grid: false }
+
+plots:
+  - LAI:
+      #title: 'LAI'
+      style: { kind: 'raster' }
+      properties: { xlabel: '', xticks: null, ylabel: '', yticks: null,
+        colormap: 'YlGn', interpolation: 'kaiser',
+            colorbarorientation: 'horizontal', colorbarpad: 0.03 }
+      datasource: 'LAI'
+      graphs:
+        - LAI:
+            name: [ 'lai=lai', 'x=x', 'y=y' ]
+            label: [ 'Leaf area index' ]
+
+  - LAI_div:
+      #title: 'LAI'
+      style: { kind: 'raster' }
+      properties: { xlabel: '', xticks: null, ylabel: '', yticks: null,
+        colormap: 'spectral', interpolation: 'kaiser',
+            colorbarorientation: 'horizontal', colorbarpad: 0.03 }
+      datasource: 'LAI'
+      graphs:
+        - LAI:
+            name: [ 'lai=lai', 'x=x', 'y=y' ]
+            label: [ 'Leaf area index' ]
+

@@ -1,0 +1,521 @@
+
+## python -B kkplot.py --data-dir ~/data \
+#         --providers-dir providers \
+#         --debug --engine matplotlib \
+#         examples/bz-demo.yaml | python
+
+datasources:
+  B0SsiloSoilchemistryTotal:
+    path: &B0SsiloSoilchemistryTotal B0SsiloSoilchemistryTotal.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloSoilchemistryTotal
+        - 'B0Ssilo/r840/B0Ssilo.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2005,2006,2007)'
+  B5SsiloMgrassSoilchemistryTotal:
+    path: &B5SsiloMgrassSoilchemistryTotal B5SsiloMgrassSoilchemistryTotal.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B5SsiloMgrassSoilchemistryTotal
+        - 'B5SsiloMgrass/r840/B5SsiloMgrass.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2005,2006,2007)'
+  B10SsiloMgrassSoilchemistryTotal:
+    path: &B10SsiloMgrassSoilchemistryTotal B10SsiloMgrassSoilchemistryTotal.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B10SsiloMgrassSoilchemistryTotal
+        - 'B10SsiloMgrass/r840/B10SsiloMgrass.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2005,2006,2007)'
+  B0SsiloSoilchemistry2005:
+    path: &B0SsiloSoilchemistry2005 B0SsiloSoilchemistry2005.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloSoilchemistry2005
+        - 'B0Ssilo/r840/B0Ssilo.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2005)'
+  B5SsiloMgrassSoilchemistry2005:
+    path: &B5SsiloMgrassSoilchemistry2005 B5SsiloMgrassSoilchemistry2005.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B5SsiloMgrassSoilchemistry2005
+        - 'B5SsiloMgrass/r840/B5SsiloMgrass.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2005)'
+  B10SsiloMgrassSoilchemistry2005:
+    path: &B10SsiloMgrassSoilchemistry2005 B10SsiloMgrassSoilchemistry2005.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B10SsiloMgrassSoilchemistry2005
+        - 'B10SsiloMgrass/r840/B10SsiloMgrass.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2005)'
+  B0SsiloSoilchemistry2006:
+    path: &B0SsiloSoilchemistry2006 B0SsiloSoilchemistry2006.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloSoilchemistry2006
+        - 'B0Ssilo/r840/B0Ssilo.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2006)'
+  B5SsiloMgrassSoilchemistry2006:
+    path: &B5SsiloMgrassSoilchemistry2006 B5SsiloMgrassSoilchemistry2006.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B5SsiloMgrassSoilchemistry2006
+        - 'B5SsiloMgrass/r840/B5SsiloMgrass.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2006)'
+  B10SsiloMgrassSoilchemistry2006:
+    path: &B10SsiloMgrassSoilchemistry2006 B10SsiloMgrassSoilchemistry2006.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B10SsiloMgrassSoilchemistry2006
+        - 'B10SsiloMgrass/r840/B10SsiloMgrass.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2006)'
+  B0SsiloSoilchemistry2007:
+    path: &B0SsiloSoilchemistry2007 B0SsiloSoilchemistry2007.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloSoilchemistry2007
+        - 'B0Ssilo/r840/B0Ssilo.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2007)'
+  B5SsiloMgrassSoilchemistry2007:
+    path: &B5SsiloMgrassSoilchemistry2007 B5SsiloMgrassSoilchemistry2007.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B5SsiloMgrassSoilchemistry2007
+        - 'B5SsiloMgrass/r840/B5SsiloMgrass.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2007)'
+  B10SsiloMgrassSoilchemistry2007:
+    path: &B10SsiloMgrassSoilchemistry2007 B10SsiloMgrassSoilchemistry2007.txt
+    kind: tmp
+    flavor: table
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B10SsiloMgrassSoilchemistry2007
+        - 'B10SsiloMgrass/r840/B10SsiloMgrass.sql'
+        - 'id area no3leach n2oemis noemis n2emis'
+        - 'select id,area,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year in (2007)'
+
+
+  B0SsiloSoilchemistryDischarge:
+    path: &B0SsiloSoilchemistryDischarge B0SsiloSoilchemistryDischarge.txt
+    kind: tmp
+    flavor: ldndcxyz
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloSoilchemistryDischarge
+        - 'B0Ssilo/r840/B0Ssilo.sql'
+        - 'id area x y z no3leach n2oemis noemis n2emis'
+        - 'select id,area,x,y,z,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year>2004 and dN_no3_leach>0 group by id'
+  B5SsiloMgrassSoilchemistryDischarge:
+    path: &B5SsiloMgrassSoilchemistryDischarge B5SsiloMgrassSoilchemistryDischarge.txt
+    kind: tmp
+    flavor: ldndcxyz
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B5SsiloMgrassSoilchemistryDischarge
+        - 'B5SsiloMgrass/r840/B5SsiloMgrass.sql'
+        - 'id area x y z no3leach n2oemis noemis n2emis'
+        - 'select id,area,x,y,z,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year>2004 and dN_no3_leach>0 group by id'
+  B10SsiloMgrassSoilchemistryDischarge:
+    path: &B10SsiloMgrassSoilchemistryDischarge B10SsiloMgrassSoilchemistryDischarge.txt
+    kind: tmp
+    flavor: ldndcxyz
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B10SsiloMgrassSoilchemistryDischarge
+        - 'B10SsiloMgrass/r840/B10SsiloMgrass.sql'
+        - 'id area x y z no3leach n2oemis noemis n2emis'
+        - 'select id,area,x,y,z,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis) from soilchemistrydaily where year>2004 and dN_no3_leach>0 group by id'
+
+  B0SsiloWatercycleDischarge:
+    path: &B0SsiloWatercycleDischarge B0SsiloWatercycleDischarge.txt
+    kind: tmp
+    flavor: ldndcxyz
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloWatercycleDischarge
+        - 'B0Ssilo/r840/B0Ssilo.sql'
+        - 'id area x y z percol transp evacep evasoil soilwater'
+        - 'select id,area,x,y,z,sum(percol),sum(transp),sum(evacep),sum(evasoil),sum(soil_water) from watercycledaily where year>2004 and percol>0 group by id'
+  B5SsiloMgrassWatercycleDischarge:
+    path: &B5SsiloMgrassWatercycleDischarge B5SsiloMgrassWatercycleDischarge.txt
+    kind: tmp
+    flavor: ldndcxyz
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B5SsiloMgrassWatercycleDischarge
+        - 'B5SsiloMgrass/r840/B5SsiloMgrass.sql'
+        - 'id area x y z percol transp evacep evasoil soilwater'
+        - 'select id,area,x,y,z,sum(percol),sum(transp),sum(evacep),sum(evasoil),sum(soil_water) from watercycledaily where year>2004 and percol>0 group by id'
+  B10SsiloMgrassWatercycleDischarge:
+    path: &B10SsiloMgrassWatercycleDischarge B10SsiloMgrassWatercycleDischarge.txt
+    kind: tmp
+    flavor: ldndcxyz
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B10SsiloMgrassWatercycleDischarge
+        - 'B10SsiloMgrass/r840/B10SsiloMgrass.sql'
+        - 'id area x y z percol transp evacep evasoil soilwater'
+        - 'select id,area,x,y,z,sum(percol),sum(transp),sum(evacep),sum(evasoil),sum(soil_water) from watercycledaily where year>2004 and percol>0 group by id'
+
+  B0SsiloNO3:
+    path: &B0SsiloNO3 B0SsiloNO3.txt
+    kind: tmp
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloNO3
+        - 'B0Ssilo/r840/B0Ssilo.sql'
+        - 'julianday year no3'
+        - 'select julianday,year,sum(N_no3) from soilchemistrylayerdaily group by timestep'
+  B5SsiloMgrassNO3:
+    path: &B5SsiloMgrassNO3 B5SsiloMgrassNO3.txt
+    kind: tmp
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B5SsiloMgrassNO3
+        - 'B5SsiloMgrass/r840/B5SsiloMgrass.sql'
+        - 'julianday year no3'
+        - 'select julianday,year,sum(N_no3) from soilchemistrylayerdaily group by timestep'
+  B10SsiloMgrassNO3:
+    path: &B10SsiloMgrassNO3 B10SsiloMgrassNO3.txt
+    kind: tmp
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B10SsiloMgrassNO3
+        - 'B10SsiloMgrass/r840/B10SsiloMgrass.sql'
+        - 'julianday year no3'
+        - 'select julianday,year,sum(N_no3) from soilchemistrylayerdaily group by timestep'
+
+
+## TODO  nh3
+  B0SsiloNEmisDaily:
+    path: &B0SsiloNEmisDaily B0SsiloNEmisDaily.txt
+    kind: tmp
+    flavor: ldndcyj
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloNEmisDaily
+        - 'B0Ssilo/r840/B0Ssilo.sql'
+        - 'year julianday one no3leach n2oemis noemis n2emis nh3emis'
+        - 'select year,julianday,1.0,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis),0.0 from soilchemistrydaily group by year,julianday'
+  B5SsiloMgrassNEmisTotal:
+    path: &B5SsiloMgrassNEmisTotal B5SsiloMgrassNEmisTotal.txt
+    kind: tmp
+    flavor: ldndcyj
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B5SsiloMgrassNEmisTotal
+        - 'B5SsiloMgrass/r840/B5SsiloMgrass.sql'
+        - 'year julianday one no3leach n2oemis noemis n2emis nh3emis'
+        - 'select year,julianday,1.0,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis),0.0 from soilchemistrydaily group by year,julianday'
+  B10SsiloMgrassNEmisTotal:
+    path: &B10SsiloMgrassNEmisTotal B10SsiloMgrassNEmisTotal.txt
+    kind: tmp
+    flavor: ldndcyj
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B10SsiloMgrassNEmisTotal
+        - 'B10SsiloMgrass/r840/B10SsiloMgrass.sql'
+        - 'year julianday one no3leach n2oemis noemis n2emis nh3emis'
+        - 'select year,julianday,1.0,sum(dN_no3_leach),sum(dN_n2o_emis),sum(dN_no_emis),sum(dN_n2_emis),0.0 from soilchemistrydaily group by year,julianday'
+
+  B0SsiloNUptakeDaily:
+    path: &B0SsiloNUptakeDaily B0SsiloNUptakeDaily.txt
+    kind: tmp
+    flavor: ldndcyj
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloNUptakeDaily
+        - 'B0Ssilo/r840/B0Ssilo-phys.sql'
+        - 'year julianday no3uptake nh3uptake nh4uptake'
+        - 'select year,julianday,sum(dN_no3_upt),0.0,sum(dN_nh4_upt) from physiologydaily group by year,julianday'
+
+  B0SsiloBiomassDaily:
+    path: &B0SsiloBiomassDaily B0SsiloBiomassDaily.txt
+    kind: tmp
+    flavor: ldndcyj
+    provider:
+      program: sqlite3.sh
+      arguments:
+        - *B0SsiloBiomassDaily
+        - 'B0Ssilo/r840/B0Ssilo-phys.sql'
+        - 'year julianday DW_bud DW_fol DW_sap DW_frt'
+        - 'select year,julianday,sum(DW_bud),sum(DW_fol),sum(DW_sap),sum(DW_frt) from physiologydaily group by year,julianday'
+
+define:
+  KG2T: 0.001
+  HA: 0.0001
+  A: 2.5e-03
+
+# FIXME
+  B0Fertilizer: 0.19863 #290.0
+  B5Fertilizer: 261.725
+  B10Fertilizer: 234.175
+
+figure:
+  #title: 'Bufferzones'
+  time: '2005-01-01->2009-01-01'
+  space: '0:100, 0:100'
+  output: 'bz-demo.pdf'
+
+  style: { kind: 'bartable' }
+  properties:
+    columns: 1
+    height: 12
+    width: 16
+#    width: 40
+    tight: false
+
+plots:
+
+#  - NO3SouthAndEast:
+#      title: 'Nitrate discharge'
+#      space: '0:100, 0:100'
+#      properties: { kind: 'line', projection: '3d', align: False, ylabel: 'NO$_3$ [kg N ha$^{-1}$]', marker: 'o' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'no3leach=HA*area@B0SsiloSoilchemistryDischarge*no3leach@B0SsiloSoilchemistryDischarge' ]
+#          style: { color: '#3EA28C' }
+#          label: [ 'B0Ssilo' ]
+#        no3_b5:
+#          name: [ 'no3leach=HA*area@B5SsiloMgrassSoilchemistryDischarge*no3leach@B5SsiloMgrassSoilchemistryDischarge' ]
+#          style: { color: '#DD5482' }
+#          label: [ 'B5SsiloMgrass' ]
+#        no3_b10:
+#          name: [ 'no3leach=HA*area@B10SsiloMgrassSoilchemistryDischarge*no3leach@B10SsiloMgrassSoilchemistryDischarge' ]
+#          style: { color: '#9AE156' }
+#          label: [ 'B10SsiloMgrass' ]
+#
+#  - Stastistics:
+#      domain: #unset space and time
+#      title: 'N Stastistics'
+#      properties: { nrows: 3, OFF_tablecolumnwidth: 1.0, OFF_tablerowheight: 0.5,
+#        tableylabelalign: 'right', tabletextalign: 'center', tablealign: 'bottom', xlimitlow: 0.0, xlimithigh: 12.0,
+#        xstretchlabelbox: 3.0, ylabeledgecolor: '#000000', fontsize: 12 }
+#      graphs:
+##        n2emis:
+##          name: [
+##            'B0n2emis2005 =HA*area@B0SsiloSoilchemistry2005*n2emis@B0SsiloSoilchemistry2005',
+##            'B0n2emis2006 =HA*area@B0SsiloSoilchemistry2006*n2emis@B0SsiloSoilchemistry2006',
+##            'B0n2emis2007 =HA*area@B0SsiloSoilchemistry2007*n2emis@B0SsiloSoilchemistry2007',
+##            'B0n2emistotal=HA*area@B0SsiloSoilchemistryTotal*n2emis@B0SsiloSoilchemistryTotal' ]
+##          label: [ '2005', '2006', '2007', 'total' ]
+##          properties: { ylabel: 'N$_2$ emissions [kg N ha$^{-1}$]' }
+#        no3leach:
+#          name: [ # below_=.n2emis.result,
+#            'B0no3leach2005=HA*area@B0SsiloSoilchemistry2005*no3leach@B0SsiloSoilchemistry2005',
+#            'B5no3leach2005=HA*area@B5SsiloMgrassSoilchemistry2005*no3leach@B5SsiloMgrassSoilchemistry2005',
+#            'B10no3leach2005=HA*area@B10SsiloMgrassSoilchemistry2005*no3leach@B10SsiloMgrassSoilchemistry2005',
+#            'B0no3leach2006=HA*area@B0SsiloSoilchemistry2006*no3leach@B0SsiloSoilchemistry2006',
+#            'B5no3leach2006=HA*area@B5SsiloMgrassSoilchemistry2006*no3leach@B5SsiloMgrassSoilchemistry2006',
+#            'B10no3leach2006=HA*area@B10SsiloMgrassSoilchemistry2006*no3leach@B10SsiloMgrassSoilchemistry2006',
+#            'B0no3leach2007=HA*area@B0SsiloSoilchemistry2007*no3leach@B0SsiloSoilchemistry2007',
+#            'B5no3leach2007=HA*area@B5SsiloMgrassSoilchemistry2007*no3leach@B5SsiloMgrassSoilchemistry2007',
+#            'B10no3leach2007=HA*area@B10SsiloMgrassSoilchemistry2007*no3leach@B10SsiloMgrassSoilchemistry2007',
+#            'B0no3leachtotal=HA*area@B0SsiloSoilchemistryTotal*no3leach@B0SsiloSoilchemistryTotal',
+#            'B5no3leachTotal=HA*area@B5SsiloMgrassSoilchemistryTotal*no3leach@B5SsiloMgrassSoilchemistryTotal',
+#            'B10no3leachTotal=HA*area@B10SsiloMgrassSoilchemistryTotal*no3leach@B10SsiloMgrassSoilchemistryTotal' ]
+#          properties: { ylabel: 'NO$_3$ leaching [kg N ha$^{-1}$]' }
+#          label: [ '2005 (B0)', '2005 (B5)', '2005 (B10)', '2006 (B0)', '2006 (B5)', '2006 (B10)', '2007 (B0)', '2007 (B5)', '2007 (B10)', 'total (B0)', 'total (B5)', 'total (B10)' ]
+#        n2oemis:
+#          name: [ below_=.no3leach.result,
+#            'B0n2oemis2005 =HA*area@B0SsiloSoilchemistry2005*n2oemis@B0SsiloSoilchemistry2005',
+#            'B5n2oemis2005=HA*area@B5SsiloMgrassSoilchemistry2005*n2oemis@B5SsiloMgrassSoilchemistry2005',
+#            'B10n2oemis2005=HA*area@B10SsiloMgrassSoilchemistry2005*n2oemis@B10SsiloMgrassSoilchemistry2005',
+#            'B0n2oemis2006 =HA*area@B0SsiloSoilchemistry2006*n2oemis@B0SsiloSoilchemistry2006',
+#            'B5n2oemis2006=HA*area@B5SsiloMgrassSoilchemistry2006*n2oemis@B5SsiloMgrassSoilchemistry2006',
+#            'B10n2oemis2006=HA*area@B10SsiloMgrassSoilchemistry2006*n2oemis@B10SsiloMgrassSoilchemistry2006',
+#            'B0n2oemis2007 =HA*area@B0SsiloSoilchemistry2007*n2oemis@B0SsiloSoilchemistry2007',
+#            'B5n2oemis2007=HA*area@B5SsiloMgrassSoilchemistry2007*n2oemis@B5SsiloMgrassSoilchemistry2007',
+#            'B10n2oemis2007=HA*area@B10SsiloMgrassSoilchemistry2007*n2oemis@B10SsiloMgrassSoilchemistry2007',
+#            'B0n2oemistotal=HA*area@B0SsiloSoilchemistryTotal*n2oemis@B0SsiloSoilchemistryTotal',
+#            'B5n2oemisTotal=HA*area@B5SsiloMgrassSoilchemistryTotal*n2oemis@B5SsiloMgrassSoilchemistryTotal',
+#            'B10n2oemisTotal=HA*area@B10SsiloMgrassSoilchemistryTotal*n2oemis@B10SsiloMgrassSoilchemistryTotal' ]
+#          label:
+#          properties: { ylabel: 'N$_2$O emissions [kg N ha$^{-1}$]' }
+#        noemis:
+#          name: [ below_=.n2oemis.result,
+#            'B0noemis2005 =HA*area@B0SsiloSoilchemistry2005*noemis@B0SsiloSoilchemistry2005',
+#            'B5noemis2005=HA*area@B5SsiloMgrassSoilchemistry2005*noemis@B5SsiloMgrassSoilchemistry2005',
+#            'B10noemis2005=HA*area@B10SsiloMgrassSoilchemistry2005*noemis@B10SsiloMgrassSoilchemistry2005',
+#            'B0noemis2006 =HA*area@B0SsiloSoilchemistry2006*noemis@B0SsiloSoilchemistry2006',
+#            'B5noemis2006=HA*area@B5SsiloMgrassSoilchemistry2006*noemis@B5SsiloMgrassSoilchemistry2006',
+#            'B10noemis2006=HA*area@B10SsiloMgrassSoilchemistry2006*noemis@B10SsiloMgrassSoilchemistry2006',
+#            'B0noemis2007 =HA*area@B0SsiloSoilchemistry2007*noemis@B0SsiloSoilchemistry2007',
+#            'B5noemis2007=HA*area@B5SsiloMgrassSoilchemistry2007*noemis@B5SsiloMgrassSoilchemistry2007',
+#            'B10noemis2007=HA*area@B10SsiloMgrassSoilchemistry2007*noemis@B10SsiloMgrassSoilchemistry2007',
+#            'B0noemistotal=HA*area@B0SsiloSoilchemistryTotal*noemis@B0SsiloSoilchemistryTotal',
+#            'B5noemisTotal=HA*area@B5SsiloMgrassSoilchemistryTotal*noemis@B5SsiloMgrassSoilchemistryTotal',
+#            'B10noemisTotal=HA*area@B10SsiloMgrassSoilchemistryTotal*noemis@B10SsiloMgrassSoilchemistryTotal' ]
+#          properties: { ylabel: 'NO emissions [kg N ha$^{-1}$]' }
+#
+#  - PercolationSouthAndEast:
+#      title: 'Water'
+#      space: '0:100, 0:100'
+#      properties: { kind: 'line', projection: '3d', align: False, ylabel: 'Water [mm]' }
+#      graphs:
+#        percol_b0:
+#          name: [ 'percol@B0SsiloWatercycleDischarge' ]
+#          style: { color: '#3EA28C', marker: 'o' }
+#          label: [ 'Discharge (B0)' ]
+#        percol_b5:
+#          name: [ 'percol@B5SsiloMgrassWatercycleDischarge' ]
+#          style: { color: '#DD5482', marker: 'o' }
+#          label: [ 'Discharge (B5)' ]
+#        percol_b10:
+#          name: [ 'percol@B10SsiloMgrassWatercycleDischarge' ]
+#          style: { color: '#9AE156', marker: 'o' }
+#          label: [ 'Discharge (B10)' ]
+#
+#        transp_b0:
+#          name: [ 'transp@B0SsiloWatercycleDischarge' ]
+#          style: { color: '#3EA28C', marker: '*' }
+#          label: [ 'Transpiration' ]
+#        transp_b5:
+#          name: [ 'transp@B5SsiloMgrassWatercycleDischarge' ]
+#          style: { color: '#DD5482', marker: '*' }
+#          label: [ 'Transpiration' ]
+#        transp_b10:
+#          name: [ 'transp@B10SsiloMgrassWatercycleDischarge' ]
+#          style: { color: '#9AE156', marker: '*' }
+#          label: [ 'Transpiration' ]
+#
+##        evacep_b0:
+##          name: [ 'evacep@B0SsiloWatercycleDischarge' ]
+##          style: { color: '#3EA28C', marker: 'p' }
+##          label: [ 'Evacep.' ]
+##        evacep_b5:
+##          name: [ 'evacep@B5SsiloMgrassWatercycleDischarge' ]
+##          style: { color: '#DD5482', marker: 'p' }
+##          label: [ 'Evacep.' ]
+##        evacep_b10:
+##          name: [ 'evacep@B10SsiloMgrassWatercycleDischarge' ]
+##          style: { color: '#9AE156', marker: 'p' }
+##          label: [ 'Evacep.' ]
+#
+#        evasoil_b0:
+#          name: [ 'evasoil@B0SsiloWatercycleDischarge' ]
+#          style: { color: '#3EA28C', marker: '+' }
+#          label: [ 'SoilEvapo.' ]
+#        evasoil_b5:
+#          name: [ 'evasoil@B5SsiloMgrassWatercycleDischarge' ]
+#          style: { color: '#DD5482', marker: '+' }
+#          label: [ 'SoilEvapo.' ]
+#        evasoil_b10:
+#          name: [ 'evasoil@B10SsiloMgrassWatercycleDischarge' ]
+#          style: { color: '#9AE156', marker: '+' }
+#          label: [ 'SoilEvapo.' ]
+#
+#  - SoilNO3:
+#      time: '2004-01-01->2007-12-31'
+#      style: { kind: 'line' }
+#      graphs:
+#        no3_b0:
+#          name: [ 'no3=HA*A*no3@B0SsiloNO3' ]
+#          label: [ 'B0Ssilo' ]
+#          style: { color: '#3EA28C' }
+#        no3_b5:
+#          name: [ 'no3=HA*A*no3@B5SsiloMgrassNO3' ]
+#          label: [ 'B5SsiloMgrass' ]
+#          style: { color: '#DD5482' }
+#        no3_b10:
+#          name: [ 'no3=HA*A*no3@B10SsiloMgrassNO3' ]
+#          label: [ 'B10SsiloMgrass' ]
+#          style: { color: '#9AE156' }
+#
+#  - NEmis:
+#      time: '2004-01-01->2007-12-31'
+#      style: { kind: pie, legendtitle: 'N balance [kg N ha$^{-1}$]' }
+#      graphs:
+#        n_b0:
+#          name: [ 'n_input=B0Fertilizer*one@B0SsiloNEmisDaily',
+#            'n2oemis=A*n2oemis@B0SsiloNEmisDaily',
+#            'noemis=A*noemis@B0SsiloNEmisDaily',
+#            'no3leach=A*no3leach@B0SsiloNEmisDaily',
+#            'nh3emis=A*nh3emis@B0SsiloNEmisDaily',
+#            'n2emis=A*n2emis@B0SsiloNEmisDaily',
+#            'no3uptake=A*no3uptake@B0SsiloNUptakeDaily',
+#            'nh3uptake=A*nh3uptake@B0SsiloNUptakeDaily' ]
+#          label: [ 'N Fertilizer, Fixation, Deposition',
+#            'N$_2$O emission',
+#            'NO emission',
+#            'NO$_3$ leaching',
+#            'NH$_3$ emission',
+#            'N$_2$ emission',
+#            'NO$_3$ uptake',
+#            'NH$_3$ uptake' ]
+#          #properties: { unit: 'kg N ha$^{-1}$' }
+
+  - Biomass:
+      time: '2004-01-01->2007-12-31'
+      style: { legendtitle: 'Biomass [kg DW ha$^{-1}$]', grid: false }
+      graphs:
+        bm_b0:
+          name: [ 'bud=DW_bud@B0SsiloBiomassDaily', 'sap=DW_sap@B0SsiloBiomassDaily', 'fol=DW_fol@B0SsiloBiomassDaily', 'frt=DW_frt@B0SsiloBiomassDaily' ]
+          label: [ 'Sapwood', 'Foliage', 'Buds', 'Fineroots' ]
+          style: { kind: area }
+
+#  - NO3Leaching:
+#      time: '2004-01-01->2007-12-31'
+#      graphs:
+        no3leach_b0:
+          name: [ 'no3leach=no3leach@B0SsiloNEmisDaily' ]
+          label: [ 'NO$_3$' ]
+          style: { kind: line, legendtitle: 'Nitrate Leaching [kg N ha$^{-1}$]', yaxisat: 'right', linewidth: 2.0, color: '#5B732B' }
+

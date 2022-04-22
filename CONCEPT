@@ -1,0 +1,91 @@
+
+CONCEPT
+
+ - input X is read, parsed and transformed to "device
+   independent" structure P(X) (pandas?)
+
+ - P(X) is sent to language engine E_i \in { E_1, E_2, ..,
+   E_n}; yielding script E_i(P(X)) =: P^i(X)
+   
+ - script P^i(X) is executed by interpreter I^i generating
+   plot, i.e., I^i( P^i( X)) contains figures (e.g., pdf,
+   eps, png format or online visualization on screen)
+
+
+
+FEATURES
+
+ - generate script for language L that can be processed
+   using interpreter for L (e.g., python with matplotlib,
+   R with ggplot, gnuplot with gnuplot)
+   - generating scripts that create the plot allow for
+     better tuning
+
+ - plot description language is a yaml document
+   (alternatives, e.g., json, xml, may be added)
+   - data source specification (file, pipe, ..)
+   - geometry specification (1d, 2d, 3d)
+   - figure, plot and subplot specifications (i.e., data,
+     ranges, layout, title, ..)
+   - target format (pdf, eps, png, ..)
+     - allow list of target formats, e.g., pdf+eps
+
+ - one plot description file may only contain a single figure
+   - i.e., all plots are aranged as subplots in the same
+     figure
+   - alternatively, each plot may generate an individual
+     figure and hence output file (still single source
+     file)
+
+ - distinguish different types of graphs:
+   - time dimension
+   - space dimension
+   - time/space dimension (?)
+   - no dimension (scatter plot..)
+
+ - allow arithmetic between data columns
+
+ - simple, fast (line) plot with auto-layout
+
+ - backend for GUIs
+
+
+TYPES OF GRAPHS
+
+ - line
+ - points, points with errors
+ - bars
+ - scatter
+ - area, stacked area
+ - heatmap
+ - box
+ - histogram
+
+ - vertical/horizontal arrows
+ - labels
+
+ - surface
+ - vector field
+ - lines along surface
+
+ - aggregated bar plots
+ - aggregated sim/obs scatter plots
+
+TEXT ELEMENTS ON GRAPHS
+
+ - r^2
+ - nse
+ - "free"
+ - "free" with date (time), location (space)
+
+
+EXAMPLES
+
+ - create python script that creates plots listed in input
+   file (FR_grignon-plots.yaml) using python's matplotlib
+   asked to produce encapsulated postscript and portable
+   network graphics output.
+
+   $> python kkplot.py --engine pythonpandas FR_grignon-plots.yaml
+
+
