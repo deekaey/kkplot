@@ -35,6 +35,9 @@ def kkplot_list_engines() :
 def main():
 
     #todo: handle as ldndc plugin
+    kkplot_env = kkexpand( '${HOME}')+'/.kkplot/kkplot.env'
+    if ( exists( kkplot_env)) :
+        load_dotenv( kkplot_env)
     kkplot_env = kkexpand( '${HOME}')+'/.ldndc/kkplot.env'
     if ( exists( kkplot_env)) :
         load_dotenv( kkplot_env)
