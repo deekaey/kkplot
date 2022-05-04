@@ -8,4 +8,4 @@ pandas
 pillow
 pyyaml
 scipy
-
+python-dotenv

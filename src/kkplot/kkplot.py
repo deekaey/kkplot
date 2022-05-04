@@ -1,7 +1,10 @@
 #!/usr/bin/python
 
 import sys
+from os.path import exists
+from dotenv import load_dotenv
 import kkplot.kkutils as utils
+from kkplot.kkutils.expand import *
 import kkplot.kkengines as engines
 from kkplot.kkplot_dviplot import kkplot_dviplot as dviplot
 
@@ -30,6 +33,11 @@ def kkplot_list_engines() :
 
 
 def main():
+
+    #todo: handle as ldndc plugin
+    kkplot_env = kkexpand( '${HOME}')+'/.ldndc/kkplot.env'
+    if ( exists( kkplot_env)) :
+        load_dotenv( kkplot_env)
 
     try :
         kkplot_config = utils.configuration( engines.names())
