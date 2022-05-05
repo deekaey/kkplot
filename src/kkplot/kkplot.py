@@ -38,6 +38,7 @@ def main():
     kkplot_env = kkexpand( '${HOME}')+'/.kkplot/kkplot.env'
     if ( exists( kkplot_env)) :
         load_dotenv( kkplot_env)
+    #overwrite with ldndc plugin
     kkplot_env = kkexpand( '${HOME}')+'/.ldndc/kkplot.env'
     if ( exists( kkplot_env)) :
         load_dotenv( kkplot_env)
