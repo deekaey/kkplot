@@ -1,6 +1,7 @@
 
 ## install dependencies with "pip install -r requirements.txt"
 
+bokeh
 matplotlib
 numexpr
 numpy
