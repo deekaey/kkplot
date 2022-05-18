@@ -1,7 +1,6 @@
 
 ## install dependencies with "pip install -r requirements.txt"
 
-statsmodels
 bokeh
 pylatexenc
 matplotlib
