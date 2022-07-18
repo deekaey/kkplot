@@ -1,7 +1,10 @@
 
 from kkplot.kkutils.log import *
+from kkplot.kkutils.expand import *
+from os.path import exists
 import os
 import argparse
+from dotenv import load_dotenv
 
 class kkplot_configuration( object) :
 
@@ -43,6 +46,9 @@ class kkplot_configuration( object) :
         parser.add_argument( '-D','--env', action='append', default=None,
             help='define additional environment variables, can be given multiple times (e.g., -DPROJECTS_DIR=/home/projects)')
 
+        parser.add_argument( '--envf', default=None,
+            help='define additional environment variables given in text file')
+
         parser.add_argument( '-d','--tmpdata-column-delim', default=',',
             help='temporary data file column delimiter (default=",")')
 
@@ -65,6 +71,7 @@ class kkplot_configuration( object) :
 
         parser.add_argument( '--components', default=None,
             help='Only figure components are plotted, e.g., no html is created for bokeh engine')
+
 
         self.args = parser.parse_args()
 
@@ -204,6 +211,9 @@ class kkplot_configuration( object) :
         return _basedir.replace( '\\', '/').strip()
 
     def set_environment( self) :
+        if self.args.envf is not None :
+            if ( exists( self.args.envf)) :
+                load_dotenv( self.args.envf, override=True)
         if self.args.env is None :
             return
         for envvar in self.args.env :
