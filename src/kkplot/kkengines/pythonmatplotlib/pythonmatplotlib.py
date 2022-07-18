@@ -607,7 +607,7 @@ class kkplot_engine_matplotlib( kkplot_engine) :
         dataframe = _kwargs.get( 'dataframe')
         if dataframe is None :
             return
-        from kkengines.pythoncode import fitness
+        from kkplot.kkengines.pythoncode import fitness
         for column in _columns :
             lbl = self._make_label( column, _graph)
             if not lbl.strip().startswith( '@') :
