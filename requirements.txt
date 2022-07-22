@@ -5,7 +5,7 @@ bokeh
 holoviews
 pylatexenc
 matplotlib
-numexpr
+numexpr>=2.7.0
 numpy
 pandas
 pillow
