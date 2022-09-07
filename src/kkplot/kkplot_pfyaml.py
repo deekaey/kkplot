@@ -96,9 +96,9 @@ class kkplot_pfreader_yaml( object) :
                     fname = kkexpand( _fname)
                     pf_stream = open( fname, 'r')
                 try:
-                    yamldata = yaml.load( pf_stream, Loader=yaml.FullLoader)
+                    yamldata = yaml.safe_load( pf_stream, Loader=yaml.FullLoader)
                 except:
-                    yamldata = yaml.load( pf_stream)
+                    yamldata = yaml.safe_load( pf_stream)
                 if self._pf_data is None :
                     self._pf_data = yamldata
                 else :
