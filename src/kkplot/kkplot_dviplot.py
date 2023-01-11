@@ -10,6 +10,7 @@ from kkplot.kkplot_figure import nocolumndepends as kkplot_nocolumndepends
 from kkplot.kksources import kkplot_sourcefactory as kkplot_sourcefactory
 
 import os as os
+import warnings
 import pandas as pandas
 import numpy as numpy
 import numexpr as numexpr
@@ -74,14 +75,18 @@ def nansum( _dataframe_1, _dataframe_2, *_dataframes) :
 
 def nanmean( _dataframe_1, _dataframe_2, *_dataframes) :
     index = _dataframe_1.index 
-    series = pandas.Series( numpy.nanmean( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
-    series.index = index
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        series = pandas.Series( numpy.nanmean( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
+        series.index = index
     return series
 
 def nanstd( _dataframe_1, _dataframe_2, *_dataframes) :
     index = _dataframe_1.index 
-    series = pandas.Series( numpy.nanstd( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
-    series.index = index
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=RuntimeWarning)
+        series = pandas.Series( numpy.nanstd( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
+        series.index = index
     return series
 
 def nanmin( _dataframe_1, _val) :
