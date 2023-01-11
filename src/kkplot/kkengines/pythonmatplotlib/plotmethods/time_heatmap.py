@@ -41,8 +41,9 @@ def kkplot_pythonmatplotlib_time_heatmap( self, _id, _graph, _axes_index, _colum
     cmap = 'Oranges' if cmap is None or cmap != 'grayscale' else 'gray'
     w( 2, 'kkheatmap = _axes.pcolormesh( x, y, c, cmap=matplotlib_colormaps.%s, vmin=c_min, vmax=c_max %s)' \
         % ( _graph.get_property( 'colormap', cmap), \
-            self._make_args( 'l', \
-                zorder=_graph.zorder \
+            self._make_args( 'l', 
+                shading=_graph.get_property( 'shading', 'flat'),
+                zorder=_graph.zorder 
         )))
     w( 2, 'cbar = matplotlib_pyplot.colorbar( kkheatmap, ax=_axes, label=r%s %s)' \
         % ( self._stringify( _graph.get_property( 'colorbarlabel', _graph.labelat( 0, ''))), \
@@ -50,7 +51,12 @@ def kkplot_pythonmatplotlib_time_heatmap( self, _id, _graph, _axes_index, _colum
                 pad=_graph.get_property( 'colorbarpad'),
                 orientation=_graph.get_property( 'colorbarorientation', 'horizontal')
     )))
-
+    w( 2, 'annotation = "%s"' %_graph.get_property( 'annotate', 'None')) 
+    w( 2, 'if annotation != "None":')
+    w( 3, 'for Xi, X in enumerate(x):')
+    w( 4, 'for Yi, Y in enumerate(y):')
+    w( 5, 'if not numpy.isnan(c[Yi][Xi]):')
+    w( 6, '_axes.plot(X, Y, annotation, markerfacecolor="none", color="black")')
     w( 2, '_axes.xaxis_date()')
 
     return method_call
