@@ -25,11 +25,11 @@ if __name__ == '__main__' :
             #df = df.loc[df[arguments['column']].isin(values),]
             df = df.loc[df[arguments['column']].astype(str).isin(values),]
             if arguments['function'] == 'mean':
-                df = df.groupby(['datetime', arguments['column']]).mean()
+                df = df.groupby(['datetime', arguments['column']]).mean( numeric_only=True)
             elif arguments['function'] == 'std':
-                df = df.groupby(['datetime', arguments['column']]).std()
+                df = df.groupby(['datetime', arguments['column']]).std( numeric_only=True)
             elif arguments['function'] == 'sum':
-                df = df.groupby(['datetime']).sum()
+                df = df.groupby(['datetime']).sum( numeric_only=True)
             elif arguments['function'] == 'filter':
                 pass
 
