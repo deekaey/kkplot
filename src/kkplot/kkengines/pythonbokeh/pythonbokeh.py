@@ -79,6 +79,7 @@ class kkplot_engine_bokeh( kkplot_engine) :
 
         kkplot_plotmethods = dict( \
             time_line=kkplot_pythonbokeh_time_line, \
+            time_bars=kkplot_pythonbokeh_time_bars, \
             time_points=kkplot_pythonbokeh_time_points, \
             time_points_errors=kkplot_pythonbokeh_time_points_errors, \
             time_regressionpoint=kkplot_pythonbokeh_time_regressionpoint, \

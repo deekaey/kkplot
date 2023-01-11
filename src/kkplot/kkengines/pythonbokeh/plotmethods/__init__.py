@@ -1,5 +1,6 @@
 
 from .time_line import kkplot_pythonbokeh_time_line
+from .time_bars import kkplot_pythonbokeh_time_bars
 from .time_points import kkplot_pythonbokeh_time_points
 from .time_pointserrors import kkplot_pythonbokeh_time_points_errors
 from .time_regressionpoint import kkplot_pythonbokeh_time_regressionpoint
