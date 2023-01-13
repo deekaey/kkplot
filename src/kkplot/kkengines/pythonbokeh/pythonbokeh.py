@@ -154,7 +154,7 @@ class kkplot_engine_bokeh( kkplot_engine) :
             ax_index = self._axis_index( plot)
             ax_position = self._axis_position( plot)
             plotheight = graph.get_property( 'plotheight', 300)
-            if graph.kind == 'regressionpoint' :
+            if graph.kind in ['regressionpoint', 'regressionline'] :
                 self.W.iappendnl( 1, 'kkaxes["%s"] = figure(x_axis_type="linear", plot_height=%d)' % ( ax_index, plotheight))
             else:
                 self.W.iappendnl( 1, 'kkaxes["%s"] = figure(x_axis_type="datetime", plot_height=%d)' % ( ax_index, plotheight))
