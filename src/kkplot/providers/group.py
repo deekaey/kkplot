@@ -24,14 +24,25 @@ if __name__ == '__main__' :
 
             #df = df.loc[df[arguments['column']].isin(values),]
             df = df.loc[df[arguments['column']].astype(str).isin(values),]
-            if arguments['function'] == 'mean':
-                df = df.groupby(['datetime', arguments['column']]).mean( numeric_only=True)
-            elif arguments['function'] == 'std':
-                df = df.groupby(['datetime', arguments['column']]).std( numeric_only=True)
-            elif arguments['function'] == 'sum':
-                df = df.groupby(['datetime']).sum( numeric_only=True)
-            elif arguments['function'] == 'filter':
-                pass
+            try:
+                if arguments['function'] == 'mean':
+                    df = df.groupby(['datetime', arguments['column']]).mean( numeric_only=True)
+                elif arguments['function'] == 'std':
+                    df = df.groupby(['datetime', arguments['column']]).std( numeric_only=True)
+                elif arguments['function'] == 'sum':
+                    df = df.groupby(['datetime']).sum( numeric_only=True)
+                elif arguments['function'] == 'filter':
+                    pass
+            #for older python versions not knowing 'numeric_only'
+            except:
+                if arguments['function'] == 'mean':
+                    df = df.groupby(['datetime', arguments['column']]).mean()
+                elif arguments['function'] == 'std':
+                    df = df.groupby(['datetime', arguments['column']]).std()
+                elif arguments['function'] == 'sum':
+                    df = df.groupby(['datetime']).sum()
+                elif arguments['function'] == 'filter':
+                    pass
 
     out_path = os.getenv( 'KKPLOT_TMPDIR') + "/" + sys.argv[2]
 
