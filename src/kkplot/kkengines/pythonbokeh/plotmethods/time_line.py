@@ -28,13 +28,17 @@ def kkplot_pythonbokeh_time_line( self, _id, _graph, _axes_index, _columns, _aux
         w( 2, 'col = %f + ( %f - %f) * float( j)/float( len( columns))' % ( c_lo, c_hi, c_lo))
         color = ', color=matplotlib.colors.to_hex( matplotlib_colormap.%s( col))' % ( _graph.get_property( "colormap"))
 
-    w( 2, '_plot.line( %s, %s %s %s, legend_label=graphlabels[column].replace("$", ""))' \
-        % ( xcolumn, ycolumn, color, self._make_args( 'l', \
+    legend_label = ''
+    if _graph.get_property( "legend_label", "True") in ["True", 'yes']:
+        legend_label = ', legend_label=graphlabels[column].replace("$", "")'
+
+    w( 2, '_plot.line( %s, %s %s %s %s)' \
+        % ( xcolumn, ycolumn, color, legend_label, self._make_args( 'l', \
                               color=_graph.get_property( 'color'), \
                               line_width=_graph.get_property( 'linewidth', 1.0))))
     w( 2, 'if "%s" != "None" : ' %_graph.get_property( 'marker'))
-    w( 3, '_plot.circle( %s, %s %s %s, legend_label=graphlabels[column].replace("$", ""))' \
-        % ( xcolumn, ycolumn, color, self._make_args( 'l', \
+    w( 3, '_plot.circle( %s, %s %s %s %s)' \
+        % ( xcolumn, ycolumn, color, legend_label, self._make_args( 'l', \
                               color=_graph.get_property( 'color'), \
                               size=_graph.get_property( 'markersize', 1.0))))
     w( 2, '_plot.legend.label_text_font_size = "%spt"' %_graph.get_property( 'legend_fontsize', 10))
@@ -43,9 +47,9 @@ def kkplot_pythonbokeh_time_line( self, _id, _graph, _axes_index, _columns, _aux
     w( 2, '_plot.legend.background_fill_alpha = %s' %_graph.get_property( 'legend_borderline_alpha', 0))
     w( 2, '_plot.legend.label_standoff = %s' %_graph.get_property( 'label_standoff', 5))
     w( 2, '_plot.legend.glyph_width = %s' %_graph.get_property( 'glyph_width', 10))
-    w( 2, '_plot.legend.spacing = %s' %_graph.get_property( 'spacing', 10))
-    w( 2, '_plot.legend.padding = %s' %_graph.get_property( 'padding', 3))
-    w( 2, '_plot.legend.margin = %s' %_graph.get_property( 'margin', 3))
+    w( 2, '_plot.legend.spacing = %s' %_graph.get_property( 'legend_spacing', 10))
+    w( 2, '_plot.legend.padding = %s' %_graph.get_property( 'legend_padding', 3))
+    w( 2, '_plot.legend.margin = %s' %_graph.get_property( 'legend_margin', 3))
 
 #        #_plot.legend.border_line_alpha = 0.0        
 #        #_plot.legend.background_fill_alpha = 0.0
