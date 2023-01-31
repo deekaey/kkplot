@@ -52,6 +52,50 @@ def merge_plotfiles( _a, _b):
         raise yaml.YAMLError('TypeError "%s" in key "%s" when merging "%s" into "%s"' % ( typeerr, key, _b, _a))
     return _a
 
+def load( _fname, _pf_data, _mergewith=None) :
+    rc_load = 0
+    pf_stream = None
+    yamldata = None
+    try :
+        try :
+            if _fname == '-' :
+                pf_stream = sys.stdin
+            else :
+                fname = kkexpand( _fname)
+                pf_stream = open( fname, 'r')
+            try:
+                yamldata = yaml.safe_load( pf_stream, Loader=yaml.FullLoader)
+            except:
+                yamldata = yaml.safe_load( pf_stream)
+            if _pf_data is None :
+                _pf_data = yamldata
+            else :
+                merge_plotfiles( _pf_data, yamldata)
+        except IOError as ioerr :
+            kklog_error( '%s  [file=%s]' % ( ioerr, _fname))
+            rc_load = -1
+        except yaml.YAMLError as yaml_err :
+            yaml_err_line = '?'
+            yaml_err_col = '?'
+            if hasattr( yaml_err, 'problem_mark') :
+                yaml_err_line = yaml_err.problem_mark.line+1
+                yaml_err_col = yaml_err.problem_mark.column+1
+            kklog_error( '%s  [file=%s,line/column=%s/%s]' %
+                    ( yaml_err, _fname, str(yaml_err_line), str(yaml_err_col)))
+            rc_load = -1
+    finally :
+        if pf_stream :
+            pf_stream.close()
+
+    if yamldata :
+        fincludes = yamldata.get( 'include')
+        kklog_debug( 'includes=%s' % ( fincludes))
+        if isinstance( fincludes, list) :
+            for finclude in fincludes :
+                rc_load, _pf_data = load( finclude, _pf_data)
+
+    return  (rc_load, _pf_data)
+
 class kkplot_pfreader_yaml( object) :
     def __init__( self, _conf, _pf_name) :
         self._conf = _conf
@@ -60,7 +104,7 @@ class kkplot_pfreader_yaml( object) :
 
         self._figure = kkplot_figure()
 
-        rc_load = self.load( self._pf_name)
+        rc_load, self._pf_data = load( self._pf_name, self._pf_data)
         if rc_load :
             raise RuntimeError( 'loading config file failed')
         kklog_debug( 'loading plot configuration successful')
@@ -84,49 +128,7 @@ class kkplot_pfreader_yaml( object) :
     def engine( self) :
         return  self._engine
 
-    def load( self, _fname, _mergewith=None) :
-        rc_load = 0
-        pf_stream = None
-        yamldata = None
-        try :
-            try :
-                if _fname == '-' :
-                    pf_stream = sys.stdin
-                else :
-                    fname = kkexpand( _fname)
-                    pf_stream = open( fname, 'r')
-                try:
-                    yamldata = yaml.safe_load( pf_stream, Loader=yaml.FullLoader)
-                except:
-                    yamldata = yaml.safe_load( pf_stream)
-                if self._pf_data is None :
-                    self._pf_data = yamldata
-                else :
-                    merge_plotfiles( self._pf_data, yamldata)
-            except IOError as ioerr :
-                kklog_error( '%s  [file=%s]' % ( ioerr, _fname))
-                rc_load = -1
-            except yaml.YAMLError as yaml_err :
-                yaml_err_line = '?'
-                yaml_err_col = '?'
-                if hasattr( yaml_err, 'problem_mark') :
-                    yaml_err_line = yaml_err.problem_mark.line+1
-                    yaml_err_col = yaml_err.problem_mark.column+1
-                kklog_error( '%s  [file=%s,line/column=%s/%s]' %
-                        ( yaml_err, _fname, str(yaml_err_line), str(yaml_err_col)))
-                rc_load = -1
-        finally :
-            if pf_stream :
-                pf_stream.close()
 
-        if yamldata :
-            fincludes = yamldata.get( 'include')
-            kklog_debug( 'includes=%s' % ( fincludes))
-            if isinstance( fincludes, list) :
-                for finclude in fincludes :
-                    self.load( finclude)
-
-        return  rc_load
 
     def read( self) :
         kklog_debug( 'reading plot configuration [%s]' % self._pf_name)
