@@ -41,6 +41,8 @@ def kkplot_pythonmatplotlib_time_raster( self, _id, _graph, _axes_index, _column
     w( 1, '_axes.set_gid( _id)')
 
     w( 1, 'cbar = None')
+    w( 1, '_dataframe["%s"] = _dataframe["%s"]-_dataframe["%s"].min()' % ( xycolumns[0], xycolumns[0], xycolumns[0]))
+    w( 1, '_dataframe["%s"] = _dataframe["%s"]-_dataframe["%s"].min()' % ( xycolumns[1], xycolumns[1], xycolumns[1]))
     w( 1, 'org_mean = _dataframe.groupby(["%s", "%s"]).mean()' % ( xycolumns[0], xycolumns[1]))
     w( 1, 'org_mean_sum = _dataframe.groupby(["%s", "%s"]).agg(["sum", "mean"])' % ( xycolumns[0], xycolumns[1]))
     if len(xycolumns) == 3 :    
@@ -66,11 +68,11 @@ def kkplot_pythonmatplotlib_time_raster( self, _id, _graph, _axes_index, _column
 
         w( 1+indentation, 'x_min = _dataframe["%s"].min() -  int((_dataframe["%s"].min()-org["%s"].min())/resolution) * resolution' %(xycolumns[0],xycolumns[0],xycolumns[0]))
         w( 1+indentation, 'x_max = _dataframe["%s"].max() +  int((org["%s"].max()-_dataframe["%s"].max())/resolution) * resolution' %(xycolumns[0],xycolumns[0],xycolumns[0]))
-        w( 1+indentation, 'x = numpy.arange(x_min-2*resolution, x_max+2*resolution, resolution)')
+        w( 1+indentation, 'x = numpy.arange(x_min-1*resolution, x_max+3*resolution, resolution)')
 
         w( 1+indentation, 'y_min = _dataframe["%s"].min() -  int((_dataframe["%s"].min()-org["%s"].min())/resolution) * resolution' %(xycolumns[1],xycolumns[1],xycolumns[1]))
         w( 1+indentation, 'y_max = _dataframe["%s"].max() +  int((org["%s"].max()-_dataframe["%s"].max())/resolution) * resolution' %(xycolumns[1],xycolumns[1],xycolumns[1]))
-        w( 1+indentation, 'y = numpy.arange(y_min-2*resolution, y_max+2*resolution, resolution)')
+        w( 1+indentation, 'y = numpy.arange(y_min-1*resolution, y_max+3*resolution, resolution)')
 
         w( 1+indentation, 'xv, yv = numpy.meshgrid(x,y)')
         w( 1+indentation, 'x_map = {k: v for v, k in enumerate(x)}')
