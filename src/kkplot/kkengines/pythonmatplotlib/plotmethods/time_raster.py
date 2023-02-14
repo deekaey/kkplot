@@ -2,6 +2,10 @@
 import numpy
 from kkplot.kkutils.log import *
 
+##@page kkplot_pythonmatplotlib_time_raster Raster plot (temporal integration)
+#@tableofcontents
+#@section option Plotting options
+# - agg (mean/sum) Aggregation option for target value
 def kkplot_pythonmatplotlib_time_raster( self, _id, _graph, _axes_index, _columns, _auxialiary_columns, **_kwargs) :
 
     agg_method = _graph.get_property( 'agg', 'mean')
