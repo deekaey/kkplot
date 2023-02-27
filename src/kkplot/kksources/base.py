@@ -118,10 +118,13 @@ class kkplot_timeparser_iso8601( kkplot_timeparser) :
             return _entity_data
 
         data_columns = _entity_data.columns
-        if 'datetime' in data_columns :
-            date_parser_ser = lambda Y : pandas.Series( [ self.iso8601_to_datetime( y) for y in Y])
-            _entity_data[_domain.domaincolumns[0]] = date_parser_ser( _entity_data['datetime'])
-        else :
+        have_date_identifier = False
+        for date_identifier in ['datetime', 'date']: 
+            if date_identifier in data_columns :
+                date_parser_ser = lambda Y : pandas.Series( [ self.iso8601_to_datetime( y) for y in Y])
+                _entity_data[_domain.domaincolumns[0]] = date_parser_ser( _entity_data[date_identifier])
+                have_date_identifier = True
+        if not have_date_identifier:
             raise RuntimeError( 'ISO8601: temporal data file lacks domain columns  [expect columns %s]' \
                                % ( ", ".join( [ '"%s"' % column for column in self.source_domaincolumns])))
         return _entity_data
