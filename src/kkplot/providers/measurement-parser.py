@@ -36,14 +36,15 @@ def mp_parse( _outfile, _infile) :
         df_infile = pandas.read_table( _infile, index_col=False, header=skiprows, skip_blank_lines=False, na_values=['-99.99','na','nan'])
 
     ## we require 'date' column
-    if 'date' not in df_infile.columns :
-        sys.stderr.write( '"date" column missing measurement file\n')
+    if ('date' not in df_infile.columns) and ('datetime' not in df_infile.columns) :
+        sys.stderr.write( '"date/datetime" column missing measurement file\n')
         return  -1
 
     ## add dummy ID
     df_infile.insert( 0, 'id', 0)
-    df_infile.insert( 0, 'year', mp_makeyear( df_infile))
-    df_infile.insert( 0, 'datetime', mp_makedatetime( df_infile))
+    if 'datetime' not in df_infile.columns:
+        df_infile.insert( 0, 'year', mp_makeyear( df_infile))
+        df_infile.insert( 0, 'datetime', mp_makedatetime( df_infile))
     if 'date' in df_infile.columns :
         df_infile.drop( [ 'date'], axis=1, inplace=True)
     if 'time' in df_infile.columns :

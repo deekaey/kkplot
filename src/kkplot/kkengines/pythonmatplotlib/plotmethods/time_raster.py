@@ -44,11 +44,36 @@ def kkplot_pythonmatplotlib_time_raster( self, _id, _graph, _axes_index, _column
     w( 0, 'def kkplot_plot_time_raster_%s( _id, _dataframe, _axes) :' % ( self._canonicalize_name( _id)))
     w( 1, '_axes.set_gid( _id)')
 
+    resample = _graph.get_property( "resample")
+    if resample:
+        resample_time_resolution = resample.split('/')[0]
+        resample_function = resample.split('/')[1]
+        if len(xycolumns) == 3 :    
+            w( 1, f"_dataframe = _dataframe.groupby(['{xycolumns[0]}','{xycolumns[1]}','{xycolumns[2]}']).resample('{resample_time_resolution}').{resample_function}(){columns}")
+        else:
+            w( 1, f"_dataframe = _dataframe.groupby(['{xycolumns[0]}','{xycolumns[1]}']).resample('{resample_time_resolution}').{resample_function}(){columns}")
+        w( 1, "_dataframe = _dataframe.reset_index()")
+        w( 1, "_dataframe = _dataframe.set_index( pandas.to_datetime( _dataframe['time']))")
+        w( 1, "_dataframe.drop('time', axis=1, inplace=True)")
+
     w( 1, 'cbar = None')
-    w( 1, '_dataframe["%s"] = _dataframe["%s"]-_dataframe["%s"].min()' % ( xycolumns[0], xycolumns[0], xycolumns[0]))
-    w( 1, '_dataframe["%s"] = _dataframe["%s"]-_dataframe["%s"].min()' % ( xycolumns[1], xycolumns[1], xycolumns[1]))
+
+    if _graph.get_property( 'xoffset') is not None:
+        w( 1, '_dataframe["%s"] -= %s' % ( xycolumns[0], _graph.get_property( 'xoffset')))
+    if _graph.get_property( 'yoffset') is not None:
+        w( 1, '_dataframe["%s"] -= %s' % ( xycolumns[1], _graph.get_property( 'yoffset')))
+    #grid cells with different resolution
+    #the minimum of the x/y axes is moved from the grid cell center to the left/lower boundary
+    #this ensures that the min(x/y) offest is not influenced by the grid cell resolution
+    #if len(xycolumns) == 3 :    
+    #    w( 1, '_dataframe["%s_help"] = _dataframe["%s"] - _dataframe["%s"]**0.5' % ( xycolumns[0], xycolumns[0], xycolumns[2]))
+    #    w( 1, '_dataframe["%s_help"] = _dataframe["%s"] - _dataframe["%s"]**0.5' % ( xycolumns[1], xycolumns[1], xycolumns[2]))
+
+    #w( 1, '_dataframe["%s"] = _dataframe["%s"]-_dataframe["%s_help"].min()' % ( xycolumns[0], xycolumns[0], xycolumns[0]))
+    #w( 1, '_dataframe["%s"] = _dataframe["%s"]-_dataframe["%s_help"].min()' % ( xycolumns[1], xycolumns[1], xycolumns[1]))
+
     w( 1, 'org_mean = _dataframe.groupby(["%s", "%s"]).mean()' % ( xycolumns[0], xycolumns[1]))
-    w( 1, 'org_mean_sum = _dataframe.groupby(["%s", "%s"]).agg(["sum", "mean"])' % ( xycolumns[0], xycolumns[1]))
+    #w( 1, 'org_mean_sum = _dataframe.groupby(["%s", "%s"]).agg(["sum", "mean"])' % ( xycolumns[0], xycolumns[1]))
     if len(xycolumns) == 3 :    
         w( 1, 'org = _dataframe.copy(deep=True)')
         w( 1, 'for area in numpy.unique(org["%s"]):' % ( xycolumns[2]))
@@ -70,12 +95,28 @@ def kkplot_pythonmatplotlib_time_raster( self, _id, _graph, _axes_index, _column
         w( 1+indentation, 'y_coordinates=numpy.unique(ycolumn)')
         w( 1+indentation, 'resolution=int(area**0.5)')
 
-        w( 1+indentation, 'x_min = _dataframe["%s"].min() -  int((_dataframe["%s"].min()-org["%s"].min())/resolution) * resolution' %(xycolumns[0],xycolumns[0],xycolumns[0]))
-        w( 1+indentation, 'x_max = _dataframe["%s"].max() +  int((org["%s"].max()-_dataframe["%s"].max())/resolution) * resolution' %(xycolumns[0],xycolumns[0],xycolumns[0]))
+        if _graph.get_property( 'xlimitlow') is not None:
+            xlimitlow = _graph.get_property( 'xlimitlow')
+        else: 
+            xlimitlow = 'org["%s"].min()' %xycolumns[0]
+        if _graph.get_property( 'xlimithigh') is not None:
+            xlimithigh = _graph.get_property( 'xlimithigh')
+        else: 
+            xlimithigh = 'org["%s"].max()' %xycolumns[0]
+        w( 1+indentation, 'x_min = _dataframe["%s"].min() -  int((_dataframe["%s"].min()-%s)/resolution) * resolution' %(xycolumns[0],xycolumns[0],xlimitlow))
+        w( 1+indentation, 'x_max = _dataframe["%s"].max() +  int((%s-_dataframe["%s"].max())/resolution) * resolution' %(xycolumns[0],xlimithigh,xycolumns[0]))
         w( 1+indentation, 'x = numpy.arange(x_min-1*resolution, x_max+3*resolution, resolution)')
 
-        w( 1+indentation, 'y_min = _dataframe["%s"].min() -  int((_dataframe["%s"].min()-org["%s"].min())/resolution) * resolution' %(xycolumns[1],xycolumns[1],xycolumns[1]))
-        w( 1+indentation, 'y_max = _dataframe["%s"].max() +  int((org["%s"].max()-_dataframe["%s"].max())/resolution) * resolution' %(xycolumns[1],xycolumns[1],xycolumns[1]))
+        if _graph.get_property( 'ylimitlow') is not None:
+            ylimitlow = _graph.get_property( 'ylimitlow')
+        else: 
+            ylimitlow = 'org["%s"].min()' %xycolumns[1]
+        if _graph.get_property( 'ylimithigh') is not None:
+            ylimithigh = _graph.get_property( 'ylimithigh')
+        else: 
+            ylimithigh = 'org["%s"].max()' %xycolumns[1]
+        w( 1+indentation, 'y_min = _dataframe["%s"].min() -  int((_dataframe["%s"].min()-%s)/resolution) * resolution' %(xycolumns[1],xycolumns[1],ylimitlow))
+        w( 1+indentation, 'y_max = _dataframe["%s"].max() +  int((%s-_dataframe["%s"].max())/resolution) * resolution' %(xycolumns[1],ylimithigh,xycolumns[1]))
         w( 1+indentation, 'y = numpy.arange(y_min-1*resolution, y_max+3*resolution, resolution)')
 
         w( 1+indentation, 'xv, yv = numpy.meshgrid(x,y)')
