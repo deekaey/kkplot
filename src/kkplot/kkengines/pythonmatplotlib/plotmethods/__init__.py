@@ -1,4 +1,5 @@
 
+#imports not sorted alphabetically due to dependencies
 #from non_bar import kkplot_pythonmatplotlib_non_bar
 from .non_bartable import kkplot_pythonmatplotlib_non_bartable
 from .non_line import kkplot_pythonmatplotlib_non_line
@@ -16,6 +17,7 @@ from .time_heatmap import kkplot_pythonmatplotlib_time_heatmap
 from .time_histogram import kkplot_pythonmatplotlib_time_histogram
 from .time_integratebar import kkplot_pythonmatplotlib_time_integratebar
 from .time_line import kkplot_pythonmatplotlib_time_line
+from .time_annotate import kkplot_pythonmatplotlib_time_annotate
 from .time_pie import kkplot_pythonmatplotlib_time_pie
 from .time_bars import kkplot_pythonmatplotlib_time_bars
 from .time_boxes import kkplot_pythonmatplotlib_time_boxes

@@ -129,6 +129,7 @@ class kkplot_engine_matplotlib( kkplot_engine) :
         self.W = None
 
         kkplot_plotmethods = dict( \
+            time_annotate=kkplot_pythonmatplotlib_time_annotate, \
             time_area=kkplot_pythonmatplotlib_time_area, \
             time_fill=kkplot_pythonmatplotlib_time_fill, \
             time_heatmap=kkplot_pythonmatplotlib_time_heatmap, \
@@ -250,6 +251,12 @@ class kkplot_engine_matplotlib( kkplot_engine) :
                 axiscolorbottom = "<color>"
             self.W.iappendnl( 1, 'kkaxes["%s"].spines["bottom"].set_color( "%s")' % ( ax_index, axiscolorbottom))
             self.W.comment_off()
+
+            xaxisvisible = plot.get_property( 'xaxisvisible', True)
+            self.W.iappendnl( 1, 'kkaxes["%s"].get_xaxis().set_visible( %s)' % ( ax_index, xaxisvisible))
+            yaxisvisible = plot.get_property( 'yaxisvisible', True)
+            self.W.iappendnl( 1, 'kkaxes["%s"].get_yaxis().set_visible( %s)' % ( ax_index, yaxisvisible))
+
             axiscolortop = plot.get_property( 'axiscolortop', axiscolor)
             if axiscolortop is None :
                 self.W.comment_on()
@@ -355,6 +362,7 @@ class kkplot_engine_matplotlib( kkplot_engine) :
         ## add graphs
         for graphmethod in _graphmethods :
             graphid = graphmethod.graph.graphid
+            kklog_debug( 'graphid %s' % ( graphid))
             if self.dviplot.series_exists( graphid) :
                 w( 1, 'try :')
                 w( 2, 'kkdataframes["%s"] = pandas.read_csv( "%s", ' % ( graphid, self.dviplot.datapool_filename( graphid)) +
@@ -364,7 +372,7 @@ class kkplot_engine_matplotlib( kkplot_engine) :
                 w( 2, r'sys.exit( 13)')
 
             w( 1, 'graphresults["%s"] = \\' % ( graphmethod.graph.graphresult))
-            w( 2, graphmethod.methodcall)
+            w( 2, graphmethod.methodcall + '\n')
 
     def generate_plots_deleteemptyaxes( self) :
         self.W.append( KKPLOT_MATPLOTLIB_DELETE_AXES_WITHOUT_GRAPHS)
