@@ -87,7 +87,7 @@ def kkplot_pythonmatplotlib_time_line( self, _id, _graph, _axes_index, _columns,
     if _graph.get_property( "colormap") and not _graph.get_property( "color") :
         w( 2, 'col = %f + ( %f - %f) * float( j)/float( len( columns))' % ( c_lo, c_hi, c_lo))
         color = ', color=matplotlib_colormap.%s( col)' % ( _graph.get_property( "colormap"))
-    w( 2, '_axes.plot( %s, %s %s %s, label=graphlabels[column], gid="%%s" %% ( column))' \
+    w( 2, '_axes.plot( %s.values, %s.values %s %s, label=graphlabels[column], gid="%%s" %% ( column))' \
         % ( xcolumn, ycolumn, color, self._make_args( 'l', \
                 zorder=_graph.zorder, \
                 color=_graph.get_property( 'color'), \
@@ -101,6 +101,8 @@ def kkplot_pythonmatplotlib_time_line( self, _id, _graph, _axes_index, _columns,
                 markevery=_graph.get_property( 'markerstride') \
         )))
                 #visible=self._toggle( _graph.get_property( 'hidden', False))
+
+    w( 1, 'return (%s.values, %s.values)' % (xcolumn, ycolumn))
 
     return method_call
 
