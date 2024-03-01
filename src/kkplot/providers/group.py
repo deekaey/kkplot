@@ -10,7 +10,7 @@ import pandas as pd
 if __name__ == '__main__' :
 
     df = pd.read_csv( sys.argv[1], comment="#", sep="\t")
-    df.datetime = pd.to_datetime(df.datetime, format="%Y-%m-%d")
+    df.datetime = pd.to_datetime(df.datetime)
 
     for a in sys.argv:
         if 'column' in a:
