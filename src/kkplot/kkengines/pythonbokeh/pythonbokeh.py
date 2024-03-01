@@ -155,9 +155,15 @@ class kkplot_engine_bokeh( kkplot_engine) :
             ax_position = self._axis_position( plot)
             plotheight = graph.get_property( 'plotheight', 300)
             if graph.kind in ['regressionpoint', 'regressionline'] :
-                self.W.iappendnl( 1, 'kkaxes["%s"] = figure(x_axis_type="linear", plot_height=%d)' % ( ax_index, plotheight))
+                self.W.iappendnl( 1, 'if bokeh_version >= "3.0.0":')
+                self.W.iappendnl( 2, 'kkaxes["%s"] = figure(x_axis_type="linear", height=%d)' % ( ax_index, plotheight))
+                self.W.iappendnl( 1, 'else:')
+                self.W.iappendnl( 2, 'kkaxes["%s"] = figure(x_axis_type="linear", plot_height=%d)' % ( ax_index, plotheight))
             else:
-                self.W.iappendnl( 1, 'kkaxes["%s"] = figure(x_axis_type="datetime", plot_height=%d)' % ( ax_index, plotheight))
+                self.W.iappendnl( 1, 'if bokeh_version >= "3.0.0":')
+                self.W.iappendnl( 2, 'kkaxes["%s"] = figure(x_axis_type="datetime", height=%d)' % ( ax_index, plotheight))
+                self.W.iappendnl( 1, 'else:')
+                self.W.iappendnl( 2, 'kkaxes["%s"] = figure(x_axis_type="datetime", plot_height=%d)' % ( ax_index, plotheight))
             if define_layout:
                 self.W.iappendnl( 1, 'kklayout = [[None for x in range(%d)] for y in range(%d)]' %(self.dviplot.extent_x, self.dviplot.extent_y) )
                 define_layout = False
@@ -338,7 +344,9 @@ class kkplot_engine_bokeh( kkplot_engine) :
             self.W.iappendnl( 1, 'output_file( "%s.html")' % ( self.dviplot.outputfile.split(".")[0]))
 
             if self.dviplot.title :
-                self.W.iappendnl( 1, 'save( column(Div(text="%s", style={"font-size": "200%%"}),p, sizing_mode="scale_width", margin=(50, 50, 50, 50)))' % self.dviplot.title)
+                font_size = "'font-size:200%'"
+                self.W.iappendnl( 1, 'division_content=Div(text="<div style=%s>%s</div>")' % (font_size, self.dviplot.title))
+                self.W.iappendnl( 1, 'save( column(division_content, p, sizing_mode="scale_width", margin=(50, 50, 50, 50)))')
             else:
                 self.W.iappendnl( 1, 'save(p)')
 
@@ -360,6 +368,9 @@ class kkplot_engine_bokeh( kkplot_engine) :
         self.W.appendnl( 'from bokeh.models import Range1d, Div')
         self.W.appendnl( 'from bokeh.embed import components')
         self.W.appendnl( 'from bokeh.models import ColumnDataSource, Whisker')
+        self.W.appendnl( 'import bokeh')
+        self.W.appendnl( 'bokeh_version = bokeh.__version__')
+
         self.W.appendnl( 'from pylatexenc.latex2text import LatexNodes2Text')
         self.W.appendnl( '')
 
