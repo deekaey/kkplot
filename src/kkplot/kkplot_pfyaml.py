@@ -9,6 +9,46 @@ import kkplot.kkplot_provider as kkplot_provider
 import yaml
 import itertools
 import sys
+import re
+import os
+
+
+def replace_env_variables(data):
+    """
+    Recursively replace environment variables in a nested dictionary and lists.
+    """
+    if isinstance(data, dict):
+        # Copy the dictionary keys since we'll be modifying the dictionary
+        keys = list(data.keys())
+        for key in keys:
+            if isinstance(key, str):
+                new_key = replace_env(key)
+                if new_key != key:
+                    data[new_key] = data.pop(key)  # Replace the key if it has changed
+            value = data[new_key] if new_key in data else None
+            if isinstance(value, (dict, list)):
+                data[new_key] = replace_env_variables(value)
+            elif isinstance(value, str):
+                data[new_key] = replace_env(value)
+    elif isinstance(data, list):
+        for i, item in enumerate(data):
+            if isinstance(item, (dict, list)):
+                data[i] = replace_env_variables(item)
+            elif isinstance(item, str):
+                data[i] = replace_env(item)
+    return data
+
+
+def replace_env(string):
+    """
+    Replace environment variables in a string with their values.
+    """
+    pattern = r'\${(\w+)}'
+    def replace(match):
+        env_var = match.group(1)
+        return os.environ.get(env_var, f'${{{env_var}}}')  # If the environment variable is not found, return the original placeholder
+    return re.sub(pattern, replace, string)
+
 
 ## http://stackoverflow.com/questions/7204805/dictionaries-of-dictionaries-merge
 def merge_plotfiles( _a, _b):
@@ -52,6 +92,7 @@ def merge_plotfiles( _a, _b):
         raise yaml.YAMLError('TypeError "%s" in key "%s" when merging "%s" into "%s"' % ( typeerr, key, _b, _a))
     return _a
 
+
 def load( _fname, _pf_data, _mergewith=None) :
     rc_load = 0
     pf_stream = None
@@ -94,6 +135,8 @@ def load( _fname, _pf_data, _mergewith=None) :
             for finclude in fincludes :
                 rc_load, _pf_data = load( finclude, _pf_data)
 
+    _pf_data = replace_env_variables(_pf_data)
+    
     return  (rc_load, _pf_data)
 
 class kkplot_pfreader_yaml( object) :
