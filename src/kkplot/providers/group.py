@@ -10,9 +10,9 @@ import pandas as pd
 if __name__ == '__main__' :
 
     df = pd.read_csv( sys.argv[1], comment="#", sep="\t")
-    if 'datetime in df':
+    if 'datetime' in df:
         df.datetime = pd.to_datetime(df.datetime)
-    elif 'date in' df:
+    elif 'date' in df:
         df.datetime = pd.to_datetime(df.date)
         df.drop(columns=['date'], inplace=True)
 
