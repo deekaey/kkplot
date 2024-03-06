@@ -42,7 +42,7 @@ def kkplot_pythonmatplotlib_time_heatmap( self, _id, _graph, _axes_index, _colum
     w( 2, 'kkheatmap = _axes.pcolormesh( x, y, c, cmap=matplotlib_colormaps.%s, vmin=c_min, vmax=c_max %s)' \
         % ( _graph.get_property( 'colormap', cmap), \
             self._make_args( 'l', 
-                shading=_graph.get_property( 'shading', 'flat'),
+                shading=_graph.get_property( 'shading', 'auto'),
                 zorder=_graph.zorder 
         )))
     w( 2, 'cbar = matplotlib_pyplot.colorbar( kkheatmap, ax=_axes, label=r%s %s)' \

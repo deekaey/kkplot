@@ -331,7 +331,7 @@ class kkplot_engine_holoviews( kkplot_engine) :
         self.W.iappendnl( 1, 'sys.stderr.write( \'writing "%s.html"...\\n\')' % ( self.dviplot.outputfile.split(".")[0]))
         if True :
             self.W.iappendnl( 1, 'output_file( "%s.html")' % ( self.dviplot.outputfile.split(".")[0]))
-            self.W.iappendnl( 1, 'save( column(Div(text="%s", style={"font-size": "200%%"}),p, sizing_mode="scale_width", margin=(50, 50, 50, 50)))' % self.dviplot.title)
+            self.W.iappendnl( 1, 'save( column(Div(text="%s", styles={"font-size": "200%%"}),p, sizing_mode="scale_width", margin=(50, 50, 50, 50)))' % self.dviplot.title)
 
 
     def generate_preamble( self, _dviplot) :

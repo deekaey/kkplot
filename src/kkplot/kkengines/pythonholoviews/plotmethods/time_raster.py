@@ -111,7 +111,7 @@ def kkplot_pythonholoviews_time_raster( self, _id, _graph, _axes_index, _columns
     # imshow options:  aspect="auto"
     w( 2+indentation, '#img = _axes.tripcolor( xcolumn,ycolumn, _dataframe[column]["%s"])' %agg_method)
 
-    if len(xycolumns) == 3 :    
+    if False: #len(xycolumns) == 3 :    
         w( 2+indentation, 'c_min=%s' % ( _graph.get_property( 'colorbarlimitlow', 'org_mean[column].min()')))
         w( 2+indentation, 'c_max=%s' % ( _graph.get_property( 'colorbarlimithigh', 'org_mean[column].max()')))
         w( 2+indentation, 'img = _axes.pcolor( xv-0.5*resolution, yv-0.5*resolution, raster, vmin=c_min, vmax=c_max %s)' \
