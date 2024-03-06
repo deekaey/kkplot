@@ -16,9 +16,11 @@ GRAPHRESULTINTL = '%s%s' % ( GRAPHRESULT, NODEPMARKER)
 KKCONSTS = dict( PI=3.141592653589793, E=2.718281828459045, K0=273.15, MC=12.0, MN=14.0, MO=16.0, MCH4=16.0, MCO2=44.0, CCDM=0.45)
 KKFUNCS = dict( sin='numpy.sin', cos='numpy.cos', timeperiod='timeperiod', timestamp='timestamp',
     daysum='daysum', weeksum='weeksum', monthsum='monthsum', yearsum='yearsum',
-    daymean='daymean', daymax='daymax', weekmean='weekmean', monthmean='monthmean', yearmean='yearmean',
+    daymax='daymax', weekmax='weekmax', monthmax='monthmax', yearmax='yearmax',
+    daymean='daymean', weekmean='weekmean', monthmean='monthmean', yearmean='yearmean',
     daystd='daystd', weekstd='weekstd', monthstd='monthstd', yearstd='yearstd',
-    cumsum='cumsum', nansum='nansum', nanmean='nanmean', nanstd='nanstd',diff='diff', integral='integral', nanmin='nanmin',kkround='kkround')
+    cumsum='cumsum', nansum='nansum', nanmean='nanmean', nanstd='nanstd',
+    diff='diff', integral='integral', nanmin='nanmin',kkround='kkround')
     
 def isreference( _dependency) :
     return  _dependency.startswith( NSSEP)

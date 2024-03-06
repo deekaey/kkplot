@@ -44,10 +44,17 @@ def monthsum( _dataframe, _nd=1) :
 def yearsum( _dataframe, _nd=1) :
     return _dataframe.resample( '%dA' %_nd).sum()
 
-def daymean( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dD' %_nd).mean()
 def daymax( _dataframe, _nd=1) :
     return _dataframe.resample( '%dD' %_nd).max()
+def weekmax( _dataframe, _nd=1) :
+    return _dataframe.resample( '%dW-MON' %_nd).max()
+def monthmax( _dataframe, _nd=1) :
+    return _dataframe.resample( '%dM' %_nd).max()
+def yearmax( _dataframe, _nd=1) :
+    return _dataframe.resample( '%dA' %_nd).max()
+
+def daymean( _dataframe, _nd=1) :
+    return _dataframe.resample( '%dD' %_nd).mean()
 def weekmean( _dataframe, _nd=1) :
     return _dataframe.resample( '%dW-MON' %_nd).mean()
 def monthmean( _dataframe, _nd=1) :
