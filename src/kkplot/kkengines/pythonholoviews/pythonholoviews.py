@@ -330,8 +330,10 @@ class kkplot_engine_holoviews( kkplot_engine) :
         #tl_top = 0.95
         self.W.iappendnl( 1, 'sys.stderr.write( \'writing "%s.html"...\\n\')' % ( self.dviplot.outputfile.split(".")[0]))
         if True :
+            font_size = "'font-size:200%'"
+            self.W.iappendnl( 1, 'division_content=Div(text="<div style=%s>%s</div>")' % (font_size, self.dviplot.title))
             self.W.iappendnl( 1, 'output_file( "%s.html")' % ( self.dviplot.outputfile.split(".")[0]))
-            self.W.iappendnl( 1, 'save( column(Div(text="%s", styles={"font-size": "200%%"}),p, sizing_mode="scale_width", margin=(50, 50, 50, 50)))' % self.dviplot.title)
+            self.W.iappendnl( 1, 'save( column(division_content, p, sizing_mode="scale_width", margin=(50, 50, 50, 50)))')
 
 
     def generate_preamble( self, _dviplot) :
