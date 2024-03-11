@@ -1,48 +1,48 @@
 
-
 import os
 import sys
-import pandas
-import datetime
-import numpy
 import pandas as pd
 
-if __name__ == '__main__' :
+if __name__ == '__main__':
+    df = pd.read_csv(sys.argv[1], comment="#", sep="\t")
 
-    df = pd.read_csv( sys.argv[1], comment="#", sep="\t")
     if 'datetime' in df:
-        df['datetime'] = pd.to_datetime(df.datetime)
+        df['datetime'] = pd.to_datetime(df['datetime'])
     elif 'date' in df:
-        df['datetime'] = pd.to_datetime(df.date)
+        df['datetime'] = pd.to_datetime(df['date'])
         df.drop(columns=['date'], inplace=True)
 
     for a in sys.argv:
         if 'column' in a:
-            arguments = { 'function': '', 'column': '', 'values':''}
+            arguments = {'function': '', 'column': '', 'values': ''}
             for i in a.split(';'):
-                k,v = i.split(':')[0].strip(), i.split(':')[1].strip()
-                arguments.update( {k:v} )
+                k, v = i.split(':', 1)
+                arguments[k.strip()] = v.strip()
 
-            values = arguments['values'].split(',')
-            values = [i.strip() for i in values]
+            values = [i.strip() for i in arguments['values'].split(',')]
 
-            #df = df.loc[df[arguments['column']].isin(values),]
-            df = df.loc[df[arguments['column']].astype(str).isin(values),]
+            for val in values:
+                if '~' in val:
+                    df = df.loc[df[arguments['column']].astype(str) != val.replace('~', ''), ]
+                else:
+                    df = df.loc[df[arguments['column']].astype(str) == val, ]
+
             try:
+                group_cols = ['datetime', arguments['column']]
                 if arguments['function'] == 'mean':
-                    df = df.groupby(['datetime', arguments['column']]).mean( numeric_only=True)
+                    df = df.groupby(group_cols).mean(numeric_only=True)
                 elif arguments['function'] == 'std':
-                    df = df.groupby(['datetime', arguments['column']]).std( numeric_only=True)
+                    df = df.groupby(group_cols).std(numeric_only=True)
                 elif arguments['function'] == 'sum':
-                    df = df.groupby(['datetime']).sum( numeric_only=True)
+                    df = df.groupby(['datetime']).sum(numeric_only=True)
                 elif arguments['function'] == 'filter':
                     pass
             #for older python versions not knowing 'numeric_only'
             except:
                 if arguments['function'] == 'mean':
-                    df = df.groupby(['datetime', arguments['column']]).mean()
+                    df = df.groupby(group_cols).mean()
                 elif arguments['function'] == 'std':
-                    df = df.groupby(['datetime', arguments['column']]).std()
+                    df = df.groupby(group_cols).std()
                 elif arguments['function'] == 'sum':
                     df = df.groupby(['datetime']).sum()
                 elif arguments['function'] == 'filter':
