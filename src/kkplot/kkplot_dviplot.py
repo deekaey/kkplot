@@ -74,11 +74,17 @@ def yearstd( _dataframe, _nd=1) :
 def cumsum( _dataframe) :
     return _dataframe.cumsum()
 
+def custom_nansum(arr):
+    if numpy.all(numpy.isnan(arr)):
+        return numpy.nan
+    else:
+        return numpy.nansum(arr)
+
 def nansum( _dataframe_1, _dataframe_2, *_dataframes) :
-    index = _dataframe_1.index 
-    series = pandas.Series( numpy.nansum( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
-    series.index = index
-    return series
+    #index = _dataframe_1.index 
+    #series = pandas.Series( numpy.nansum( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
+    #series.index = index
+    return pandas.concat([ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=1).apply(custom_nansum, axis=1)
 
 def nanmean( _dataframe_1, _dataframe_2, *_dataframes) :
     index = _dataframe_1.index 
