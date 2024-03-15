@@ -12,7 +12,7 @@ def kkplot_pythonmatplotlib_time_points_errors( self, _id, _graph, _axes_index, 
     w( 1, 'graphlabels = { %s }' % ( self._make_labels( _columns, _graph)))
     w( 1, 'for ( data, yerr) in zip( [ %s], [ %s]) :' \
         % ( ','.join([ '"%s"' % c for c in _columns]), ','.join([ '"%s"' % c for c in auxialiary_columns])))
-    w( 2, '_axes.errorbar( _dataframe.index, _dataframe[data], yerr=_dataframe[yerr] %s, label=graphlabels[data], gid="%%s" %% ( data))' \
+    w( 2, '_axes.errorbar( _dataframe.index.values, _dataframe[data].values, yerr=_dataframe[yerr] %s, label=graphlabels[data], gid="%%s" %% ( data))' \
         % ( self._make_args( 'l', \
                 zorder=_graph.zorder, \
 				capsize=_graph.get_property( 'capsize', None), \
