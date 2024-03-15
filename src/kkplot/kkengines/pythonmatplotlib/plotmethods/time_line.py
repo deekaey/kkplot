@@ -102,7 +102,29 @@ def kkplot_pythonmatplotlib_time_line( self, _id, _graph, _axes_index, _columns,
         )))
                 #visible=self._toggle( _graph.get_property( 'hidden', False))
 
-    w( 1, 'return (%s.values, %s.values)' % (xcolumn, ycolumn))
+    regression = _graph.get_property( 'regression', False)
+    if regression :
+        w( 2, 'from sklearn.linear_model import LinearRegression')
+        w( 2, 'X = numpy.array([pandas.to_datetime( d).toordinal() for d in %s.values]).reshape(-1, 1)' % xcolumn)
+        # Fit a linear regression model
+        w( 2, 'model = LinearRegression()')
+        w( 2, 'model.fit(X, %s.values)' % ycolumn)
+        # Predict values using the model
+        w( 2, 'predicted_values = model.predict(X)')
+        w( 2, '_axes.plot( %s.values, predicted_values %s %s, label="", gid="%%s" %% ( column))' \
+            % ( xcolumn, color, self._make_args( 'l', \
+                    zorder=_graph.zorder, \
+                    color=_graph.get_property( 'color'), \
+                    linestyle='dashed', \
+                    linewidth=_graph.get_property( 'linewidth'), \
+                    marker=_graph.get_property( 'marker'), \
+                    markersize=_graph.get_property( 'markersize'), \
+                    markeredgecolor=_graph.get_property( 'markeredgecolor'), \
+                    markeredgewidth=_graph.get_property( 'markeredgewidth'), \
+                    markerfacecolor=_graph.get_property( 'markercolor'), \
+                    markevery=_graph.get_property( 'markerstride') \
+            )))
 
+    w( 1, 'return (%s.values, %s.values)' % (xcolumn, ycolumn))
     return method_call
 
