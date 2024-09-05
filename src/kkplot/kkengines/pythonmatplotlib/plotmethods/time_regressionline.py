@@ -48,7 +48,7 @@ def kkplot_pythonmatplotlib_time_regressionline( self, _id, _graph, _axes_index,
     textcoords = _graph.get_property( 'textcoords', "axes fraction")
     self.W.iappendnl( 1, 'textcoords="%s"' %textcoords)
 
-    self.W.iappendnl( 1, '_axes.plot([-1e10,1e10],[-1e10,1e10], color="grey", linestyle="dashed")')    
+    #self.W.iappendnl( 1, '_axes.plot([-1e10,1e10],[-1e10,1e10], color="grey", linestyle="dashed")')
     self.W.iappendnl( 1, '_axes.plot( x.iloc[:,1], regression_model.fittedvalues %s, label="_%%s" %% ( graphid), gid="%%s" %% ( graphid))' \
                        % ( self._make_args( 'l', \
                                        zorder=_graph.zorder, \
@@ -57,6 +57,8 @@ def kkplot_pythonmatplotlib_time_regressionline( self, _id, _graph, _axes_index,
                                        color=_graph.get_property( "color") \
                            )))            
     #self.W.iappendnl( 1, '_axes.plot( [0.0, 1000.0], [0.0, 1000.0], label="", gid="%s" % ( graphid), color="grey") ')
+    self.W.iappendnl( 1, 'upper_limit = max( _axes.get_xlim()[1], _axes.get_ylim()[1])')
+    self.W.iappendnl( 1, '_axes.plot([0,upper_limit],[0,upper_limit], color="grey", linestyle="dashed")')
     self.W.iappendnl( 1, 'f = regression_model.fittedvalues')
     self.W.iappendnl( 1, 'name = "%s"' %("%s" %_graph.get_property( 'name', '')))
     self.W.iappendnl( 1, '_axes.annotate( "r$^2$: %.2f %s\\ny=%.1f+%.2fx\\nRMSE = %.2f\\nbias = %.1f" % (regression_model.rsquared, name, regression_model.params["const"], regression_model.params[0], rmse, bias), xy=(0.0,0.0), xycoords="axes fraction", xytext=(textcoordinates[0], textcoordinates[1]), textcoords=textcoords)')

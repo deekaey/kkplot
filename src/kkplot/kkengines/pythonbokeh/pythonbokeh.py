@@ -231,7 +231,7 @@ class kkplot_engine_bokeh( kkplot_engine) :
         w( 1, 'graphresults = dict()')
         w( 1, 'kkdataframes = dict()')
 
-        seriesopts = dict( time=', parse_dates=["time"], index_col=1, keep_date_col=True', space='', non='')
+        seriesopts = dict( time=', parse_dates=["time"], index_col=1', space='', non='')
         delim = self._conf.tmpdata_column_delim
         ## add graphs
         for graphmethod in _graphmethods :
@@ -331,7 +331,10 @@ class kkplot_engine_bokeh( kkplot_engine) :
 
         #tl_left, tl_bottom, tl_right, tl_top = ( 0.0, 0.0, 1.0, 1.0)
         #self.W.iappendnl( 1, 'p = gridplot(kklayout, plot_width=%d, plot_height=%d, sizing_mode="scale_width")' % (self.dviplot.size_x*30, self.dviplot.size_y*20))
-        self.W.iappendnl( 1, 'p = layout(kkplot_remove_none(kklayout), sizing_mode="stretch_width")')
+        #self.W.iappendnl( 1, 'p = layout(kkplot_remove_none(kklayout), sizing_mode="stretch_width")')
+                
+        w = h = self.dviplot.get_property( 'plotheight', 300)
+        self.W.iappendnl( 1, 'p = gridplot( kklayout, width=%d, height=%d)' %(w,h))
         #tl_top = 0.95
         self.W.iappendnl( 1, 'sys.stderr.write( \'writing "%s.html"...\\n\')' % ( self.dviplot.outputfile.split(".")[0]))
         if self.dviplot.components :

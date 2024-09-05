@@ -106,7 +106,7 @@ def kkplot_pythonmatplotlib_time_regressionpoint( self, _id, _graph, _axes_index
                     elinewidth=_graph.get_property( "linewidth") \
             )))
 
-    if _graph.label( _columns[0]) :
+    if False: #_graph.label( _columns[0]) :
         self.W.iappend  ( 1, 'label_orientation= "%s"\n' % _graph.get_property( "labelorientation", "right"))
         self.W.iappend  ( 1, '_axes.annotate( ')
         self.W.append   (    'label, xy=(point_x, point_y), xytext=( -10, 10), textcoords="offset points", ha=label_orientation, va="bottom", ')

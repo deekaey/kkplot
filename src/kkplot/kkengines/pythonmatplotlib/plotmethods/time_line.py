@@ -124,6 +124,15 @@ def kkplot_pythonmatplotlib_time_line( self, _id, _graph, _axes_index, _columns,
                     markerfacecolor=_graph.get_property( 'markercolor'), \
                     markevery=_graph.get_property( 'markerstride') \
             )))
+        
+        textcoordinates = _graph.get_property( 'textcoordinates', [0.05, 0.8])
+        w( 2, 'textcoordinates=[%f, %f]' %(textcoordinates[0], textcoordinates[1]))
+        textcoords = _graph.get_property( 'textcoords', "axes fraction")
+        w( 2, 'textcoords="%s"' %textcoords)
+
+        w( 2, 'slope = model.coef_[0] * (X[1]-X[0])')
+        w( 2, 'name = "%s"' %("%s" %_graph.get_property( 'name', '')))
+        w( 2, '_axes.annotate( "slope: %.1f" % (slope), xy=(0.0,0.0), xycoords="axes fraction", xytext=(textcoordinates[0], textcoordinates[1]), textcoords=textcoords)')
 
     w( 1, 'return (%s.values, %s.values)' % (xcolumn, ycolumn))
     return method_call

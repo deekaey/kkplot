@@ -67,6 +67,19 @@ def kkplot_pythonmatplotlib_time_integratebar( self, _id, _graph, _axes_index, _
     w( 1, 'Aggregated = pandas.DataFrame( aggregated, columns=graphlabels)')
     w( 1, 'Errors = pandas.DataFrame( errors, columns=columnnames)')
 
+    xaxis_values = _graph.get_property( "x", [])
+    xaxis_values = [i.replace('__','') for i in xaxis_values]
+    if len( xaxis_values) > 0:
+        #graph name used for x axis value
+        graphname = _id.split('.')[-1].replace('__','')
+        if graphname in xaxis_values:
+            w( 1, "Aggregated.index = ['%s']" %graphname)
+            #create a sorted Dataframe of standardized size with dummy rows having no data
+            for x in xaxis_values:
+                if x != graphname:
+                    w( 1, "Aggregated = pandas.concat([pandas.DataFrame(numpy.nan, index=['%s'], columns=Aggregated.columns), Aggregated])" %x)
+            w( 1, "Aggregated = Aggregated.sort_index()")
+
     add_arguments =  ( self._make_args( 'l', \
                 zorder=_graph.zorder, \
                 capsize=_graph.get_property( 'capsize', 0.0) , \
@@ -98,7 +111,7 @@ def kkplot_pythonmatplotlib_time_integratebar( self, _id, _graph, _axes_index, _
     w( 2, '_axes.bar( xpositions,'
                     +'list(Aggregated.iloc[0]) %s)' % add_arguments)
     
-    w( 1, '_axes.set_xticklabels( [ %s], rotation="horizontal")' % ( ','.join([ '"%s"' % ( _graph.datalabel( dataselect)) for dataselect in _graph])))
+    #w( 1, '_axes.set_xticklabels( [ %s], rotation="horizontal")' % ( ','.join([ '"%s"' % ( _graph.datalabel( dataselect)) for dataselect in _graph])))
     w( 0, '')
     w( 1, 'return Aggregated')
 

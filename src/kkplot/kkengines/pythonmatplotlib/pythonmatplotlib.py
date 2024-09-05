@@ -357,7 +357,7 @@ class kkplot_engine_matplotlib( kkplot_engine) :
         w( 1, 'graphresults = dict()')
         w( 1, 'kkdataframes = dict()')
 
-        seriesopts = dict( time=', parse_dates=["time"], index_col=1, keep_date_col=True', space='', non='')
+        seriesopts = dict( time=', parse_dates=["time"], index_col=1', space='', non='')
         delim = self._conf.tmpdata_column_delim
         ## add graphs
         for graphmethod in _graphmethods :

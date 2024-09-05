@@ -80,12 +80,13 @@ def kkplot_pythonbokeh_time_regressionpoint( self, _id, _graph, _axes_index, _co
     if _graph.get_property( 'op') == 'all' :
         w( 1, 'concat = pandas.concat( [ _dataframe[c].dropna() for c in _dataframe.columns], axis=1, join="inner")')
         w( 1, 'if label != "":')
-        w( 2, '_plot.circle( concat[data_column_x], concat[data_column_y], legend_label=label %s %s)' \
+        w( 2, '_plot.scatter( concat[data_column_x], concat[data_column_y], legend_label=label %s %s)' \
             % ( graphargs_common, self._make_args( 'l', \
+                    size=_graph.get_property( "markersize", 5.0), \
                     line_width=0.0 \
             )))
         w( 1, 'else:')
-        w( 2, '_plot.circle( concat[data_column_x], concat[data_column_y] %s %s)' \
+        w( 2, '_plot.scatter( concat[data_column_x], concat[data_column_y] %s %s)' \
             % ( graphargs_common, self._make_args( 'l', \
                     line_width=0.0 \
             )))
@@ -95,8 +96,9 @@ def kkplot_pythonbokeh_time_regressionpoint( self, _id, _graph, _axes_index, _co
         return method_call
 
     elif _graph.get_property( "xerror") is None and _graph.get_property( "yerror") is None :
-        w( 1, '_plot.circle( point_x, point_y %s %s )' \
+        w( 1, '_plot.scatter( point_x, point_y %s %s )' \
             % ( graphargs_common, self._make_args( 'l', \
+                    size=_graph.get_property( "markersize", 5.0), \
                     line_width=_graph.get_property( "linewidth") \
             )))
     else :
@@ -109,15 +111,14 @@ def kkplot_pythonbokeh_time_regressionpoint( self, _id, _graph, _axes_index, _co
                     elinewidth=_graph.get_property( "linewidth") \
             )))
 
-    if _graph.label( _columns[0]) :
-        self.W.iappend  ( 1, '_axes.annotate( ')
-        self.W.append   (    'label, xy=(point_x, point_y), xytext=( -10, 10), textcoords="offset points", ha="left", va="bottom", ')
-        self.W.append   (    'bbox=dict( boxstyle="round,pad=0.2", lw=1.0, ec="black", fc="yellow", alpha=0.2), ')
-        self.W.append   (    'arrowprops=dict( lw=0.5, ec="black", facecolor="black", arrowstyle="-|>,head_length=0.2,head_width=0.1", connectionstyle="arc3,rad=-0.3")')
-        self.W.appendnl (    ')')
+    if False: #_graph.label( _columns[0]) :
+        w( 1, 'from bokeh.models import ColumnDataSource, Label, LabelSet')
+        w( 1, 'source = ColumnDataSource(data=dict(x=[point_x], y=[point_y],label=[label]))')
+        w( 1, 'labels = LabelSet(x="x", y="y", text="label", x_offset=5, y_offset=5, source=source)')
+        w( 1, '_plot.add_layout(labels)')
 
-    w( 1, '_plot.legend.click_policy="hide"')
-    w( 1, '_plot.legend.visible = False')
+    w( 1, '#_plot.legend.click_policy="hide"')
+    w( 1, '#_plot.legend.visible = False')
     w( 1, 'return [( point_x, point_y)]')
 
     return method_call
