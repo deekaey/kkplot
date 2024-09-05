@@ -9,6 +9,7 @@ from kkplot.kkplot_figure import nocolumndepends as kkplot_nocolumndepends
 
 from kkplot.kksources import kkplot_sourcefactory as kkplot_sourcefactory
 
+import sys
 import os as os
 import warnings
 import pandas as pandas
@@ -30,6 +31,15 @@ def canonicalize_name( _name) :
 def timestamp(_y,_m,_d):
     return datetime.strptime( str(_y)+"-"+str(_m)+"-"+str(_d), '%Y-%m-%d')
 
+
+if sys.version_info < (3, 9, 4):
+    monthly = 'M'
+    annual = 'A'
+else:
+    monthly = 'ME'
+    annual = 'YE'
+
+
 def timeperiod(_y1,_m1,_d1,_y2,_m2,_d2,_res='day'):
     start = datetime.strptime( str(_y1)+"-"+str(_m1)+"-"+str(_d1), '%Y-%m-%d')
     end = datetime.strptime( str(_y2)+"-"+str(_m2)+"-"+str(_d2), '%Y-%m-%d')
@@ -40,36 +50,36 @@ def daysum( _dataframe, _nd=1) :
 def weeksum( _dataframe, _nd=1) :
     return _dataframe.resample( '%dW-MON' %_nd).sum()
 def monthsum( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dM' %_nd).sum()
+    return _dataframe.resample( f'%d{monthly}' %_nd).sum()
 def yearsum( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dYE' %_nd).sum()
+    return _dataframe.resample( f'%d{annual}' %_nd).sum()
 
 def daymax( _dataframe, _nd=1) :
     return _dataframe.resample( '%dD' %_nd).max()
 def weekmax( _dataframe, _nd=1) :
     return _dataframe.resample( '%dW-MON' %_nd).max()
 def monthmax( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dM' %_nd).max()
+    return _dataframe.resample( f'%d{monthly}' %_nd).max()
 def yearmax( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dYE' %_nd).max()
+    return _dataframe.resample( f'%d{annual}' %_nd).max()
 
 def daymean( _dataframe, _nd=1) :
     return _dataframe.resample( '%dD' %_nd).mean()
 def weekmean( _dataframe, _nd=1) :
     return _dataframe.resample( '%dW-MON' %_nd).mean()
 def monthmean( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dM' %_nd).mean()
+    return _dataframe.resample( f'%d{monthly}' %_nd).mean()
 def yearmean( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dA' %_nd).mean()
+    return _dataframe.resample( f'%d{annual}' %_nd).mean()
 
 def daystd( _dataframe, _nd=1) :
     return _dataframe.resample( '%dD' %_nd).std()
 def weekstd( _dataframe, _nd=1) :
     return _dataframe.resample( '%dW-MON' %_nd).std()
 def monthstd( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dM' %_nd).std()
+    return _dataframe.resample( f'%d{monthly}' %_nd).std()
 def yearstd( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dA' %_nd).std()
+    return _dataframe.resample( f'%d{annual}' %_nd).std()
 
 def cumsum( _dataframe) :
     return _dataframe.cumsum()
