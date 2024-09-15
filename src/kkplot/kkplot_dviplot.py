@@ -138,9 +138,15 @@ def integral( _dataframe, _timeperiod=None, _timestamp=None, _error=0) :
 
     #set last dataframe entry to integral value
     if _error == 0 :
-        data_clean[-1] = pandas.Series( integrate.trapz(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_scale)
+        if scipy.__version__ >= "1.13.0":
+            data_clean[-1] = pandas.Series( integrate.trapezoid(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_scale)
+        else:
+            data_clean[-1] = pandas.Series( integrate.trapz(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_scale)
     else :
-        data_clean[-1] = pandas.Series( (integrate.trapz(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_scale)
+        if scipy.__version__ >= "1.13.0":
+            data_clean[-1] = pandas.Series( (integrate.trapezoid(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_scale)
+        else:
+            data_clean[-1] = pandas.Series( (integrate.trapz(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_scale)
     #return only the integral value as dataframe
     #return _dataframe.resample( '%dA' %1).mean()
     if _timestamp:
@@ -326,15 +332,15 @@ class kkplot_dviplot( object) :
             if series.get( graph.graphid) is None :
                 series[graph.graphid] = pandas.DataFrame()
 
-## sk:obs?            skip = False
-## sk:obs?            if graph.name is not None :
-## sk:obs?                for graph_name in graph.names :
-## sk:obs?                    if not graph_name in data.columns :
-## sk:obs?                        kklog_warn( 'invalid column name in name list [column=%s]' % ( graph_name))
-## sk:obs?                        skip = True
-## sk:obs?                        break
-## sk:obs?            if skip :
-## sk:obs?                continue
+            ## sk:obs?            skip = False
+            ## sk:obs?            if graph.name is not None :
+            ## sk:obs?                for graph_name in graph.names :
+            ## sk:obs?                    if not graph_name in data.columns :
+            ## sk:obs?                        kklog_warn( 'invalid column name in name list [column=%s]' % ( graph_name))
+            ## sk:obs?                        skip = True
+            ## sk:obs?                        break
+            ## sk:obs?            if skip :
+            ## sk:obs?                continue
 
             for dependency in graph.dependencies( entity) :
                 if kkplot_isreference( dependency) :
@@ -455,10 +461,8 @@ class kkplot_dviplot( object) :
             dependency_name = _graph.dataid( _dataselect, dependency)
             graph = self._figure.get_graph( dependency_name)
 
-            rewrite_expression = rewrite_expression.replace( \
-                dependency, dependency_name)
-            rewrite_expression = rewrite_expression.replace( \
-                dependency_name, '%s["%s"]["%s"]' % ( '_series', graph.graphid, dependency_name))
+            rewrite_expression = rewrite_expression.replace( dependency, dependency_name)
+            rewrite_expression = rewrite_expression.replace( dependency_name, '%s["%s"]["%s"]' % ( '_series', graph.graphid, dependency_name))
 
         #kklog_info( '%s = %s\n' % ( _graph.graphid, rewrite_expression))
         return ( entity_assign, rewrite_expression)

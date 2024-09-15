@@ -7,7 +7,9 @@ def kkplot_pythonmatplotlib_time_regressionpoint( self, _id, _graph, _axes_index
     auxialiary_columns = [ cols[0] for cols in _auxialiary_columns]
 
     w = self.W.iappendnl
+    w( 0, 'import scipy')
     w( 0, 'import scipy.integrate as scipy_integrate')
+    w( 0, 'scipy_version = scipy.__version__')
     w( 0, 'def kkplot_plot_time_regressionpoint_%s( _id, _dataframe, _axes) :' % ( self._canonicalize_name( _id)))
     w( 1, '_axes.set_gid( _id)')
     timeresolution = _graph.get_property( "timeresolution", "day")
@@ -34,7 +36,10 @@ def kkplot_pythonmatplotlib_time_regressionpoint( self, _id, _graph, _axes_index
             pass
 
     if _graph.get_property( 'op', 'integrate') == 'integrate' :
-        w( 1, 'point_x = scipy_integrate.trapz( data_x, x=nodes_x)')
+        w( 1, 'if scipy_version >= "1.13.0":')
+        w( 2, 'point_x = scipy_integrate.trapezoid( data_x, x=nodes_x)')
+        w( 1, 'else:')
+        w( 2, 'point_x = scipy_integrate.trapz( data_x, x=nodes_x)')
         w( 1, 'point_x = point_x / kkplot_matplotlib_timeperiod( data_x.index[-1]-data_x.index[0]).%ss * time_period' % ( timeresolution))
     elif _graph.get_property( 'op') == 'mean' :
         w( 1, 'point_x = data_x.mean()')
@@ -59,7 +64,10 @@ def kkplot_pythonmatplotlib_time_regressionpoint( self, _id, _graph, _axes_index
             pass
 
     if _graph.get_property( 'op', 'integrate') == 'integrate' :
-        w( 1, 'point_y = scipy_integrate.trapz( data_y, x=nodes_y)')
+        w( 1, 'if scipy_version >= "1.13.0":')
+        w( 2, 'point_y = scipy_integrate.trapezoid( data_y, x=nodes_y)')
+        w( 1, 'else:')
+        w( 2, 'point_y = scipy_integrate.trapz( data_y, x=nodes_y)')
         w( 1, 'point_y = point_y / kkplot_matplotlib_timeperiod( data_y.index[-1]-data_y.index[0]).%ss * time_period' % ( timeresolution))
     elif _graph.get_property( 'op') == 'mean' :
         w( 1, 'point_y = data_y.mean()')

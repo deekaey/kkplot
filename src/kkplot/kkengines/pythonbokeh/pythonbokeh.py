@@ -65,12 +65,6 @@ def kkplot_remove_none( _list):
     return b
 '''
 
-class Code( object) :
-    def __init__( self, _code) :
-        self.m_code = _code
-    def  __str__( self) :
-        return self.m_code
-
 class kkplot_engine_bokeh( kkplot_engine) :
     def  __init__( self, _conf=None, _dviplot=None) :
         super( kkplot_engine_bokeh, self).__init__( "bokeh", _conf, _dviplot)
@@ -210,7 +204,7 @@ class kkplot_engine_bokeh( kkplot_engine) :
             if plotmethod :
                 graph_method_call = plotmethod( self, graph.graphid, graph, ax_index, graph_columns, auxialiary_columns, \
                     graphresults='graphresults', axes='kkaxes', \
-                    dataframe='kkdataframes["%s"]' % ( graph.graphid), figure='kkfigures')
+                    dataframe='kkdataframes["%s"]' % ( graph.graphid), figure='kkfigures', dviplot=self._dviplot)
                 if graph_method_call is None :
                     kklog_error( 'failed to generate code for graph "%s"' % ( graph.graphid))
                     return list()

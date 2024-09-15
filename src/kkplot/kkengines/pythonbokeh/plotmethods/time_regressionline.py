@@ -57,6 +57,14 @@ def kkplot_pythonbokeh_time_regressionline( self, _id, _graph, _axes_index, _col
     self.W.iappendnl( 1, 'plot_label = Label( x_units="screen", y_units="screen", x=x_coord, y=y_coord, text_font_size=YOUR_FONT_SIZE, text="R2: %.2f %s\\ny=%.1f+%.1fx" % (regression_model.rsquared, name, regression_model.params["const"], regression_model.params[0]))')
     self.W.iappendnl( 1, '_plot.add_layout( plot_label)')
     self.W.iappendnl( 0, '')
+    file_out = _graph.get_property( 'file', None)
+    if file_out != None:
+        if 'dviplot' in _kwargs:
+            self.W.iappendnl( 1, 'f = open( "%s","w")' %(_kwargs['dviplot']._conf.outputs_dir()+file_out))
+        else:
+            self.W.iappendnl( 1, 'f = open( "%s","w")' %file_out)
+        self.W.iappendnl( 1, 'f.write( str(regression_model.rsquared))')
+        self.W.iappendnl( 1, 'f.close()')
     self.W.iappendnl( 1, 'return regression_model')
 
     return method_call
