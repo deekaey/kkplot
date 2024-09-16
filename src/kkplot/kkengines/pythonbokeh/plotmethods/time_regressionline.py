@@ -60,7 +60,7 @@ def kkplot_pythonbokeh_time_regressionline( self, _id, _graph, _axes_index, _col
     file_out = _graph.get_property( 'file', None)
     if file_out != None:
         if 'dviplot' in _kwargs:
-            self.W.iappendnl( 1, 'f = open( "%s","w")' %(_kwargs['dviplot']._conf.outputs_dir()+file_out))
+            self.W.iappendnl( 1, 'f = open( "%s","w")' %(_kwargs['dviplot']._conf.outputs_dir()+"/"+file_out))
         else:
             self.W.iappendnl( 1, 'f = open( "%s","w")' %file_out)
         self.W.iappendnl( 1, 'f.write( str(regression_model.rsquared))')
