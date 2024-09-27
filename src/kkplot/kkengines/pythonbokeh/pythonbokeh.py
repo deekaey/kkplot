@@ -327,7 +327,8 @@ class kkplot_engine_bokeh( kkplot_engine) :
         #self.W.iappendnl( 1, 'p = gridplot(kklayout, plot_width=%d, plot_height=%d, sizing_mode="scale_width")' % (self.dviplot.size_x*30, self.dviplot.size_y*20))
         #self.W.iappendnl( 1, 'p = layout(kkplot_remove_none(kklayout), sizing_mode="stretch_width")')
                 
-        w = h = self.dviplot.get_property( 'plotheight', 300)
+        h = self.dviplot.get_property( 'plotheight', 300)
+        w = self.dviplot.get_property( 'plotwidth', h)
         self.W.iappendnl( 1, 'p = gridplot( kklayout, width=%d, height=%d)' %(w,h))
         #tl_top = 0.95
         self.W.iappendnl( 1, 'sys.stderr.write( \'writing "%s.html"...\\n\')' % ( self.dviplot.outputfile.split(".")[0]))
