@@ -13,6 +13,8 @@ def kkplot_pythonbokeh_time_line( self, _id, _graph, _axes_index, _columns, _aux
     c_lo, c_hi = ( 0.25, 1)
 
     w = self.W.iappendnl
+    w( 0, 'import scipy')
+    w( 0, 'scipy_version = scipy.__version__')
     w( 0, 'def kkplot_plot_time_line_%s( _id, _dataframe, _plot) :' % ( self._canonicalize_name( _id)))
 
     w( 1, 'graphlabels = { %s }' % ( self._make_labels( columns, _graph)))
@@ -37,7 +39,13 @@ def kkplot_pythonbokeh_time_line( self, _id, _graph, _axes_index, _columns, _aux
                               color=_graph.get_property( 'color'), \
                               line_width=_graph.get_property( 'linewidth', 1.0))))
     w( 2, 'if "%s" != "None" : ' %_graph.get_property( 'marker'))
-    w( 3, '_plot.circle( %s, %s %s %s %s)' \
+    w( 3, 'if scipy_version >= "1.13.0":')
+    w( 4, '_plot.scatter( %s, %s %s %s %s)' \
+        % ( xcolumn, ycolumn, color, legend_label, self._make_args( 'l', \
+                              color=_graph.get_property( 'color'), \
+                              size=_graph.get_property( 'markersize', 1.0))))
+    w( 3, 'else:')
+    w( 4, '_plot.circle( %s, %s %s %s %s)' \
         % ( xcolumn, ycolumn, color, legend_label, self._make_args( 'l', \
                               color=_graph.get_property( 'color'), \
                               size=_graph.get_property( 'markersize', 1.0))))
