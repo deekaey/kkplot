@@ -373,6 +373,8 @@ class kkplot_engine_bokeh( kkplot_engine) :
         self.W.appendnl( 'from bokeh.models import ColumnDataSource, Whisker')
         self.W.appendnl( 'import bokeh')
         self.W.appendnl( 'bokeh_version = bokeh.__version__')
+        self.W.appendnl( 'from bokeh.palettes import Category10')
+        self.W.appendnl( 'bokeh_colors = Category10[10]')
 
         self.W.appendnl( 'from pylatexenc.latex2text import LatexNodes2Text')
         self.W.appendnl( '')

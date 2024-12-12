@@ -24,11 +24,15 @@ def kkplot_pythonbokeh_time_line( self, _id, _graph, _axes_index, _columns, _aux
     w( 1, 'columns = [ %s]' % ( ','.join([ '"%s"' % c for c in columns])))
     w( 1, 'for j, column in enumerate( columns) :')
     ycolumn = '_dataframe[column]'
-    
+
     color = ''
-    if _graph.get_property( "colormap") and not _graph.get_property( "color"):
-        w( 2, 'col = %f + ( %f - %f) * float( j)/float( len( columns))' % ( c_lo, c_hi, c_lo))
-        color = ', color=matplotlib.colors.to_hex( matplotlib_colormap.%s( col))' % ( _graph.get_property( "colormap"))
+    if not _graph.get_property( "color"):
+        if _graph.get_property( "colormap"):
+            w( 2, 'col = %f + ( %f - %f) * float( j)/float( len( columns))' % ( c_lo, c_hi, c_lo))
+            color = ', color=matplotlib.colors.to_hex( matplotlib_colormap.%s( col))' % ( _graph.get_property( "colormap"))
+        else:
+            w( 2, 'color_from_bokeh_colors = bokeh_colors[j % len(bokeh_colors)]')
+            color = ', color=color_from_bokeh_colors'
 
     legend_label = ''
     if _graph.get_property( "legend_label", "True") in ["True", 'yes']:
