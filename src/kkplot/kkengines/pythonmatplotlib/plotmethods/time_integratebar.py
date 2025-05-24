@@ -21,6 +21,7 @@ def kkplot_pythonmatplotlib_time_integratebar( self, _id, _graph, _axes_index, _
     n_selects = len( _auxialiary_columns)
     w = self.W.iappendnl
  
+    w( 0, 'import scipy')
     w( 0, 'from scipy import integrate')
     w( 0, 'def kkplot_plot_time_integratebar_%s( _id, _dataframe, _axes) :' \
         % ( self._canonicalize_name( _id)))
@@ -56,9 +57,14 @@ def kkplot_pythonmatplotlib_time_integratebar( self, _id, _graph, _axes_index, _
     w( 4, 'x = [0.0]')
     w( 4, 'for d in range(len(data_clean.index)-1):')
     w( 5, 'x.append( (data_clean.index[d+1]-data_clean.index[d]).total_seconds() + x[d])')
-    w( 4, 'aggregated[k,l] = integrate.trapz(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_period')
-    w( 4, 'errors[k,l] = (integrate.trapz(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_period')
-
+    
+    w( 4, 'scipy_version = scipy.__version__')
+    w( 4, 'if scipy_version >= "1.13.1":')
+    w( 5, 'aggregated[k,l] = integrate.trapezoid(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_period')
+    w( 5, 'errors[k,l] = (integrate.trapezoid(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_period')
+    w( 4, 'else:')
+    w( 5, 'aggregated[k,l] = integrate.trapz(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_period')
+    w( 5, 'errors[k,l] = (integrate.trapz(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_period')
     graphlabels = ','.join( ([ '""' if _graph.label(name) is None else '"%s"' % ( _graph.label(name)) for name in _graph.NAMES]))
     columnnames = ','.join( ([ '"%s"' % name for name in _graph.NAMES]))
 
@@ -107,10 +113,22 @@ def kkplot_pythonmatplotlib_time_integratebar( self, _id, _graph, _axes_index, _
 
     w( 1, 'else:')
     w( 2, 'if xpositions == None: ')
-    w( 3, 'xpositions = range(len(list(Aggregated.iloc[0]))) ')       
-    w( 2, '_axes.bar( xpositions,'
-                    +'list(Aggregated.iloc[0]) %s)' % add_arguments)
+    w( 3, 'xpositions = range(len(list(Aggregated.iloc[0]))) ')
     
+    if 'color' not in add_arguments:
+        w( 2, 'colors = []')
+        w( 2, 'for j in range( len(xpositions)):')
+        w( 3, 'col = 0.250000 + ( 1.000000 - 0.250000) * float( j)/float( len( xpositions))')
+        
+        if _graph.get_property( "colormap") :
+            w( 3, 'colors.append( matplotlib_colormap.%s( col))' % ( _graph.get_property( "colormap")))
+        else:
+            w( 3, 'colors.append( matplotlib_colormap.jet( col))')
+        w( 2, '_axes.bar( xpositions,'
+                        +'list(Aggregated.iloc[0]), color=colors %s)' % add_arguments)
+    else:
+        w( 2, '_axes.bar( xpositions,'
+                        +'list(Aggregated.iloc[0]) %s)' % add_arguments)
     #w( 1, '_axes.set_xticklabels( [ %s], rotation="horizontal")' % ( ','.join([ '"%s"' % ( _graph.datalabel( dataselect)) for dataselect in _graph])))
     w( 0, '')
     w( 1, 'return Aggregated')

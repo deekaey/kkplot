@@ -393,8 +393,20 @@ class kkplot_dviplot( object) :
         timeseries = self._transform_domaincolumns_time( _timeseries, _index_columns, _datasource)
         timeseries = timeseries.set_index( _index_columns)
         timeseries.dropna(axis=0, how='all', inplace=True)
-        _timeseries_pool.dropna(axis=0, how='all', inplace=True)        
-        return pandas.concat( [_timeseries_pool, timeseries], axis=1, join='outer')
+        _timeseries_pool.dropna(axis=0, how='all', inplace=True)
+        try:
+            return pandas.concat( [_timeseries_pool, timeseries], axis=1, join='outer')
+        except:
+            duplicated_indexes_pool = timeseries.index[_timeseries_pool.index.duplicated()]
+            if len(duplicated_indexes_pool) > 0:
+                print("Duplicated indeces:")
+                print(duplicated_indexes_pool)
+                
+            duplicated_indexes_timeseries = timeseries.index[timeseries.index.duplicated()]
+            if len(duplicated_indexes_timeseries) > 0:
+                print("Duplicated indeces:")
+                print(duplicated_indexes_timeseries)
+            return None
     def _merge_data_join_spaceseries( self, _spaceseries_pool, _spaceseries, _index_columns, _datasource) :
         spaceseries = _spaceseries.set_index( _index_columns)
         timeseries = self._transform_domaincolumns_space( timeseries, _datasource)

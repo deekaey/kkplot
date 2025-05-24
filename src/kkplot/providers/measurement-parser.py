@@ -3,26 +3,45 @@ import sys
 import pandas
 import datetime
 import numpy
+import csv
 
 pandas_version = pandas.__version__.split( '.')
 pandas_version_major = int( pandas_version[0])
 pandas_version_minor = int( pandas_version[1])
 
 
-def mp_makeyear( _df) :
+import pandas as pd
 
-    d = _df['date'].astype( str)
-    y = pandas.Series( [ ymd[0:4] for ymd in d], d.index)
-    return  y
+def mp_makeyear(_df):
+    # Check if 'date' or 'Date' exists in the dataframe columns
+    date_column = 'date' if 'date' in _df.columns else 'Date'
+    
+    # Ensure the column exists before proceeding
+    if date_column not in _df.columns:
+        raise KeyError(f"Column '{date_column}' not found in the DataFrame")
+    
+    d = _df[date_column].astype(str)
+    y = pd.Series([ymd[0:4] for ymd in d], d.index)
+    return y
 
-def mp_makedatetime( _df) :
-
-    d = _df['date'].astype( str)
-    if 'time' in _df.columns :
-        t = _df['time'].astype( str)
-        t[t=='nan'] = '12:00'
+def mp_makedatetime(_df):
+    # Check if 'date' or 'Date' exists in the dataframe columns
+    date_column = 'date' if 'date' in _df.columns else 'Date'
+    
+    # Ensure the column exists before proceeding
+    if date_column not in _df.columns:
+        raise KeyError(f"Column '{date_column}' not found in the DataFrame")
+    
+    d = _df[date_column].astype(str)
+    
+    # If 'time' column exists, process it
+    if 'time' in _df.columns:
+        t = _df['time'].astype(str)
+        t[t == 'nan'] = '12:00'  # Replace 'nan' with a default time
         return d + 'T' + t
-    return  d
+    
+    return d
+
 
 def mp_parse( _outfile, _infile) :
 
@@ -30,13 +49,20 @@ def mp_parse( _outfile, _infile) :
     if skiprows < 0 :
         return  -1
 
+    with open(_infile, 'r') as f:
+        # Skip the first `skiprows` lines manually
+        for _ in range(skiprows):
+            next(f)
+        dialect = csv.Sniffer().sniff(f.read(1024), delimiters=[',', '\t', ' ', '    '])
+        f.seek(0)
+
     if pandas_version_minor < 15 :
-        df_infile = pandas.read_table( _infile, index_col=False, header=0, skiprows=skiprows, na_values=['-99.99','na','nan'])
+        df_infile = pandas.read_table( _infile, index_col=False, header=0, skiprows=skiprows, na_values=['-99.99','na','nan'], sep=dialect.delimiter)
     else :
-        df_infile = pandas.read_table( _infile, index_col=False, header=skiprows, skip_blank_lines=False, na_values=['-99.99','na','nan'])
+        df_infile = pandas.read_table( _infile, index_col=False, header=skiprows, skip_blank_lines=False, na_values=['-99.99','na','nan'], sep=dialect.delimiter)
 
     ## we require 'date' column
-    if ('date' not in df_infile.columns) and ('datetime' not in df_infile.columns) :
+    if ('date' not in df_infile.columns) and ('datetime' not in df_infile.columns) and ('Date' not in df_infile.columns) :
         sys.stderr.write( '"date/datetime" column missing measurement file\n')
         return  -1
 
