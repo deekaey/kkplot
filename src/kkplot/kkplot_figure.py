@@ -20,7 +20,7 @@ KKFUNCS = dict( sin='numpy.sin', cos='numpy.cos', timeperiod='timeperiod', times
     daymean='daymean', weekmean='weekmean', monthmean='monthmean', yearmean='yearmean',
     daystd='daystd', weekstd='weekstd', monthstd='monthstd', yearstd='yearstd',
     cumsum='cumsum', nansum='nansum', nanmean='nanmean', nanstd='nanstd',
-    diff='diff', integral='integral', nanmin='nanmin',kkround='kkround')
+    diff='diff', integral='integral', nanmax='nanmax', nanmin='nanmin',kkround='kkround')
     
 def isreference( _dependency) :
     return  _dependency.startswith( NSSEP)

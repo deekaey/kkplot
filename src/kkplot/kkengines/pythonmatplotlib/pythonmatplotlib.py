@@ -257,6 +257,19 @@ class kkplot_engine_matplotlib( kkplot_engine) :
             yaxisvisible = plot.get_property( 'yaxisvisible', True)
             self.W.iappendnl( 1, 'kkaxes["%s"].get_yaxis().set_visible( %s)' % ( ax_index, yaxisvisible))
 
+            spinesbottomvisible = plot.get_property( 'spinesbottomvisible', True)
+            if not spinesbottomvisible :
+                self.W.iappendnl( 1, 'kkaxes["%s"].spines.bottom.set_visible( %s)' % ( ax_index, spinesbottomvisible))
+                self.W.iappendnl( 1, 'd = .25  # proportion of vertical to horizontal extent of the slanted line')
+                self.W.iappendnl( 1, 'kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12, linestyle="none", color="k", mec="k", mew=1, clip_on=False)')
+                self.W.iappendnl( 1, 'kkaxes["%s"].plot([0, 1], [0, 0], transform=kkaxes["%s"].transAxes, **kwargs)' % ( ax_index, ax_index))
+            spinestopvisible = plot.get_property( 'spinestopvisible', True)
+            if not spinestopvisible :
+                self.W.iappendnl( 1, 'kkaxes["%s"].spines.top.set_visible( %s)' % ( ax_index, spinestopvisible))
+                self.W.iappendnl( 1, 'd = .25  # proportion of vertical to horizontal extent of the slanted line')
+                self.W.iappendnl( 1, 'kwargs = dict(marker=[(-1, -d), (1, d)], markersize=12, linestyle="none", color="k", mec="k", mew=1, clip_on=False)')
+                self.W.iappendnl( 1, 'kkaxes["%s"].plot([0, 1], [1, 1], transform=kkaxes["%s"].transAxes, **kwargs)' % ( ax_index, ax_index))
+
             axiscolortop = plot.get_property( 'axiscolortop', axiscolor)
             if axiscolortop is None :
                 self.W.comment_on()
@@ -465,7 +478,13 @@ class kkplot_engine_matplotlib( kkplot_engine) :
         _plot.add_properties( dict( title=''))
         if _plot.title is not None :
             _plot.add_properties( dict( title=_plot.title))
-        self._setplotproperty( _plot, 'title', 'set_title')
+        if ( _plot.get_property( 'titlepad', 0.0) > 0.0):
+            ax_index = self._axis_index( _plot)
+            w = self.W.iappendnl
+            w( 1, 'kkaxes["%s"].set_title( "%s", pad=%f)' % ( ax_index, _plot.get_property('title'), _plot.get_property( 'titlepad')))
+        else:
+            self._setplotproperty( _plot, 'title', 'set_title')
+
 
         if ( _plot.get_property( 'xlimitlow', False) not in ['None', '']) and ( _plot.get_property( 'xlimithigh', False) not in ['None', '']) :
             self._setplotproperty( _plot, 'xlimitlow,xlimithigh', 'set_xlim')
@@ -518,6 +537,7 @@ class kkplot_engine_matplotlib( kkplot_engine) :
         if self.dviplot.title :
             self.W.iappendnl( 1, 'kkfigures.suptitle( "%s", fontsize=%d)' % ( self.dviplot.title, 20))
             tl_top = 0.95
+        tl_top = self.dviplot.get_property( 'tighttop', tl_top)
         self.W.iappendnl( 1, 'sys.stderr.write( \'writing "%s"...\\n\')' % ( self.dviplot.outputfile))
         if self.dviplot.get_property( 'tight', True) == True :
             self.W.iappendnl( 1, 'kkfigures.set_tight_layout( dict( rect=[%.2f, %.2f, %.2f, %.2f])) #pad=1.08, h_pad=2.0, w_pad=2.0))' % ( tl_left, tl_bottom, tl_right, tl_top))

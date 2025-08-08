@@ -21,11 +21,16 @@ if __name__ == '__main__':
 
             values = [i.strip() for i in arguments['values'].split(',')]
 
-            for val in values:
-                if '~' in val:
-                    df = df.loc[df[arguments['column']].astype(str) != val.replace('~', ''), ]
-                else:
-                    df = df.loc[df[arguments['column']].astype(str) == val, ]
+            include_vals = [val for val in values if '~' not in val]
+            exclude_vals = [val.replace('~', '') for val in values if '~' in val]
+
+            col = df[arguments['column']].astype(str)
+
+            if include_vals:
+                df = df[col.isin(include_vals)]
+
+            if exclude_vals:
+                df = df[~col.isin(exclude_vals)]
 
             try:
                 group_cols = ['datetime', arguments['column']]

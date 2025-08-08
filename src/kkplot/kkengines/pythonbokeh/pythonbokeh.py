@@ -260,6 +260,11 @@ class kkplot_engine_bokeh( kkplot_engine) :
         self._setplotproperty( _plot, 'ylabel', 'yaxis.axis_label', _value=None, _bool=None, _tex=True)
         #self._setplotproperty( _plot, 'ylabelfontsize', 'yaxis.label.set_size')
 
+        for axis in ['xaxis', 'yaxis']:
+            self._setplotproperty( _plot, 'desired_num_ticks', f'{axis}.ticker', _value=4, _bool=None, _tex=False,
+                                   _fun='BasicTicker', _fun_keyword='desired_num_ticks')
+        #kkaxes["trace_gas_CH4"].yaxis.ticker = BasicTicker(desired_num_ticks=5)
+
         _plot.add_properties( dict( title=''))
         if _plot.title is not None :
             _plot.add_properties( dict( title=_plot.title))
@@ -279,29 +284,35 @@ class kkplot_engine_bokeh( kkplot_engine) :
         #self._setplotproperty( _plot, 'zlimitlow,zlimithigh', 'z_rangeRange1d')
         return
 
-    def _setplotproperty( self, _plot, _props, _setter, _value=None, _bool=None, _tex=False, _fun='') :
+    def _setplotproperty( self, _plot, _props, _setter, _value=None, _bool=None, _tex=False, _fun='', _fun_keyword='') :
         axis = self._axis_index( _plot)
-        self.__setplotproperty( _plot, axis, _props, _setter, _value, _bool, _tex, _fun)
+        self.__setplotproperty( _plot, axis, _props, _setter, _value, _bool, _tex, _fun, _fun_keyword)
 
-    def __setplotproperty( self, _plot, _axis, _props, _setter, _value=None, _bool=None, _tex=False, _fun='') :
+    def __setplotproperty( self, _plot, _axis, _props, _setter, _value=None, _bool=None, _tex=False, _fun='', _fun_keyword='') :
         self.W.comment_off()
         values = list()
         for prop in _props.split( ',') :
             if _plot.get_property( prop) is not None :
                 if _bool is not None and _plot.get_property( prop) != _bool :
                     self.W.comment_on()
-                values.append( _value if _value is not None else _plot.get_property( prop))
-            else :
+                #values.append( _value if _value is not None else _plot.get_property( prop))
+                values.append( _plot.get_property( prop))
+            elif _value is not None:
+                values.append( _value)
+            else:
                 values = ['<%s>' % ( _props)]
                 self.W.comment_on()
                 break
 
+        if _fun_keyword != '':
+            _fun_keyword = _fun_keyword+'='
+
         if _tex :
-            property_code = 'kkaxes["%s"].%s = %s(LatexNodes2Text().latex_to_text( %s))' \
-                % ( _axis, _setter, _fun, ', '.join( [ self._stringify( value) for value in values]))
+            property_code = 'kkaxes["%s"].%s = %s(%sLatexNodes2Text().latex_to_text( %s))' \
+                % ( _axis, _setter, _fun, _fun_keyword, ', '.join( [ self._stringify( value) for value in values]))
         else :
-            property_code = 'kkaxes["%s"].%s = %s(%s)' \
-                % ( _axis, _setter, _fun, ', '.join( [ self._stringify( value) for value in values]))
+            property_code = 'kkaxes["%s"].%s = %s(%s%s)' \
+                % ( _axis, _setter, _fun, _fun_keyword, ', '.join( [ self._stringify( value) for value in values]))
 
         self.W.iappendnl( 1, '%s' % ( property_code))
         self.W.comment_off()
@@ -368,7 +379,7 @@ class kkplot_engine_bokeh( kkplot_engine) :
         self.W.appendnl( 'from bokeh.layouts import gridplot, column, row, layout')
         self.W.appendnl( 'from bokeh.plotting import figure')
         self.W.appendnl( 'from bokeh.models.annotations import Title, Label')
-        self.W.appendnl( 'from bokeh.models import Range1d, Div')
+        self.W.appendnl( 'from bokeh.models import Range1d, Div, BasicTicker')
         self.W.appendnl( 'from bokeh.embed import components')
         self.W.appendnl( 'from bokeh.models import ColumnDataSource, Whisker')
         self.W.appendnl( 'import bokeh')

@@ -1,4 +1,5 @@
 
+import bokeh
 from kkplot.kkutils.log import *
 
 def kkplot_pythonbokeh_time_line( self, _id, _graph, _axes_index, _columns, _auxialiary_columns, **_kwargs) :
@@ -49,7 +50,12 @@ def kkplot_pythonbokeh_time_line( self, _id, _graph, _axes_index, _columns, _aux
                               color=_graph.get_property( 'color'), \
                               size=_graph.get_property( 'markersize', 1.0))))
     w( 3, 'else:')
-    w( 4, '_plot.circle( %s, %s %s %s %s)' \
+
+    plot_method_point = 'circle'
+    if bokeh.__version__ > "3.4.0":
+        plot_method_point = 'scatter'
+
+    w( 4, f'_plot.{plot_method_point}( %s, %s %s %s %s)' \
         % ( xcolumn, ycolumn, color, legend_label, self._make_args( 'l', \
                               color=_graph.get_property( 'color'), \
                               size=_graph.get_property( 'markersize', 1.0))))
@@ -62,6 +68,7 @@ def kkplot_pythonbokeh_time_line( self, _id, _graph, _axes_index, _columns, _aux
     w( 2, '_plot.legend.spacing = %s' %_graph.get_property( 'legend_spacing', 10))
     w( 2, '_plot.legend.padding = %s' %_graph.get_property( 'legend_padding', 3))
     w( 2, '_plot.legend.margin = %s' %_graph.get_property( 'legend_margin', 3))
+    w( 2, '_plot.legend.location = "%s"' %_graph.get_property( 'legend_location', 'top_right'))
 
 #        #_plot.legend.border_line_alpha = 0.0        
 #        #_plot.legend.background_fill_alpha = 0.0

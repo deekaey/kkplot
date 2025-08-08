@@ -130,6 +130,8 @@ def kkplot_pythonbokeh_time_regressionpoint( self, _id, _graph, _axes_index, _co
 
     w( 1, '#_plot.legend.click_policy="hide"')
     w( 1, '#_plot.legend.visible = False')
+    w( 1, '_plot.xaxis[0].formatter.use_scientific = False')
+    w( 1, '_plot.yaxis[0].formatter.use_scientific = False')
     w( 1, 'return [( point_x, point_y)]')
 
     return method_call

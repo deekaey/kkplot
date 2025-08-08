@@ -44,7 +44,7 @@ def kkplot_pythonbokeh_time_regressionline( self, _id, _graph, _axes_index, _col
     self.W.iappendnl( 1, 'textcoordinates=[%f, %f]' %(coords[0], coords[1]))    
     self.W.iappendnl( 1, 'x_coord=textcoordinates[0]*_plot.width')
     self.W.iappendnl( 1, 'y_coord=textcoordinates[1]*_plot.height')    
-    self.W.iappendnl( 1, '_plot.line([-2*x.min(),2*x.max()],[-2*x.min(),2*x.max()], color="grey", line_dash="dashed")')    
+    self.W.iappendnl( 1, '_plot.line([min( x.min()-0.1*abs(x.min()), y.min()-0.1*abs(y.min()) ), max( x.max()+0.1*abs(x.max()), y.max()+0.1*abs(y.max()) )], [min( x.min()-0.1*abs(x.min()), y.min()-0.1*abs(y.min()) ), max( x.max()+0.1*abs(x.max()), y.max()+0.1*abs(y.max()) )], color="grey", line_dash="dashed")')
     self.W.iappendnl( 1, '_plot.line( xc.iloc[:,1], regression_model.fittedvalues %s)' \
                        % ( self._make_args( 'l', \
                                        line_width=_graph.get_property( 'linewidth'), \

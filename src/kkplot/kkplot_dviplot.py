@@ -114,8 +114,13 @@ def nanstd( _dataframe_1, _dataframe_2, *_dataframes) :
 
 def nanmin( _dataframe_1, _val) :
     index = _dataframe_1.index
-    series = pandas.Series( numpy.min( [_dataframe_1, [_val+1 for i in range(len(_dataframe_1))]], axis=0))   
-    series.replace( _val+1, numpy.nan, inplace=True)
+    series = pandas.Series( numpy.min( [_dataframe_1, [_val for i in range(len(_dataframe_1))]], axis=0))
+    series.index = index
+    return series
+
+def nanmax( _dataframe_1, _val) :
+    index = _dataframe_1.index
+    series = pandas.Series( numpy.max( [_dataframe_1, [_val for i in range(len(_dataframe_1))]], axis=0))
     series.index = index
     return series
 
@@ -474,7 +479,10 @@ class kkplot_dviplot( object) :
             graph = self._figure.get_graph( dependency_name)
 
             rewrite_expression = rewrite_expression.replace( dependency, dependency_name)
+            # Replace only if not quoted at start
+            rewrite_expression = rewrite_expression.replace( '"'+dependency_name, "__keep__")
             rewrite_expression = rewrite_expression.replace( dependency_name, '%s["%s"]["%s"]' % ( '_series', graph.graphid, dependency_name))
+            rewrite_expression = rewrite_expression.replace( "__keep__", '"'+dependency_name)
 
         #kklog_info( '%s = %s\n' % ( _graph.graphid, rewrite_expression))
         return ( entity_assign, rewrite_expression)
