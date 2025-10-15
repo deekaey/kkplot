@@ -448,10 +448,14 @@ class kkplot_dviplot( object) :
 
     def _evaluate_expressions( self, _series, _entity, _graph) :
         for dataselect in _graph :
-            entity_assign, expression = \
-                self._rewrite_expression( _series, _entity, _graph, dataselect)
+            entity_assign, expression = self._rewrite_expression( _series, _entity, _graph, dataselect)
             #kklog_info( '_series["%s"]["%s"] = %s' % ( _graph.graphid, entity_assign, expression))
-            _series[_graph.graphid] = pandas.concat( [_series[_graph.graphid], pandas.Series(eval( expression), name=entity_assign)], axis=1, join='outer')
+            #print( len(_series[_graph.graphid]))
+            try:
+                add = pandas.Series(eval( expression), name=entity_assign)
+            except:
+                add = pandas.Series([numpy.nan for i in range(len(_series[_graph.graphid]))], name=entity_assign)
+            _series[_graph.graphid] = pandas.concat( [_series[_graph.graphid], add], axis=1, join='outer')
 
         return _series[_graph.graphid]
 

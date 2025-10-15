@@ -380,12 +380,16 @@ class kkplot_engine_matplotlib( kkplot_engine) :
                 w( 1, 'try :')
                 w( 2, 'kkdataframes["%s"] = pandas.read_csv( "%s", ' % ( graphid, self.dviplot.datapool_filename( graphid)) +
                     'header=0, na_values=["na"], sep="%s"' % ( delim) + seriesopts[graphmethod.graph.domainkind] + ')')
+
+
+
+
+
+                w( 2, 'graphresults["%s"] = \\' % ( graphmethod.graph.graphresult))
+                w( 2, graphmethod.methodcall + '\n')
                 w( 1, 'except :')
                 w( 2, r'sys.stderr.write( "failed to open datafile  [datafile=%s]\n")' % ( self.dviplot.datapool_filename( graphid)))
-                w( 2, r'sys.exit( 13)')
-
-            w( 1, 'graphresults["%s"] = \\' % ( graphmethod.graph.graphresult))
-            w( 2, graphmethod.methodcall + '\n')
+                #w( 2, 'pass')
 
     def generate_plots_deleteemptyaxes( self) :
         self.W.append( KKPLOT_MATPLOTLIB_DELETE_AXES_WITHOUT_GRAPHS)
