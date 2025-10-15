@@ -2,5 +2,6 @@ kkplot.egg-info
 
 .DS_Store
 *.swp
-
+kkplot.xcodeproj
+doc
 __pycache__

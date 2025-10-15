@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import io
 import sys
 from os.path import exists
 from dotenv import load_dotenv
@@ -80,7 +81,15 @@ def main():
                 if kkplot_config.bundle :
                     source_filename = kkplot_plot.source_filename( kkplot_engine.suffix)
                     kkplot_engine.write( source_filename)
-                kkplot_engine.write()
+
+                if kkplot_config.execute :
+                    code_buffer = io.StringIO()
+                    kkplot_engine.write( _target=code_buffer)
+                    generated_code = code_buffer.getvalue()
+                    exec(generated_code, {'__name__': '__main__'})
+                else:
+                    kkplot_engine.write()
+                    print(kkplot_config.execute)
             else :
                 utils.log.kklog_error( 'failed to generate plot\n')
                 sys.exit( 103)

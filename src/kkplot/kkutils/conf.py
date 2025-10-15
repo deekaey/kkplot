@@ -24,6 +24,9 @@ class kkplot_configuration( object) :
         parser.add_argument( '--list-engines', action='store_true',default=False,
             help='list available engines')
 
+        parser.add_argument('--no-execute', dest='execute', action='store_false',
+            help='do not execute the generated Python code')
+
         parser.add_argument( '--bundle', action='store_true',default=False,
             help='create directory containing everything needed to produce figure.')
         parser.add_argument( '--output', default=None,
@@ -96,6 +99,10 @@ class kkplot_configuration( object) :
 
     def  plotfile( self) :
         return  self.args.plotfile
+
+    @property
+    def  execute( self) :
+        return  self.args.execute
 
     @property
     def  bundle( self) :

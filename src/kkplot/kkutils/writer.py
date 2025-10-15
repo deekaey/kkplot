@@ -7,7 +7,9 @@ class kkplot_writer( object) :
     def __init__( self, _stream=None, _mode='python') :
 
         self._error = False
-        self._modes = { 'python':{ 'commenton':'#', 'commentoff':''}, 'gnuplot':{ 'commenton':'#', 'commentoff':''}, 'html':{ 'commenton':'<!--\n', 'commentoff':'\n-->'}}
+        self._modes = { 'python':{ 'commenton':'#', 'commentoff':''},
+                        'gnuplot':{ 'commenton':'#', 'commentoff':''},
+                        'html':{ 'commenton':'<!--\n', 'commentoff':'\n-->'}}
 
         self._mode = _mode
 
@@ -71,17 +73,16 @@ class kkplot_writer( object) :
         for c in range( _count) :
             self.appendnl( '')
 
-    def _open_stream( self, _target) :
-        stream = None
-        if _target is None :
-            stream = sys.stdout
-        elif type( _target) is file :
-            stream = _target
-        elif type( _target) is str :
-            stream = open( _target, 'w')
-        else :
-            raise RuntimeError( 'stream not understood')
-        return stream
+    def _open_stream(self, _target):
+        if _target is None:
+            return sys.stdout
+        elif hasattr(_target, 'write'):
+            return _target
+        elif isinstance(_target, str):
+            return open(_target, 'w')
+        else:
+            raise RuntimeError('stream not understood')
+
     def _close_stream( self, _target, _stream) :
         if type( _target) is str :
             _stream.close()
