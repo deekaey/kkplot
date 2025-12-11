@@ -376,20 +376,17 @@ class kkplot_engine_matplotlib( kkplot_engine) :
         for graphmethod in _graphmethods :
             graphid = graphmethod.graph.graphid
             kklog_debug( 'graphid %s' % ( graphid))
-            if self.dviplot.series_exists( graphid) :
-                w( 1, 'try :')
-                w( 2, 'kkdataframes["%s"] = pandas.read_csv( "%s", ' % ( graphid, self.dviplot.datapool_filename( graphid)) +
-                    'header=0, na_values=["na"], sep="%s"' % ( delim) + seriesopts[graphmethod.graph.domainkind] + ')')
-
-
-
-
-
-                w( 2, 'graphresults["%s"] = \\' % ( graphmethod.graph.graphresult))
-                w( 2, graphmethod.methodcall + '\n')
-                w( 1, 'except :')
-                w( 2, r'sys.stderr.write( "failed to open datafile  [datafile=%s]\n")' % ( self.dviplot.datapool_filename( graphid)))
-                #w( 2, 'pass')
+            w( 1, '##')
+            w( 1, 'try :')
+            w( 2, 'kkdataframes["%s"] = pandas.read_csv( "%s", ' % ( graphid, self.dviplot.datapool_filename( graphid)) +
+                'header=0, na_values=["na"], sep="%s"' % ( delim) + seriesopts[graphmethod.graph.domainkind] + ')')
+            w( 1, 'except :')
+            w( 2, r'sys.stderr.write( "failed to open datafile  [datafile=%s]\n")' % ( self.dviplot.datapool_filename( graphid)))
+            w( 1, 'try :')
+            w( 2, 'graphresults["%s"] = \\' % ( graphmethod.graph.graphresult))
+            w( 2, graphmethod.methodcall + '\n')
+            w( 1, 'except :')
+            w( 2, r'sys.stderr.write( "failed create plot\n")')
 
     def generate_plots_deleteemptyaxes( self) :
         self.W.append( KKPLOT_MATPLOTLIB_DELETE_AXES_WITHOUT_GRAPHS)
@@ -490,8 +487,23 @@ class kkplot_engine_matplotlib( kkplot_engine) :
             self._setplotproperty( _plot, 'title', 'set_title')
 
 
-        if ( _plot.get_property( 'xlimitlow', False) not in ['None', '']) and ( _plot.get_property( 'xlimithigh', False) not in ['None', '']) :
-            self._setplotproperty( _plot, 'xlimitlow,xlimithigh', 'set_xlim')
+        if ( _plot.get_property( 'xlimitlow', False) not in ['None', '', False]) and ( _plot.get_property( 'xlimithigh', False) not in ['None', '', False]) :
+            #self._setplotproperty( _plot, 'xlimitlow,xlimithigh', 'set_xlim')
+            xlimits = (_plot.get_property( 'xlimitlow', False), _plot.get_property( 'xlimithigh', False))
+            axis = self._axis_index( _plot)
+            xlimits_is_float = True
+            try:
+                xlimits = [float(x) for x in xlimits]
+            except:
+                xlimits_is_float = False
+            if xlimits_is_float:
+                self.W.iappendnl( 1, 'kkaxes["%s"].set_xlim( %f,%f)' % ( axis, xlimits[0], xlimits[1]))
+            else:
+                self.W.iappendnl( 1, 'try:')
+                self.W.iappendnl( 2, 'kkaxes["%s"].set_xlim( "%s","%s")' % ( axis, xlimits[0], xlimits[1]))
+                self.W.iappendnl( 1, 'except:')
+                self.W.iappendnl( 2, 'kkaxes["%s"].set_xlim( mdates.datestr2num( "%s"), mdates.datestr2num( "%s"))' % ( axis, xlimits[0], xlimits[1]))
+
         self._setplotproperty( _plot, 'ylimitlow,ylimithigh', 'set_ylim')
         self._setplotproperty( _plot, 'zlimitlow,zlimithigh', 'set_zlim')
 
@@ -565,6 +577,7 @@ class kkplot_engine_matplotlib( kkplot_engine) :
         self.W.appendnl( 'import matplotlib.dates as matplotlib_dates')
         self.W.appendnl( 'import matplotlib.lines as matplotlib_lines')
         self.W.appendnl( 'import matplotlib.pyplot as matplotlib_pyplot')
+        self.W.appendnl( 'import matplotlib.dates as mdates')
         self.W.appendnl( 'if sys.version_info[0] >2:')
         self.W.iappendnl( 1, 'from pandas.plotting import register_matplotlib_converters')
         self.W.iappendnl( 1, 'register_matplotlib_converters()')
