@@ -41,10 +41,17 @@ def kkplot_pythonbokeh_time_regressionline( self, _id, _graph, _axes_index, _col
     self.W.iappendnl( 1, 'xc = sm.add_constant(x)')
     self.W.iappendnl( 1, 'regression_model = sm.OLS(y, xc).fit()')
     self.W.iappendnl( 1, 'rmse = numpy.sqrt(numpy.mean((y - x)**2))')
+
     coords = _graph.get_property( 'textcoordinates', [0.05, 0.92])
-    self.W.iappendnl( 1, 'textcoordinates=[%f, %f]' %(coords[0], coords[1]))    
+    self.W.iappendnl( 1, 'textcoordinates=[%f, %f]' %(coords[0], coords[1]))
     self.W.iappendnl( 1, 'x_coord=textcoordinates[0]*_plot.width')
-    self.W.iappendnl( 1, 'y_coord=textcoordinates[1]*_plot.height')    
+    self.W.iappendnl( 1, 'y_coord=textcoordinates[1]*_plot.height')
+
+    coords_offset = _graph.get_property( 'textcoordinatesoffset', [0.0, 0.0])
+    self.W.iappendnl( 1, 'textcoordinates_offset=[%f, %f]' %(coords_offset[0], coords_offset[1]))
+    self.W.iappendnl( 1, 'x_coord_offset=textcoordinates_offset[0]')
+    self.W.iappendnl( 1, 'y_coord_offset=textcoordinates_offset[1]')
+
     self.W.iappendnl( 1, '_plot.line([min( x.min()-0.1*abs(x.min()), y.min()-0.1*abs(y.min()) ), max( x.max()+0.1*abs(x.max()), y.max()+0.1*abs(y.max()) )], [min( x.min()-0.1*abs(x.min()), y.min()-0.1*abs(y.min()) ), max( x.max()+0.1*abs(x.max()), y.max()+0.1*abs(y.max()) )], color="grey", line_dash="dashed")')
     self.W.iappendnl( 1, '_plot.line( xc.iloc[:,1], regression_model.fittedvalues %s)' \
                        % ( self._make_args( 'l', \
@@ -55,7 +62,7 @@ def kkplot_pythonbokeh_time_regressionline( self, _id, _graph, _axes_index, _col
     self.W.iappendnl( 1, 'f = regression_model.fittedvalues')
     self.W.iappendnl( 1, 'name = "%s"' %("%s" %_graph.get_property( 'name', '')))
     self.W.iappendnl( 1, 'YOUR_FONT_SIZE = "%s"' %("%s" %_graph.get_property( 'text_font_size', '10px')))
-    self.W.iappendnl( 1, 'plot_label = Label( x_units="screen", y_units="screen", x=x_coord, y=y_coord, text_font_size=YOUR_FONT_SIZE, text="R2: %.2f %s\\ny=%.1f+%.1fx\\nRMSE=%f" % (regression_model.rsquared, name, regression_model.params["const"], regression_model.params[0], rmse))')
+    self.W.iappendnl( 1, 'plot_label = Label( x_units="screen", y_units="screen", x=x_coord, y=y_coord, x_offset=x_coord_offset, y_offset=y_coord_offset, text_font_size=YOUR_FONT_SIZE, text="R2: %.2f %s\\ny=%.1f+%.1fx\\nRMSE=%f" % (regression_model.rsquared, name, regression_model.params["const"], regression_model.params[0], rmse))')
     self.W.iappendnl( 1, '_plot.add_layout( plot_label)')
     self.W.iappendnl( 0, '')
     file_out = _graph.get_property( 'file', None)
