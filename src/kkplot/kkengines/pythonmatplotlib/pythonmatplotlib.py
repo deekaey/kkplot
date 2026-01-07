@@ -377,11 +377,12 @@ class kkplot_engine_matplotlib( kkplot_engine) :
             graphid = graphmethod.graph.graphid
             kklog_debug( 'graphid %s' % ( graphid))
             w( 1, '##')
-            w( 1, 'try :')
-            w( 2, 'kkdataframes["%s"] = pandas.read_csv( "%s", ' % ( graphid, self.dviplot.datapool_filename( graphid)) +
-                'header=0, na_values=["na"], sep="%s"' % ( delim) + seriesopts[graphmethod.graph.domainkind] + ')')
-            w( 1, 'except :')
-            w( 2, r'sys.stderr.write( "failed to open datafile  [datafile=%s]\n")' % ( self.dviplot.datapool_filename( graphid)))
+            if 'kkdataframes' in graphmethod.methodcall :
+                w( 1, 'try :')
+                w( 2, 'kkdataframes["%s"] = pandas.read_csv( "%s", ' % ( graphid, self.dviplot.datapool_filename( graphid)) +
+                    'header=0, na_values=["na"], sep="%s"' % ( delim) + seriesopts[graphmethod.graph.domainkind] + ')')
+                w( 1, 'except :')
+                w( 2, r'sys.stderr.write( "failed to open datafile  [datafile=%s]\n")' % ( self.dviplot.datapool_filename( graphid)))
             w( 1, 'try :')
             w( 2, 'graphresults["%s"] = \\' % ( graphmethod.graph.graphresult))
             w( 2, graphmethod.methodcall + '\n')
