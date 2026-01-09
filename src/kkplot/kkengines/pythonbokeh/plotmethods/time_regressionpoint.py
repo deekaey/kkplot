@@ -96,13 +96,14 @@ def kkplot_pythonbokeh_time_regressionpoint( self, _id, _graph, _axes_index, _co
                     size=_graph.get_property( "markersize", 5.0), \
                     line_width=0.0 \
             )))
+        w( 2, '_plot.legend.click_policy="hide"')
+        w( 2, '_plot.legend.visible = False')
         w( 1, 'else:')
         w( 2, '_plot.scatter( concat[data_column_x], concat[data_column_y] %s %s)' \
             % ( graphargs_common, self._make_args( 'l', \
                     line_width=0.0 \
             )))
-        w( 1, '_plot.legend.click_policy="hide"')
-        w( 1, '_plot.legend.visible = False')
+
         w( 1, 'return [( concat[data_column_x],  concat[data_column_y])]')
         return method_call
 
