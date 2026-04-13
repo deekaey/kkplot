@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['kkgen_5fconfiguration_0',['kkgen_configuration',['../classkkplot_1_1kkgen_1_1kkgen__configuration.html',1,'kkplot::kkgen']]],
+  ['kkgenconfiguration_0',['KKGenConfiguration',['../classkkplot_1_1kkgen_1_1_k_k_gen_configuration.html',1,'kkplot::kkgen']]],
   ['kkplot_5fconfiguration_1',['kkplot_configuration',['../classkkplot_1_1kkutils_1_1conf_1_1kkplot__configuration.html',1,'kkplot::kkutils::conf']]],
   ['kkplot_5fdatasource_2',['kkplot_datasource',['../classkkplot_1_1kkplot__figure_1_1kkplot__datasource.html',1,'kkplot::kkplot_figure']]],
   ['kkplot_5fdomain_3',['kkplot_domain',['../classkkplot_1_1kkplot__domains_1_1kkplot__domain.html',1,'kkplot::kkplot_domains']]],
