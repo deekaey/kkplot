@@ -399,11 +399,9 @@ class kkplot_pfreader_yaml( object) :
                         if graph_labels is None :
                             graph_labels = ':none:'
 
-                graph_infos = \
-                    self.read_graph_infos( graph_block, graph_info_defaults)
+                graph_infos = self.read_graph_infos( graph_block, graph_info_defaults)
 
-                new_graph = kkplot_graph( graph_id, graph_names, \
-                    graph_labels, plot_id)
+                new_graph = kkplot_graph( graph_id, graph_names, graph_labels, plot_id)
                 new_graph.add_properties( { '@index':j, 'index':j})
                 new_graph.set_domain( self.read_domain( graph_block, new_plot.domain))
 
