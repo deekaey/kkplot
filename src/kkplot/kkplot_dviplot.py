@@ -446,16 +446,63 @@ class kkplot_dviplot( object) :
             series[graph.graphid] = self._evaluate_expressions( _series, entity, graph)
         return series
 
-    def _evaluate_expressions( self, _series, _entity, _graph) :
-        for dataselect in _graph :
-            entity_assign, expression = self._rewrite_expression( _series, _entity, _graph, dataselect)
-            #kklog_info( '_series["%s"]["%s"] = %s' % ( _graph.graphid, entity_assign, expression))
-            #print( len(_series[_graph.graphid]))
+
+    def _evaluate_expressions(self, _series, _entity, _graph):
+        for dataselect in _graph:
+            entity_assign, expression = self._rewrite_expression(_series, _entity, _graph, dataselect)
+
             try:
-                add = pandas.Series(eval( expression), name=entity_assign)
-            except:
-                add = pandas.Series([numpy.nan for i in range(len(_series[_graph.graphid]))], name=entity_assign)
-            _series[_graph.graphid] = pandas.concat( [_series[_graph.graphid], add], axis=1, join='outer')
+                add = pandas.Series(eval(expression), name=entity_assign)
+            except Exception:
+                add = pandas.Series(
+                    [numpy.nan for i in range(len(_series[_graph.graphid]))],
+                    name=entity_assign
+                )
+
+            try:
+                _series[_graph.graphid] = pandas.concat(
+                    [_series[_graph.graphid], add],
+                    axis=1,
+                    join='outer'
+                )
+
+            except pandas.errors.InvalidIndexError as e:
+                df = _series[_graph.graphid]
+
+                print("InvalidIndexError during concat")
+                print(f"graphid: {_graph.graphid}")
+                print(f"entity_assign: {entity_assign}")
+                print(f"expression: {expression}")
+                print()
+
+                print("Left object type:", type(df))
+                print("Right object type:", type(add))
+                print()
+
+                print("Left index unique:", df.index.is_unique)
+                if not df.index.is_unique:
+                    dup_left_idx = df.index[df.index.duplicated()].unique()
+                    print("Duplicate left index values:")
+                    print(list(dup_left_idx))
+
+                print("Right index unique:", add.index.is_unique)
+                if not add.index.is_unique:
+                    dup_right_idx = add.index[add.index.duplicated()].unique()
+                    print("Duplicate right index values:")
+                    print(list(dup_right_idx))
+
+                if hasattr(df, "columns"):
+                    print("Left columns unique:", df.columns.is_unique)
+                    if not df.columns.is_unique:
+                        dup_left_cols = df.columns[df.columns.duplicated()].unique()
+                        print("Duplicate left column names:")
+                        print(list(dup_left_cols))
+
+                print("Right series name:", add.name)
+                if hasattr(df, "columns") and add.name in df.columns:
+                    print(f"Right series name already exists in left columns: {add.name}")
+
+                raise
 
         return _series[_graph.graphid]
 

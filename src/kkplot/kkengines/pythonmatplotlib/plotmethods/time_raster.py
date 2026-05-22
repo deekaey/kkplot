@@ -44,11 +44,21 @@ def kkplot_pythonmatplotlib_time_raster( self, _id, _graph, _axes_index, _column
     w( 0, 'def kkplot_plot_time_raster_%s( _id, _dataframe, _axes) :' % ( self._canonicalize_name( _id)))
     w( 1, '_axes.set_gid( _id)')
 
+    if sys.version_info < (3, 9, 4):
+        monthly = 'M'
+        annual = 'A'
+    else:
+        monthly = 'ME'
+        annual = 'YE'
+
     resample = _graph.get_property( "resample")
     if resample:
         resample_time_resolution = resample.split('/')[0]
+        if resample_time_resolution in ['Y', 'YE', 'A']:
+            resample_time_resolution = annual
         resample_function = resample.split('/')[1]
-        if len(xycolumns) == 3 :    
+
+        if len(xycolumns) == 3 :
             w( 1, f"_dataframe = _dataframe.groupby(['{xycolumns[0]}','{xycolumns[1]}','{xycolumns[2]}']).resample('{resample_time_resolution}').{resample_function}(){columns}")
         else:
             w( 1, f"_dataframe = _dataframe.groupby(['{xycolumns[0]}','{xycolumns[1]}']).resample('{resample_time_resolution}').{resample_function}(){columns}")

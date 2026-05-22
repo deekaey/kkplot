@@ -3,6 +3,7 @@
 
 bokeh
 holoviews
+seaborn
 pylatexenc
 matplotlib
 numexpr>=2.7.0

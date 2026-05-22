@@ -314,7 +314,9 @@ class kkplot_engine_matplotlib( kkplot_engine) :
 
             graph_columns = list()
             auxialiary_columns = list()
-            for dataselect in graph :
+            datalabel = graph.get_property( 'datalabel', None)
+
+            for di, dataselect in enumerate( graph) :
                 aux_column_ids = graph.referenceids( dataselect)
                 column_id = []
                 if len( aux_column_ids) > 0 :
@@ -326,10 +328,12 @@ class kkplot_engine_matplotlib( kkplot_engine) :
 
                 column_ids = graph.referenceids( dataselect)
                 column_names = graph.names
-                add_datalabel = graph.get_property( 'datalabel', True)
+                add_datalabel = graph.get_property( 'adddatalabel', True)
                 for ( column_id, column_name) in zip( column_ids, column_names) :
                     graph_label = graph.label( column_name)
-                    if graph_label is None :
+                    if type(datalabel) == list and di < len(datalabel):
+                        column_label = datalabel[di]
+                    elif graph_label is None :
                         column_label = None
                     elif add_datalabel :
                         column_label = '%s%s' % ( graph_label, graph.datalabel( dataselect, ' [%s]'))
