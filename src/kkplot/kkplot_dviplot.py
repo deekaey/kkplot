@@ -394,23 +394,33 @@ class kkplot_dviplot( object) :
         for column in _nonseries.columns :
             _nonseries_pool[column] = _nonseries[column]
         return _nonseries_pool
-    def _merge_data_join_timeseries( self, _timeseries_pool, _timeseries, _index_columns, _datasource) :
-        timeseries = self._transform_domaincolumns_time( _timeseries, _index_columns, _datasource)
-        timeseries = timeseries.set_index( _index_columns)
+    def _merge_data_join_timeseries(self, _timeseries_pool, _timeseries, _index_columns, _datasource):
+        # Apply transformations and set index
+        timeseries = self._transform_domaincolumns_time(_timeseries, _index_columns, _datasource)
+        timeseries = timeseries.set_index(_index_columns)
+        _timeseries_pool = _timeseries_pool.set_index(_index_columns)  # Ensure both have the same index type
+
+        # Drop fully NaN rows
         timeseries.dropna(axis=0, how='all', inplace=True)
         _timeseries_pool.dropna(axis=0, how='all', inplace=True)
+
+        # Check for duplicates explicitly
+        if not _timeseries_pool.index.is_unique:
+            kklog_warn( f"Duplicated indices in _timeseries_pool: {_timeseries_pool.index[_timeseries_pool.index.duplicated()]")
+        if not timeseries.index.is_unique:
+            kklog_warn( f"Duplicated indices in timeseries: {timeseries.index[timeseries.index.duplicated()]")
+
         try:
-            return pandas.concat( [_timeseries_pool, timeseries], axis=1, join='outer')
-        except:
-            duplicated_indexes_pool = timeseries.index[_timeseries_pool.index.duplicated()]
-            if len(duplicated_indexes_pool) > 0:
-                print("Duplicated indeces:")
-                print(duplicated_indexes_pool)
-                
-            duplicated_indexes_timeseries = timeseries.index[timeseries.index.duplicated()]
-            if len(duplicated_indexes_timeseries) > 0:
-                print("Duplicated indeces:")
-                print(duplicated_indexes_timeseries)
+            # Attempt merge with outer join
+            result = pandas.concat([_timeseries_pool, timeseries], axis=1, join='outer')
+            return result
+        except Exception as e:
+            kklog_fatal( f"Error during merge: {str(e)}")
+            kklog_fatal( "\nDebug - Error context:")
+            kklog_fatal( f"- _timeseries_pool columns: {list(_timeseries_pool.columns)}")
+            kklog_fatal( f"- timeseries columns: {list(timeseries.columns)}")
+            kklog_fatal( f"- _index_columns: {_index_columns}")
+            kklog_fatal( "\nReturning None due to merge failure.")
             return None
     def _merge_data_join_spaceseries( self, _spaceseries_pool, _spaceseries, _index_columns, _datasource) :
         spaceseries = _spaceseries.set_index( _index_columns)

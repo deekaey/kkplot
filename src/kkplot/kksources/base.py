@@ -102,31 +102,35 @@ class kkplot_timeparser_ldndcy( kkplot_timeparser) :
         return _entity_data
 
 import dateutil.parser
-class kkplot_timeparser_iso8601( kkplot_timeparser) :
-    def __init__( self, _args) :
-        super( kkplot_timeparser_iso8601, self).__init__( _args)
+class kkplot_timeparser_iso8601(kkplot_timeparser):
+    def __init__(self, _args):
+        super(kkplot_timeparser_iso8601, self).__init__(_args)
 
     @property
-    def source_domaincolumns( self) :
-        return [ 'datetime']
+    def source_domaincolumns(self):
+        return ['datetime']
 
-    def iso8601_to_datetime( self, _iso8601) :
-        return dateutil.parser.parse( _iso8601)
+    def iso8601_to_datetime(self, _iso8601):
+        return dateutil.parser.parse(_iso8601)
 
-    def construct_domaincolumns( self, _entity_data, _domain) :
-        if _domain.domaincolumns[0] in _entity_data.columns :
+    def construct_domaincolumns(self, _entity_data, _domain):
+        if _domain.domaincolumns[0] in _entity_data.columns:
             return _entity_data
 
         data_columns = _entity_data.columns
-        have_date_identifier = False
-        for date_identifier in ['datetime', 'date']: 
-            if date_identifier in data_columns :
-                date_parser_ser = lambda Y : pandas.Series( [ self.iso8601_to_datetime( y) for y in Y])
-                _entity_data[_domain.domaincolumns[0]] = date_parser_ser( _entity_data[date_identifier])
-                have_date_identifier = True
-        if not have_date_identifier:
-            raise RuntimeError( 'ISO8601: temporal data file lacks domain columns  [expect columns %s]' \
-                               % ( ", ".join( [ '"%s"' % column for column in self.source_domaincolumns])))
+        new_columns = {}
+
+        for date_identifier in ['datetime', 'date']:
+            if date_identifier in data_columns:
+                new_columns[_domain.domaincolumns[0]] = _entity_data[date_identifier].apply(self.iso8601_to_datetime)
+
+        if not new_columns:
+            raise RuntimeError(
+                'ISO8601: temporal data file lacks domain columns [expect columns %s]' %
+                (", ".join([f'"{column}"' for column in self.source_domaincolumns]))
+            )
+
+        _entity_data = pd.concat([_entity_data, pd.DataFrame(new_columns)], axis=1)
         return _entity_data
 
 
