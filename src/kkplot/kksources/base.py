@@ -2,8 +2,8 @@
 from kkplot.kkutils.log import *
 
 import datetime as datetime
-import pandas as pandas
-import numpy as numpy
+import pandas as pd
+import numpy as np
 
 class kkplot_domainparser( object) :
     def __init__( self, _args=dict()) :
@@ -65,7 +65,7 @@ class kkplot_timeparser_ldndcyj( kkplot_timeparser) :
 
         data_columns = _entity_data.columns
         if 'year' in data_columns and 'julianday' in data_columns :
-            date_parser_ser = lambda Y, J : pandas.Series( [ self.julianday_to_datetime( y, j) for ( y,j) in zip( Y,J)])
+            date_parser_ser = lambda Y, J : pd.Series( [ self.julianday_to_datetime( y, j) for ( y,j) in zip( Y,J)])
             _entity_data[_domain.domaincolumns[0]] = date_parser_ser( _entity_data['year'], _entity_data['julianday'])
         else :
             raise RuntimeError( 'LdndcYJ: temporal data file lacks domain columns  [expect columns %s]' \
@@ -94,7 +94,7 @@ class kkplot_timeparser_ldndcy( kkplot_timeparser) :
 
         data_columns = _entity_data.columns
         if 'year' in data_columns :
-            date_parser_ser = lambda Y : pandas.Series( [ self.year_to_datetime( y) for y in Y])
+            date_parser_ser = lambda Y : pd.Series( [ self.year_to_datetime( y) for y in Y])
             _entity_data[_domain.domaincolumns[0]] = date_parser_ser( _entity_data['year'])
         else :
             raise RuntimeError( 'LdndcY: temporal data file lacks domain columns  [expect columns %s]' \
@@ -173,10 +173,10 @@ class kkplot_spaceparser_ldndcesri( kkplot_spaceparser) :
 
     def _set_centroids( self, _ids, _domain) :
         C = _domain.domaincolumns
-        d = numpy.empty(( len(_ids), len( C)))
+        d = np.empty(( len(_ids), len( C)))
         d.fill( 0.0)
-        ixyz_dataframe = pandas.DataFrame( d, columns=C)
-        ixyz_dataframe['id'] = _ids.astype( numpy.int64)
+        ixyz_dataframe = pd.DataFrame( d, columns=C)
+        ixyz_dataframe['id'] = _ids.astype( np.int64)
         for shapeid in self._centroids :
             pass
             #xyz_dataframe[C][_ids==shapeid] = self._centroids.shapeid
@@ -226,7 +226,7 @@ class kkplot_spaceparser_ldndcesri( kkplot_spaceparser) :
             centroids[shapeid] = list()
             centroid_z = 0.0 if z_index == -1 else element.record[z_index]
 
-            points = numpy.array( element.shape.points)
+            points = np.array( element.shape.points)
             centroids[shapeid].append(( points[0][0], points[0][1], centroid_z))
         return centroids
 
@@ -334,13 +334,13 @@ class kkplot_source( object) :
                 groupby_key = _graph.groupname(k)
                 if groupby_key not in querydata.columns :
                     if groupby_key == 'year' :
-                        years = pandas.DatetimeIndex( querydata['time']).year
+                        years = pd.DatetimeIndex( querydata['time']).year
                         querydata = querydata[years==crit]
                     elif groupby_key == 'month' :
-                        month = pandas.DatetimeIndex( querydata['time']).month
+                        month = pd.DatetimeIndex( querydata['time']).month
                         querydata = querydata[month==crit]
                     elif groupby_key == 'day' :
-                        days = pandas.DatetimeIndex( querydata['time']).day
+                        days = pd.DatetimeIndex( querydata['time']).day
                         querydata = querydata[days==crit]
                     else :
                         kklog_error( 'missing column  [column=%s]' % ( groupby_key))
