@@ -36,6 +36,11 @@ def kkplot_pythonmatplotlib_time_regressionline( self, _id, _graph, _axes_index,
     self.W.iappendnl( 2, 'pass')    
     self.W.iappendnl( 1, 'x, y = pandas.Series( x), pandas.Series( y)')
     self.W.iappendnl( 1, 'rmse = numpy.sqrt( numpy.mean( numpy.square(y-x)))')
+    rrmse = _graph.get_property( 'rrmse', "")
+    if rrmse == 'x':
+        self.W.iappendnl( 1, 'rrmse = rmse / numpy.mean(x) ')
+    elif rrmse == 'y':
+        self.W.iappendnl( 1, 'rrmse = rmse / numpy.mean(y) ')
     self.W.iappendnl( 1, 'bias = numpy.mean(y-x)')
     self.W.iappendnl( 0, '')
 
@@ -62,7 +67,10 @@ def kkplot_pythonmatplotlib_time_regressionline( self, _id, _graph, _axes_index,
     self.W.iappendnl( 1, '_axes.plot([lower_limit,upper_limit],[lower_limit,upper_limit], color="grey", linestyle="dashed")')
     self.W.iappendnl( 1, 'f = regression_model.fittedvalues')
     self.W.iappendnl( 1, 'name = "%s"' %("%s" %_graph.get_property( 'name', '')))
-    self.W.iappendnl( 1, '_axes.annotate( "r$^2$: %.2f %s\\ny=%.1f+%.2fx\\nRMSE = %.2f\\nbias = %.1f" % (regression_model.rsquared, name, regression_model.params["const"], regression_model.params[0], rmse, bias), xy=(0.0,0.0), xycoords="axes fraction", xytext=(textcoordinates[0], textcoordinates[1]), textcoords=textcoords)')
+    if rrmse in ['x', 'y']:
+        self.W.iappendnl( 1, '_axes.annotate( "r$^2$: %.2f %s\\ny=%.1f+%.2fx\\nRMSE = %.2f\\nRRMSE = %.2f\\nbias = %.1f" % (regression_model.rsquared, name, regression_model.params["const"], regression_model.params[0], rmse, rrmse, bias), xy=(0.0,0.0), xycoords="axes fraction", xytext=(textcoordinates[0], textcoordinates[1]), textcoords=textcoords)')
+    else:
+        self.W.iappendnl( 1, '_axes.annotate( "r$^2$: %.2f %s\\ny=%.1f+%.2fx\\nRMSE = %.2f\\nbias = %.1f" % (regression_model.rsquared, name, regression_model.params["const"], regression_model.params[0], rmse, bias), xy=(0.0,0.0), xycoords="axes fraction", xytext=(textcoordinates[0], textcoordinates[1]), textcoords=textcoords)')
     self.W.iappendnl( 0, '')
     self.W.iappendnl( 1, 'return regression_model')
 

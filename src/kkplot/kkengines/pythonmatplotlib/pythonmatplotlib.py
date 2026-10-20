@@ -431,6 +431,7 @@ class kkplot_engine_matplotlib( kkplot_engine) :
             self.generate_plots_setplotproperty( plot)
 
     def generate_plots_setplotproperty( self, _plot) :
+
         self._setplotproperty( _plot, 'bgcolor', 'set_axis_bgcolor')
         self._setplotproperty( _plot, 'xlabel', 'set_xlabel')
         self._setplotproperty( _plot, 'xlabelfontsize', 'xaxis.label.set_size')
@@ -491,8 +492,12 @@ class kkplot_engine_matplotlib( kkplot_engine) :
         else:
             self._setplotproperty( _plot, 'title', 'set_title')
 
+        xlow = _plot.get_property('xlimitlow', False)
+        xhigh = _plot.get_property('xlimithigh', False)
+        if (type(xlow) == float and type(xhigh) == float) or \
+           (type(xlow) == int and type(xhigh) == int) or \
+           ((isinstance(xlow, (str)) and isinstance(xhigh, (str))) and ((xlow != "") and (xhigh != ""))):
 
-        if ( _plot.get_property( 'xlimitlow', False) not in ['None', '', False]) and ( _plot.get_property( 'xlimithigh', False) not in ['None', '', False]) :
             #self._setplotproperty( _plot, 'xlimitlow,xlimithigh', 'set_xlim')
             xlimits = (_plot.get_property( 'xlimitlow', False), _plot.get_property( 'xlimithigh', False))
             axis = self._axis_index( _plot)

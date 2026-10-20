@@ -12,12 +12,10 @@ from kkplot.kksources import kkplot_sourcefactory as kkplot_sourcefactory
 import sys
 import os as os
 import warnings
-import pandas as pd
-from pandas.errors import InvalidIndexError
+import pandas as pandas
 import numpy as numpy
 import numexpr as numexpr
 from datetime import datetime
-from typing import Optional
 
 def canonicalize_name( _name) :
     validchars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789'
@@ -94,15 +92,15 @@ def custom_nansum(arr):
 
 def nansum( _dataframe_1, _dataframe_2, *_dataframes) :
     #index = _dataframe_1.index 
-    #series = pd.Series( numpy.nansum( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
+    #series = pandas.Series( numpy.nansum( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
     #series.index = index
-    return pd.concat([ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=1).apply(custom_nansum, axis=1)
+    return pandas.concat([ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=1).apply(custom_nansum, axis=1)
 
 def nanmean( _dataframe_1, _dataframe_2, *_dataframes) :
     index = _dataframe_1.index 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=RuntimeWarning)
-        series = pd.Series( numpy.nanmean( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
+        series = pandas.Series( numpy.nanmean( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
         series.index = index
     return series
 
@@ -110,19 +108,19 @@ def nanstd( _dataframe_1, _dataframe_2, *_dataframes) :
     index = _dataframe_1.index 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=RuntimeWarning)
-        series = pd.Series( numpy.nanstd( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
+        series = pandas.Series( numpy.nanstd( [ _dataframe_1, _dataframe_2 ] + list( _dataframes), axis=0))
         series.index = index
     return series
 
 def nanmin( _dataframe_1, _val) :
     index = _dataframe_1.index
-    series = pd.Series( numpy.min( [_dataframe_1, [_val for i in range(len(_dataframe_1))]], axis=0))
+    series = pandas.Series( numpy.min( [_dataframe_1, [_val for i in range(len(_dataframe_1))]], axis=0))
     series.index = index
     return series
 
 def nanmax( _dataframe_1, _val) :
     index = _dataframe_1.index
-    series = pd.Series( numpy.max( [_dataframe_1, [_val for i in range(len(_dataframe_1))]], axis=0))
+    series = pandas.Series( numpy.max( [_dataframe_1, [_val for i in range(len(_dataframe_1))]], axis=0))
     series.index = index
     return series
 
@@ -146,14 +144,14 @@ def integral( _dataframe, _timeperiod=None, _timestamp=None, _error=0) :
     #set last dataframe entry to integral value
     if _error == 0 :
         if scipy.__version__ >= "1.13.0":
-            data_clean[-1] = pd.Series( integrate.trapezoid(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_scale)
+            data_clean[-1] = pandas.Series( integrate.trapezoid(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_scale)
         else:
-            data_clean[-1] = pd.Series( integrate.trapz(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_scale)
+            data_clean[-1] = pandas.Series( integrate.trapz(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_scale)
     else :
         if scipy.__version__ >= "1.13.0":
-            data_clean[-1] = pd.Series( (integrate.trapezoid(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_scale)
+            data_clean[-1] = pandas.Series( (integrate.trapezoid(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_scale)
         else:
-            data_clean[-1] = pd.Series( (integrate.trapz(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_scale)
+            data_clean[-1] = pandas.Series( (integrate.trapz(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_scale)
     #return only the integral value as dataframe
     #return _dataframe.resample( '%dA' %1).mean()
     if _timestamp:
@@ -337,7 +335,7 @@ class kkplot_dviplot( object) :
         for entity in _entities :
             graph = self._figure.get_graph( entity)
             if series.get( graph.graphid) is None :
-                series[graph.graphid] = pd.DataFrame()
+                series[graph.graphid] = pandas.DataFrame()
 
             ## sk:obs?            skip = False
             ## sk:obs?            if graph.name is not None :
@@ -365,7 +363,7 @@ class kkplot_dviplot( object) :
                         kklog_debug( 'datacolumn "%s" for graph "%s" exists. skipping.' % ( targetname, graph.graphid))
                         continue
         
-                    selected_data = pd.DataFrame()
+                    selected_data = pandas.DataFrame()
                     if graph.name is None :
                         pass
                     else :
@@ -396,66 +394,28 @@ class kkplot_dviplot( object) :
         for column in _nonseries.columns :
             _nonseries_pool[column] = _nonseries[column]
         return _nonseries_pool
-
-    def _merge_data_join_timeseries(
-        self,
-        _timeseries_pool: pd.DataFrame,
-        _timeseries: pd.DataFrame,
-        _index_columns: list,
-        _datasource: str,
-    ) -> Optional[pd.DataFrame]:
-        """
-        Merges two DataFrames by joining them on a common index.
-        Logs detailed information about duplicate indices and handles errors gracefully.
-
-        Args:
-            _timeseries_pool: The target DataFrame to merge into.
-            _timeseries: The source DataFrame to merge.
-            _index_columns: List of column names to set as the index.
-            _datasource: Identifier for the data source (for logging).
-
-        Returns:
-            Optional[pd.DataFrame]: Merged DataFrame if successful, None if errors occur.
-        """
+    def _merge_data_join_timeseries( self, _timeseries_pool, _timeseries, _index_columns, _datasource) :
+        timeseries = self._transform_domaincolumns_time( _timeseries, _index_columns, _datasource)
+        timeseries = timeseries.set_index( _index_columns)
+        timeseries.dropna(axis=0, how='all', inplace=True)
+        _timeseries_pool.dropna(axis=0, how='all', inplace=True)
         try:
-            # Transform and validate timeseries DataFrame
-            timeseries = self._transform_domaincolumns_time(_timeseries, _index_columns, _datasource)
-
-            # Set index and drop NaN rows
-            timeseries = timeseries.set_index(_index_columns)
-            timeseries.dropna(axis=0, how="all", inplace=True)
-            _timeseries_pool.dropna(axis=0, how="all", inplace=True)
-
-            # Check for duplicate indices early
-            timeseries_dup = timeseries.index[timeseries.index.duplicated()]
-            pool_dup = _timeseries_pool.index[_timeseries_pool.index.duplicated()]
-
-            if len(timeseries_dup) > 0:
-                kklog_warn( f"Duplicates found in 'timeseries' (datasource: {_datasource}):\n{timeseries_dup}")
-            if len(pool_dup) > 0:
-                kklog_warn( f"Duplicates found in '_timeseries_pool' (datasource: {_datasource}):\n{pool_dup}")
-
-            # Attempt to concatenate
-            merged = pd.concat([_timeseries_pool, timeseries], axis=1, join="outer")
-            return merged
-
-        except InvalidIndexError as e:
-            kklog_fatal( f"InvalidIndexError during merge:\n Error: {e}")
-            kklog_fatal( f"Context:\n- '_timeseries_pool' shape: {_timeseries_pool.shape}")
-            kklog_fatal( f"- 'timeseries' shape: {timeseries.shape}")
-            kklog_fatal( f"- '_index_columns': {_index_columns}")
-            kklog_fatal( f"- Duplicate indices in 'timeseries': {len(timeseries_dup)}")
-            kklog_fatal( f"- Duplicate indices in '_timeseries_pool': {len(pool_dup)}")
+            return pandas.concat( [_timeseries_pool, timeseries], axis=1, join='outer')
+        except:
+            duplicated_indexes_pool = timeseries.index[_timeseries_pool.index.duplicated()]
+            if len(duplicated_indexes_pool) > 0:
+                print("Duplicated indeces:")
+                print(duplicated_indexes_pool)
+                
+            duplicated_indexes_timeseries = timeseries.index[timeseries.index.duplicated()]
+            if len(duplicated_indexes_timeseries) > 0:
+                print("Duplicated indeces:")
+                print(duplicated_indexes_timeseries)
             return None
-
-        except Exception as e:
-            kklog_fatal( f"Unexpected error during merge: {e}")
-            return None
-
     def _merge_data_join_spaceseries( self, _spaceseries_pool, _spaceseries, _index_columns, _datasource) :
         spaceseries = _spaceseries.set_index( _index_columns)
         timeseries = self._transform_domaincolumns_space( timeseries, _datasource)
-        return pd.concat( [_spaceseries_pool, spaceseries], axis=1, join='outer')
+        return pandas.concat( [_spaceseries_pool, spaceseries], axis=1, join='outer')
 
     def _transform_domaincolumns_time( self, _timeseries, _index_columns, _datasource) :
         t_shiftarg = _datasource.flavorarg( 'shift')
@@ -463,7 +423,7 @@ class kkplot_dviplot( object) :
             t_shift = parse_timedelta( t_shiftarg)
             if t_shift is not None :
                 kklog_verbose( 'time-shifting data "%s" by [%s]' % ( _datasource.name, t_shift))
-                _timeseries[_index_columns] += pd.to_timedelta( t_shift)
+                _timeseries[_index_columns] += pandas.to_timedelta( t_shift)
         return  _timeseries
     def _transform_domaincolumns_space( self, _spaceseries, _datasource) :
         t_shiftarg = _datasource.flavorarg( 'shift')
@@ -492,21 +452,21 @@ class kkplot_dviplot( object) :
             entity_assign, expression = self._rewrite_expression(_series, _entity, _graph, dataselect)
 
             try:
-                add = pd.Series(eval(expression), name=entity_assign)
+                add = pandas.Series(eval(expression), name=entity_assign)
             except Exception:
-                add = pd.Series(
+                add = pandas.Series(
                     [numpy.nan for i in range(len(_series[_graph.graphid]))],
                     name=entity_assign
                 )
 
             try:
-                _series[_graph.graphid] = pd.concat(
+                _series[_graph.graphid] = pandas.concat(
                     [_series[_graph.graphid], add],
                     axis=1,
                     join='outer'
                 )
 
-            except pd.errors.InvalidIndexError as e:
+            except pandas.errors.InvalidIndexError as e:
                 df = _series[_graph.graphid]
 
                 print("InvalidIndexError during concat")

@@ -53,7 +53,11 @@ def mp_parse( _outfile, _infile) :
         # Skip the first `skiprows` lines manually
         for _ in range(skiprows):
             next(f)
-        dialect = csv.Sniffer().sniff(f.read(1024), delimiters=[',', '\t', ' ', '    '])
+        ## sniff on complete lines only; a truncated last line confuses the sniffer for wide files
+        sample = f.read(8192)
+        if '\n' in sample :
+            sample = sample[:sample.rfind('\n')+1]
+        dialect = csv.Sniffer().sniff(sample, delimiters=[',', '\t', ' ', '    '])
         f.seek(0)
 
     if pandas_version_minor < 15 :
@@ -95,7 +99,16 @@ def mp_getskiprows( _infile) :
                     return -1
                 return  line_count
     f.close()
-    return 0
+
+    ## no '%data' marker: skip leading '#' header lines (markdown header format)
+    f = open( _infile, 'r')
+    line_count = 0
+    for line in f :
+        if not line.startswith( '#') :
+            break
+        line_count += 1
+    f.close()
+    return line_count
 
 
 import os
