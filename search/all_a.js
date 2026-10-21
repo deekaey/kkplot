@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['node_0',['node',['../structnode.html',1,'']]],
-  ['null_1',['null',['../classkkplot_1_1kkutils_1_1esri_1_1_writer.html#ab636c5495b4ea0b970b38bb08eda5423',1,'kkplot::kkutils::esri::Writer']]]
+  ['map_0',['map',['../structmap.html',1,'']]],
+  ['mbox_1',['mbox',['../classkkplot_1_1kkutils_1_1esri_1_1_writer.html#a73c1b806957f70ef0e5766ec779a719a',1,'kkplot::kkutils::esri::Writer']]],
+  ['modectx_2',['ModeCtx',['../struct_mode_ctx.html',1,'']]]
 ];
