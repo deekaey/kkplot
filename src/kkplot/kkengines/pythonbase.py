@@ -139,15 +139,8 @@ class kkplot_engine_base_python( kkplot_engine) :
         self.writer.iappendnl( 0, '')
 
     def _canonicalize_name( self, _name) :
-        validchars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789'
-        canonicalized_name = ''
-        for c in _name :
-            if not c in validchars :
-                canonicalized_name += '_'
-            else :
-                canonicalized_name += c
-
-        return canonicalized_name
+        import re
+        return re.sub( '[^A-Za-z0-9_]', '_', _name)
 
     def _make_args( self, _commas, **_kwargs) :
         args = ', '.join([ '%s=%s' % ( k, self._stringify( v)) for ( k, v) in zip( _kwargs.keys(), _kwargs.values()) if v is not None])

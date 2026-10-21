@@ -17,69 +17,36 @@ import numpy as numpy
 import numexpr as numexpr
 from datetime import datetime
 
+import re
 def canonicalize_name( _name) :
-    validchars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789'
-    name = _name.strip( ' \t./\\')
-    canonicalized_name = ''
-    for c in name :
-        if not c in validchars :
-            canonicalized_name += '_'
-        else :
-            canonicalized_name += c
-    return canonicalized_name
+    return re.sub( '[^A-Za-z0-9_]', '_', _name.strip( ' \t./\\'))
 
 def timestamp(_y,_m,_d):
     return datetime.strptime( str(_y)+"-"+str(_m)+"-"+str(_d), '%Y-%m-%d')
-
-
-if sys.version_info < (3, 9, 4):
-    monthly = 'M'
-    annual = 'A'
-else:
-    monthly = 'ME'
-    annual = 'YE'
-
 
 def timeperiod(_y1,_m1,_d1,_y2,_m2,_d2,_res='day'):
     start = datetime.strptime( str(_y1)+"-"+str(_m1)+"-"+str(_d1), '%Y-%m-%d')
     end = datetime.strptime( str(_y2)+"-"+str(_m2)+"-"+str(_d2), '%Y-%m-%d')
     delta = end-start
     return delta.days
-def daysum( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dD' %_nd).sum()
-def weeksum( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dW-MON' %_nd).sum()
-def monthsum( _dataframe, _nd=1) :
-    return _dataframe.resample( f'%d{monthly}' %_nd).sum()
-def yearsum( _dataframe, _nd=1) :
-    return _dataframe.resample( f'%d{annual}' %_nd).sum()
 
-def daymax( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dD' %_nd).max()
-def weekmax( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dW-MON' %_nd).max()
-def monthmax( _dataframe, _nd=1) :
-    return _dataframe.resample( f'%d{monthly}' %_nd).max()
-def yearmax( _dataframe, _nd=1) :
-    return _dataframe.resample( f'%d{annual}' %_nd).max()
+## resampling functions usable in plot file expressions:
+##   {day,week,month,year}{sum,max,mean,std}( column, n=1)
+## pandas >= 2.2 renamed month/year end aliases 'M'/'A' to 'ME'/'YE'
+_pandas_new_aliases = tuple( int( v) for v in pandas.__version__.split( '.')[:2]) >= ( 2, 2)
+KKPLOT_RESAMPLE_FREQUENCIES = dict(
+    day='D', week='W-MON',
+    month='ME' if _pandas_new_aliases else 'M',
+    year='YE' if _pandas_new_aliases else 'A')
 
-def daymean( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dD' %_nd).mean()
-def weekmean( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dW-MON' %_nd).mean()
-def monthmean( _dataframe, _nd=1) :
-    return _dataframe.resample( f'%d{monthly}' %_nd).mean()
-def yearmean( _dataframe, _nd=1) :
-    return _dataframe.resample( f'%d{annual}' %_nd).mean()
+def _make_resampler( _freq, _aggregate) :
+    def resampler( _dataframe, _nd=1) :
+        return getattr( _dataframe.resample( '%d%s' % ( _nd, _freq)), _aggregate)()
+    return resampler
 
-def daystd( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dD' %_nd).std()
-def weekstd( _dataframe, _nd=1) :
-    return _dataframe.resample( '%dW-MON' %_nd).std()
-def monthstd( _dataframe, _nd=1) :
-    return _dataframe.resample( f'%d{monthly}' %_nd).std()
-def yearstd( _dataframe, _nd=1) :
-    return _dataframe.resample( f'%d{annual}' %_nd).std()
+for _period, _freq in KKPLOT_RESAMPLE_FREQUENCIES.items() :
+    for _aggregate in [ 'sum', 'max', 'mean', 'std'] :
+        globals()[_period+_aggregate] = _make_resampler( _freq, _aggregate)
 
 def cumsum( _dataframe) :
     return _dataframe.cumsum()
@@ -131,36 +98,24 @@ def diff( _dataframe) :
     return _dataframe.diff()
 
 from scipy import integrate
+_trapezoid = getattr( integrate, 'trapezoid', None) or integrate.trapz
+
+## time-weighted mean of the series scaled to _timeperiod (default: covered
+## days); with _error, the root mean square instead (error propagation).
+## returns a single value placed at the last time stamp (or _timestamp).
 def integral( _dataframe, _timeperiod=None, _timestamp=None, _error=0) :
     data_clean = _dataframe.dropna()
-    x = [0.0]
-    for d in range(len(data_clean.index)-1):
-        x.append( (data_clean.index[d+1]-data_clean.index[d]).total_seconds() + x[d])
-    if _timeperiod : 
-        time_scale = _timeperiod
-    else:
-        time_scale = (data_clean.index[-1] - data_clean.index[0]).days
+    index = data_clean.index
+    seconds = ( index - index[0]).total_seconds()
+    time_scale = _timeperiod if _timeperiod else ( index[-1] - index[0]).days
 
-    #set last dataframe entry to integral value
     if _error == 0 :
-        if scipy.__version__ >= "1.13.0":
-            data_clean[-1] = pandas.Series( integrate.trapezoid(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_scale)
-        else:
-            data_clean[-1] = pandas.Series( integrate.trapz(data_clean, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds() * time_scale)
+        value = _trapezoid( data_clean, seconds) / seconds[-1] * time_scale
     else :
-        if scipy.__version__ >= "1.13.0":
-            data_clean[-1] = pandas.Series( (integrate.trapezoid(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_scale)
-        else:
-            data_clean[-1] = pandas.Series( (integrate.trapz(data_clean**2.0, x) / (data_clean.index[-1]-data_clean.index[0]).total_seconds())**0.5 * time_scale)
-    #return only the integral value as dataframe
-    #return _dataframe.resample( '%dA' %1).mean()
-    if _timestamp:
-        data_clean_index = data_clean.index.values.copy()
-        data_clean_index[-1] = _timestamp
-        data_clean.index._data = numpy.array(data_clean_index)
-        return data_clean[[-1]]
-    else:
-        return data_clean[[-1]]
+        value = ( _trapezoid( data_clean**2.0, seconds) / seconds[-1])**0.5 * time_scale
+
+    stamp = _timestamp if _timestamp else index[-1]
+    return pandas.Series( [ value], index=pandas.DatetimeIndex( [ stamp], name=index.name), name=data_clean.name)
 
 
 class kkplot_dviplot( object) :
@@ -191,12 +146,33 @@ class kkplot_dviplot( object) :
                 kklog_fatal( 'failed to read entity from datasource')
             series = self._evaluate_domain_expressions( series, toposorted_entities)
             series = self._delete_terminal_columns( series)
-            self._write_data( series)
+            ## the matplotlib engine plots from memory
+            if self._engine != 'matplotlib' or self._conf.bundle :
+                self._write_data( series)
 
         self._seriesids = series.keys()
+        self._series = series
 
     def series_exists( self, _serieid) :
         return _serieid in self._seriesids
+
+    def series( self, _serieid, _kind='time') :
+        """data pool shaped like it is read back from the file written
+        by _write_data (extra 'row' column, time index in seconds)"""
+        serie = self._series.get( _serieid)
+        if serie is None or serie.empty :
+            return None
+        serie = serie.dropna( how='all').reset_index()
+        serie.insert( 0, 'row', range( len( serie)))
+        if _kind == 'time' :
+            if 'time' not in serie.columns :
+                return None
+            time = pandas.to_datetime( serie['time'])
+            if time.dt.tz is not None :
+                time = time.dt.tz_localize( None)
+            serie['time'] = time.dt.floor( 's').astype( 'datetime64[ns]')
+            serie = serie.set_index( serie.columns[1])
+        return serie
 
     @property
     def series_kinds( self) :
@@ -245,6 +221,12 @@ class kkplot_dviplot( object) :
             of = '%s/%s' % ( self._conf.outputs_dir(), of)
         if self._conf.bundle :
             of = of if of.rfind( os.sep) == -1 else of[of.rfind( os.sep)+1:]
+        return  of
+    @property
+    def outputpath( self) :
+        of = self._outputfile
+        if not os.path.isabs( of) :
+            of = '%s/%s' % ( self._conf.outputs_dir(), of)
         return  of
     @property
     def outputfileformat( self) :
@@ -336,16 +318,6 @@ class kkplot_dviplot( object) :
             graph = self._figure.get_graph( entity)
             if series.get( graph.graphid) is None :
                 series[graph.graphid] = pandas.DataFrame()
-
-            ## sk:obs?            skip = False
-            ## sk:obs?            if graph.name is not None :
-            ## sk:obs?                for graph_name in graph.names :
-            ## sk:obs?                    if not graph_name in data.columns :
-            ## sk:obs?                        kklog_warn( 'invalid column name in name list [column=%s]' % ( graph_name))
-            ## sk:obs?                        skip = True
-            ## sk:obs?                        break
-            ## sk:obs?            if skip :
-            ## sk:obs?                continue
 
             for dependency in graph.dependencies( entity) :
                 if kkplot_isreference( dependency) :

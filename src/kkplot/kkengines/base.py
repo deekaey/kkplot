@@ -5,6 +5,22 @@ import sys
 
 KKPLOT_ENGINES = dict()
 
+## graph kind (as written in plot file) -> plot method base name
+KKPLOT_GRAPHKIND_ALIASES = {
+    'standard': 'line', 'lines': 'line',
+    'fillbetween': 'fill', 'band': 'fill',
+    'polygon': 'polygons',
+    'point': 'points',
+    'points+errors': 'points_errors',
+    'bar': 'bars',
+    'box': 'boxes', 'boxplot': 'boxes', 'boxplots': 'boxes',
+    'integrate+bar': 'integratebar',
+    'stack': 'area', 'stacked': 'area', 'stackedarea': 'area',
+    'regression0': 'regressionzero', 'regressionnointercept': 'regressionzero',
+    'hist': 'histogram',
+    'piechart': 'pie',
+}
+
 class kkplot_plotmethod( object) :
     def __init__( self, _graph, _graphmethodcall) :
         self.graph = _graph
@@ -13,6 +29,9 @@ class kkplot_plotmethod( object) :
         return 'graph <%s>, method=%s' % ( self.graph.graphid, self.methodcall)
 
 class kkplot_engine( object) :
+    ## engines that generate code have it written (--bundle) and executed by kkplot
+    generates_code = True
+
     def  __init__( self, _name, _conf, _dviplot) :
         self._name = _name
         self._conf = _conf
@@ -75,61 +94,8 @@ class kkplot_engine( object) :
             kklog_warn( 'unknown projection  [projection=%s]' % ( graph_projection))
             raise RuntimeError( 'unknown projection')
 
-        if graph_kind == 'standard' or graph_kind == 'line' or graph_kind == 'lines' :
-            return ( 'line', projection)
-        elif graph_kind == 'cumulativeline' :
-            return ( 'cumulativeline', projection)
-        elif graph_kind == 'fill' or graph_kind == 'fillbetween' or graph_kind == 'band' :
-            return ( 'fill', projection)
-        elif graph_kind == 'polygon' or graph_kind == 'polygons' :
-            return ( 'polygons', projection)
-        elif graph_kind == 'point' or graph_kind == 'points' :
-            return ( 'points', projection)
-        elif graph_kind == 'points+errors' :
-            return ( 'points_errors', projection)
-        elif graph_kind == 'bar' or graph_kind == 'bars' :
-            return ( 'bars', projection)
-        elif graph_kind == 'box' or graph_kind == 'boxes' or graph_kind == 'boxplot' or graph_kind == 'boxplots' :
-            return ( 'boxes', projection)
-        elif graph_kind == 'integratebar' or graph_kind == 'integrate+bar' :
-            return ( 'integratebar', projection)
-        elif graph_kind == 'area' or graph_kind == 'stack' or graph_kind == 'stacked' or graph_kind == 'stackedarea' :
-            return ( 'area', projection)
-        elif graph_kind == 'contour' :
-            return ( 'contour', projection)
-        elif graph_kind == 'raster' :
-            return ( 'raster', projection)
-        elif graph_kind == 'regressionline' :
-            return ( 'regressionline', projection)
-        elif graph_kind == 'regressionzero' or graph_kind == 'regression0' or graph_kind == 'regressionnointercept' :
-            return ( 'regressionzero', projection)
-        elif graph_kind == 'regressionpoint' :
-            return ( 'regressionpoint', projection)
-        elif graph_kind == 'heatmap' :
-            return ( 'heatmap', projection)
-        elif graph_kind == 'hist' or graph_kind == 'histogram' :
-            return ( 'histogram', projection)
-
-        elif graph_kind == 'pie' or graph_kind == 'piechart' :
-            return ( 'pie', projection)
-
-        elif graph_kind == 'shadebox' :
-            return ( 'shadebox', projection)
-
-        elif graph_kind == 'surface' :
-            return ( 'surface', projection)
-
-        elif graph_kind == 'bartable' :
-            return ( 'bartable', projection)
-
-        elif graph_kind == 'volume' :
-            return ( 'volume', projection)
-        else :
-            #kklog_warn( 'unregistered graph type "%s"' % graph_kind)
-            return ( graph_kind, projection)
-
-        kklog_warn( 'unsupported graph type "%s"' % graph_kind)
-        raise RuntimeError( 'unsupported graph type')
+        ## unknown kinds are passed through unchanged
+        return ( KKPLOT_GRAPHKIND_ALIASES.get( graph_kind, graph_kind), projection)
 
 
     def _generate_graphmethods( self, _graphmethodcall) :
@@ -186,14 +152,34 @@ class kkplot_engine( object) :
         return subcolumns
 
 
+## engine name -> module that registers it on import
+KKPLOT_ENGINE_MODULES = {
+    'bokeh': 'kkplot.kkengines.pythonbokeh',
+    'holoviews': 'kkplot.kkengines.pythonholoviews',
+    'matplotlib': 'kkplot.kkengines.pythonmatplotlib',
+    'tabular': 'kkplot.kkengines.pythontabular',
+    'vtk': 'kkplot.kkengines.pythonvtk',
+    'gnuplot': 'kkplot.kkengines.gnuplot',
+    'null': 'kkplot.kkengines.null',
+}
+
+def  _load_engine( _name) :
+    if _name not in KKPLOT_ENGINES and _name in KKPLOT_ENGINE_MODULES :
+        import importlib
+        try :
+            importlib.import_module( KKPLOT_ENGINE_MODULES[_name])
+        except ImportError as err :
+            kklog_error( 'failed to load engine [%s]: %s' % ( _name, err))
+
 def  create( _name, _conf, _dviplot) :
+    _load_engine( _name)
     if _name in KKPLOT_ENGINES :
         kkengine = KKPLOT_ENGINES[_name].new( _conf, _dviplot)
         kklog_debug( 'using engine: %s' % ( kkengine))
         return  kkengine
-    kklog_error( 'no such engine [%s] (available engines {%s})' % ( _name, ', '.join( KKPLOT_ENGINES.keys())))
+    kklog_error( 'no such engine [%s] (available engines {%s})' % ( _name, ', '.join( names())))
     return  None
 
 def  names() :
-    return  KKPLOT_ENGINES.keys()
+    return  KKPLOT_ENGINE_MODULES.keys()
 

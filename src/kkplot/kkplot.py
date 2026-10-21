@@ -76,8 +76,9 @@ def main():
         elif kkplot_config.engine_help() :
             kkplot_print_enginehelp( kkplot_engine)
         else :
+            ## engines that do not generate code have drawn the figure in generate()
             rc = kkplot_engine.generate()
-            if rc == 0 :
+            if rc == 0 and kkplot_engine.generates_code :
                 if kkplot_config.bundle :
                     source_filename = kkplot_plot.source_filename( kkplot_engine.suffix)
                     kkplot_engine.write( source_filename)
@@ -89,8 +90,7 @@ def main():
                     exec(generated_code, {'__name__': '__main__'})
                 else:
                     kkplot_engine.write()
-                    print(kkplot_config.execute)
-            else :
+            elif rc != 0 :
                 utils.log.kklog_error( 'failed to generate plot\n')
                 sys.exit( 103)
     else :

@@ -1,33 +1,31 @@
 
-#imports not sorted alphabetically due to dependencies
-#from non_bar import kkplot_pythonmatplotlib_non_bar
-from .non_bartable import kkplot_pythonmatplotlib_non_bartable
-from .non_line import kkplot_pythonmatplotlib_non_line
+##  plot methods: f( axes, graph, data, columns, auxiliary columns, context)
+##  draw the graph directly onto the axes; their return value is stored as
+##  the graph's result (consumed by e.g. regression lines)
 
-from .space_boxes import kkplot_pythonmatplotlib_space_boxes
-from .space_line3d import kkplot_pythonmatplotlib_space_line3d
-from .space_points3d import kkplot_pythonmatplotlib_space_points3d
-from .space_polygons import kkplot_pythonmatplotlib_space_polygons
-from .space_surface3d import kkplot_pythonmatplotlib_space_surface3d
+from .lines import time_line, time_points, time_points_errors, \
+    time_cumulativeline, time_bars, time_scatter, time_scatter_columns
+from .integratebar import time_integratebar
+from .heatmap import time_heatmap
+from .raster import time_raster, time_raster_columns
+from .regression import time_regressionpoint, time_regressionline, time_regressionzero
 
-from .time_area import kkplot_pythonmatplotlib_time_area
-from .time_cumulativeline import kkplot_pythonmatplotlib_time_cumulativeline
-from .time_fill import kkplot_pythonmatplotlib_time_fill
-from .time_heatmap import kkplot_pythonmatplotlib_time_heatmap
-from .time_histogram import kkplot_pythonmatplotlib_time_histogram
-from .time_integratebar import kkplot_pythonmatplotlib_time_integratebar
-from .time_line import kkplot_pythonmatplotlib_time_line
-from .time_annotate import kkplot_pythonmatplotlib_time_annotate
-from .time_pie import kkplot_pythonmatplotlib_time_pie
-from .time_bars import kkplot_pythonmatplotlib_time_bars
-from .time_boxes import kkplot_pythonmatplotlib_time_boxes
-from .time_pointserrors import kkplot_pythonmatplotlib_time_points_errors
-from .time_points import kkplot_pythonmatplotlib_time_points
-from .time_raster import kkplot_pythonmatplotlib_time_raster
-from .time_regressionline import kkplot_pythonmatplotlib_time_regressionline
-from .time_regressionpoint import kkplot_pythonmatplotlib_time_regressionpoint
-from .time_regressionzero import kkplot_pythonmatplotlib_time_regressionzero
-from .time_scatter import kkplot_pythonmatplotlib_time_scatter
-from .time_shadebox import kkplot_pythonmatplotlib_time_shadebox
-from .time_surface3d import kkplot_pythonmatplotlib_time_surface3d
+PLOTMETHODS = dict(
+    time_line=time_line,
+    time_points=time_points,
+    time_points_errors=time_points_errors,
+    time_cumulativeline=time_cumulativeline,
+    time_bars=time_bars,
+    time_scatter=time_scatter,
+    time_integratebar=time_integratebar,
+    time_heatmap=time_heatmap,
+    time_raster=time_raster,
+    time_regressionpoint=time_regressionpoint,
+    time_regressionline=time_regressionline,
+    time_regressionzero=time_regressionzero)
 
+## plot methods that do not read the graph's data
+NODATA_PLOTMETHODS = [ time_regressionline, time_regressionzero]
+
+## column checks that make the whole figure fail (as before)
+COLUMNCHECKS = { time_raster: time_raster_columns, time_scatter: time_scatter_columns}

@@ -53,11 +53,34 @@ class kkplot_provider( object) :
 
 
     def execute( self) :
-        if self._program is not None :
-            import subprocess
-            rc = subprocess.call( [ self._program] + self._args)
-            return rc
-        return 0
+        if self._program is None :
+            return 0
+        if self._program == 'python' and len( self._args) > 0 and self._args[0].endswith( '.py') :
+            return self._execute_python_inprocess( self._args[0], self._args[1:])
+        import subprocess
+        return subprocess.call( [ self._program] + self._args)
+
+    ## run python providers inside this interpreter: saves starting
+    ## a new python (and importing pandas) for every data source
+    def _execute_python_inprocess( self, _script, _args) :
+        import runpy
+        import sys
+        import traceback
+        saved_argv, saved_path = sys.argv, list( sys.path)
+        sys.argv = [ _script] + list( _args)
+        sys.path.insert( 0, os.path.dirname( os.path.abspath( _script)))
+        try :
+            runpy.run_path( _script, run_name='__main__')
+            rc = 0
+        except SystemExit as exit :
+            rc = exit.code if isinstance( exit.code, int) else ( 0 if exit.code is None else 1)
+        except Exception :
+            traceback.print_exc()
+            rc = 1
+        finally :
+            sys.argv, sys.path[:] = saved_argv, saved_path
+            sys.stdout.flush()
+        return rc
 
     def __str__( self) :
         return  '%s %s' % ( self._program, ' '.join( [ '"%s"' % ( arg) for arg in self._args]))

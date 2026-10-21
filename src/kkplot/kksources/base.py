@@ -28,36 +28,14 @@ class kkplot_noneparser( kkplot_domainparser) :
         super( kkplot_noneparser, self).__init__( _args)
 
 
-import time
-import calendar
 class kkplot_timeparser_ldndcyj( kkplot_timeparser) :
     def __init__( self, _args) :
         super( kkplot_timeparser_ldndcyj, self).__init__( _args)
 
-        self.juliandaymonth = \
-            [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12]
-        self.juliandaymonthleapyear = \
-            [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12]
-
-        self.juliandayday = \
-            [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
-        self.juliandaydayleapyear = \
-            [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
-
-        self.M = { True:self.juliandaymonthleapyear, False:self.juliandaymonth }
-        self.D = { True:self.juliandaydayleapyear, False:self.juliandayday }
-
-    def isleapyear( self, _year) :
-        return calendar.isleap( _year)
-    def julianday_to_datetime( self, _year, _julianday) :
-        month = self.M[self.isleapyear( _year)][int(_julianday)]
-        day = self.D[self.isleapyear( _year)][int(_julianday)]
-        return datetime.datetime( _year, month, day)
-
     @property
     def source_domaincolumns( self) :
         return [ 'year', 'julianday'] ## TODO [ 'subday']
-        
+
     ## TODO subday (auto-detect)
     def construct_domaincolumns( self, _entity_data, _domain) :
         if _domain.domaincolumns[0] in _entity_data.columns :
@@ -65,13 +43,13 @@ class kkplot_timeparser_ldndcyj( kkplot_timeparser) :
 
         data_columns = _entity_data.columns
         if 'year' in data_columns and 'julianday' in data_columns :
-            date_parser_ser = lambda Y, J : pd.Series( [ self.julianday_to_datetime( y, j) for ( y,j) in zip( Y,J)])
-            _entity_data[_domain.domaincolumns[0]] = date_parser_ser( _entity_data['year'], _entity_data['julianday'])
+            year = _entity_data['year'].astype( int).astype( str)
+            julianday = _entity_data['julianday'].astype( int).astype( str).str.zfill( 3)
+            _entity_data[_domain.domaincolumns[0]] = pd.to_datetime( year + julianday, format='%Y%j')
         else :
             raise RuntimeError( 'LdndcYJ: temporal data file lacks domain columns  [expect columns %s]' \
                 % ( ", ".join( [ '"%s"' % column for column in self.source_domaincolumns])))
         return _entity_data
-
 
 
 class kkplot_timeparser_ldndcy( kkplot_timeparser) :
@@ -82,20 +60,15 @@ class kkplot_timeparser_ldndcy( kkplot_timeparser) :
     def source_domaincolumns( self) :
         return [ 'year']
 
-    def year_to_datetime( self, _year) :
-        month = 12
-        day = 31
-        return datetime.datetime( _year, month, day)
-
-
+    ## a year is represented by its last day
     def construct_domaincolumns( self, _entity_data, _domain) :
         if _domain.domaincolumns[0] in _entity_data.columns :
             return _entity_data
 
         data_columns = _entity_data.columns
         if 'year' in data_columns :
-            date_parser_ser = lambda Y : pd.Series( [ self.year_to_datetime( y) for y in Y])
-            _entity_data[_domain.domaincolumns[0]] = date_parser_ser( _entity_data['year'])
+            year = _entity_data['year'].astype( int).astype( str)
+            _entity_data[_domain.domaincolumns[0]] = pd.to_datetime( year + '1231', format='%Y%m%d')
         else :
             raise RuntimeError( 'LdndcY: temporal data file lacks domain columns  [expect columns %s]' \
                                % ( ", ".join( [ '"%s"' % column for column in self.source_domaincolumns])))
@@ -110,8 +83,15 @@ class kkplot_timeparser_iso8601(kkplot_timeparser):
     def source_domaincolumns(self):
         return ['datetime']
 
-    def iso8601_to_datetime(self, _iso8601):
-        return dateutil.parser.parse(_iso8601)
+    @staticmethod
+    def iso8601_to_datetime(_iso8601):
+        ## vectorized parsing of the common case; fall back to
+        ## (slow) element-wise dateutil for anything else
+        try:
+            return pd.to_datetime(_iso8601, format='ISO8601')
+        except (ValueError, TypeError):
+            pass
+        return _iso8601.apply(dateutil.parser.parse)
 
     def construct_domaincolumns(self, _entity_data, _domain):
         if _domain.domaincolumns[0] in _entity_data.columns:
@@ -122,7 +102,7 @@ class kkplot_timeparser_iso8601(kkplot_timeparser):
 
         for date_identifier in ['datetime', 'date']:
             if date_identifier in data_columns:
-                new_columns[_domain.domaincolumns[0]] = _entity_data[date_identifier].apply(self.iso8601_to_datetime)
+                new_columns[_domain.domaincolumns[0]] = self.iso8601_to_datetime(_entity_data[date_identifier])
 
         if not new_columns:
             raise RuntimeError(
